@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4bn410qt2jjr"]
+
+[ext_resource type="Script" path="res://WebScraper/WebScraper.gd" id="1_2m44x"]
+
+[node name="WebScraper" type="Node2D"]
+script = ExtResource("1_2m44x")
+data_file = "res://WebScraper/Wheel of Fortune – Cheat Answer List - Facebook Game Hints, Strategies & Guides.html"
