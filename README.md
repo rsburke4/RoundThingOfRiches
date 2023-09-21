@@ -26,15 +26,15 @@ After selecting the number of players/teams participating, **and the number of r
 
 1. Starting player spins the wheel.
 2. Based on the space it lands on:
-    * Dollar value: player may guess a consonant for the dollar amount shown on the wheel; play continues if the consonant appears and passes to next player if it does not
-    * Bankrupt: player loses all money; play passes to next player
-    * Lose a turn: no penalty for current player; play passes to next player
-    * **Free play**: player may guess a consonant for $500 or a vowel for free; player's turn continues, even if wrong
+	* Dollar value: player may guess a consonant for the dollar amount shown on the wheel; play continues if the consonant appears and passes to next player if it does not
+	* Bankrupt: player loses all money; play passes to next player
+	* Lose a turn: no penalty for current player; play passes to next player
+	* **Free play**: player may guess a consonant for $500 or a vowel for free; player's turn continues, even if wrong
 3. A player that correctly guesses a consonant that appears in the puzzle:
-    * Earns money for each consonant (e.g. if on $500 and guess "T" for a puzzle that contains 2 T's, they earn $1000 toward their total score for the round)
-    * May opt to buy any number of vowels for $250 per guess; this costs $250 no matter how many of each guess appear (e.g. it will cost $250 if the puzzle contains 1 "A" or multiple.
-    * Can try to solve the puzzle
-    * May spin the wheel again to make another guess (step 2)
+	* Earns money for each consonant (e.g. if on $500 and guess "T" for a puzzle that contains 2 T's, they earn $1000 toward their total score for the round)
+	* May opt to buy any number of vowels for $250 per guess; this costs $250 no matter how many of each guess appear (e.g. it will cost $250 if the puzzle contains 1 "A" or multiple.
+	* Can try to solve the puzzle
+	* May spin the wheel again to make another guess (step 2)
 4. The player's turn ends by an incorrect guess or landing on the "Bankrupt" or "Lose a turn" spaces
 5. Play continues by rotating through players until the puzzle is solved (steps 1-3)
 6. The player who solves the puzzle wins the money they have earned.  All other players get $0 for the round.
@@ -64,6 +64,10 @@ Game created using [Godot game engine](https://godotengine.org/).
 ## 3rd-party Assets
 
 * TBD asset: (link)
+Wheel Answers Come from DataGrabber's previous scrape of a Wheel of Fortune Facebook game:
+https://www.datagrabber.org/wheel-of-fortune-facebook-game/wheel-of-fortune-cheat-answer/
+
+A truncated version of the HTML containing the table is saved in res://WebScraper/
 
 ## Code snippets
 
