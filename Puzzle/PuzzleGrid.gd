@@ -19,7 +19,7 @@ func _ready():
 				if i == 0 or i == 13:
 					tile_i.color = get_parent().get_node("Background").color
 			
-			tile_i.name = "Tile " + str(i)
+			tile_i.name = "Tile" + str(i)
 			
 			c.add_child(tile_i)
 

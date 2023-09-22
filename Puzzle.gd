@@ -14,6 +14,7 @@ func _ready():
 	
 	# initialize the puzzle
 	category.text = new_puzzle.Category
+	setup_puzzle(new_puzzle)  # is this argument necessary? would this ever be called without the global?
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -41,10 +42,51 @@ func get_puzzle(filename):
 	puzzle_dict.Category = selected_answer[1]
 	puzzle_dict.NumLines = selected_answer.size() - 2
 	
-	# not sure how else to do this, may need to revisit for better formatting
-	if puzzle_dict.NumLines >= 1: puzzle_dict.Line1 = selected_answer[2]
-	if puzzle_dict.NumLines >= 2: puzzle_dict.Line2 = selected_answer[3]
-	if puzzle_dict.NumLines >= 3: puzzle_dict.Line3 = selected_answer[4]
-	if puzzle_dict.NumLines >= 4: puzzle_dict.Line4 = selected_answer[5]
-	
+	# read into the dictionary based on number of lines so it appears "centered"
+	# vertically on the grid
+	#  > 1-line will be on line 2
+	#  > 2-lines will be on lines 2 and 3
+	#  > 3-lines will be on lines 2 through 4
+	#  > 4-lines will be on lines 1 through 4
+	if puzzle_dict.NumLines == 4:  # this is the only case that will use Line1
+		print("in if")
+		puzzle_dict.Line1 = selected_answer[2]
+		puzzle_dict.Line2 = selected_answer[3]
+		puzzle_dict.Line3 = selected_answer[4]
+		puzzle_dict.Line4 = selected_answer[5]
+	else:  # the only caution here is to not overrrun the number of lines
+		puzzle_dict.Line2 = selected_answer[2]
+		if puzzle_dict.NumLines >= 2: puzzle_dict.Line3 = selected_answer[3]
+		if puzzle_dict.NumLines >= 3: puzzle_dict.Line4 = selected_answer[4]
+
 	return puzzle_dict;
+
+func setup_puzzle(puzzle):
+	print(puzzle.Line1)
+	print(puzzle.Line2)
+	print(puzzle.Line3)
+	print(puzzle.Line4)
+	
+	# get nodes for each line for easier access of children
+	var line1 = get_node("PuzzleGrid/Line1Grid")
+	var line2 = get_node("PuzzleGrid/Line2Grid")
+	var line3 = get_node("PuzzleGrid/Line3Grid")
+	var line4 = get_node("PuzzleGrid/Line4Grid")
+	
+	# for each line, need to find the first and last tiles to be used so that
+	# text is as close to centered as possible
+	for l in [line1, line2, line3, line4]:
+		var cur_line = puzzle[l.name.substr(0,5)]
+
+		if cur_line .length() > 0:
+			var padding = (14-cur_line.length())/2.0  # number of blanks on either side
+			var start = floor(padding)
+			var end = 14 - ceil(padding)  # this will pad more to the end if there's an odd number
+			var tiles = range(start,end)
+
+			for i in range(cur_line.length()):
+				var tile = l.get_node("Tile"+str(tiles[i]))
+				var letter = tile.get_node("Letter")
+				
+				letter.text = cur_line[i]
+				tile.color = Color.LIGHT_YELLOW
