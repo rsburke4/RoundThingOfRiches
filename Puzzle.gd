@@ -1,8 +1,5 @@
 extends Node2D
 
-# globals - but does these make sense to be global?
-var new_puzzle
-
 # JSON parsing based off example in Godot documentation:
 # https://docs.godotengine.org/en/stable/classes/class_json.html
 var json = JSON.new()
@@ -14,19 +11,23 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	var tiles_used = [[0,0],[0,0],[0,0],[0,0]]  # will hold the first and last tiles used for the puzzle
 	# as a test, create a new puzzle when the screen is clicked
 	# TODO - replace this with signals, as appropriate, during integration steps
 	if Input.is_action_just_pressed("enter_press"):
-		create_new_puzzle()
+		tiles_used = create_new_puzzle()
 		
 	# TODO - add searching for letters
+	var guess = "A"   # replace with a keyboard event for testing
+	evaluate_guess(guess, tiles_used)
 
 func create_new_puzzle():
-	new_puzzle = get_puzzle("res://answers.json")
+	reset_puzzle()
+	var new_puzzle = get_puzzle("res://answers.json")
 	var category = get_node("Category")
 	
 	category.text = new_puzzle.Category
-	setup_puzzle(new_puzzle)  # is this argument necessary? would this ever be called without the global?
+	return setup_puzzle(new_puzzle)
 
 func get_puzzle(filename):
 	var puzzle_dict = {"Category": "", "NumLines": 0, "Line1": "","Line2": "", "Line3": "","Line4": ""}
@@ -79,6 +80,8 @@ func setup_puzzle(puzzle):
 	var line3 = get_node("PuzzleGrid/Line3Grid")
 	var line4 = get_node("PuzzleGrid/Line4Grid")
 	
+	var loc = [ [0, 0], [0, 0], [0, 0], [0, 0]]
+	
 	# for each line, need to find the first and last tiles to be used so that
 	# text is as close to centered as possible
 	for l in [line1, line2, line3, line4]:
@@ -95,11 +98,13 @@ func setup_puzzle(puzzle):
 				# this only has 12 open spaces and starts/stops "one in" from the other lines
 				padding = (12-cur_line.length())/2.0
 				start = floor(padding) + 1
-				end = 14 - ceil(padding) - 1 
+				end = 14 - ceil(padding) - 1
 			else:
 				padding = (14-cur_line.length())/2.0  # number of blanks on either side
 				start = floor(padding)
 				end = 14 - ceil(padding)  # this will pad more to the end if there's an odd number
+				
+			loc[label[label.length()-1].to_int()-1] = [start, end]
 
 			var tiles = range(start,end)
 
@@ -107,3 +112,43 @@ func setup_puzzle(puzzle):
 				if cur_line[i] != " ":
 					var tile = l.get_node("Tile"+str(tiles[i]))
 					tile.change_state(TileConst.STATE_HIDDEN, cur_line[i])
+					
+					# show any punctuation that may be used
+					if cur_line[i] in ["-", "'"]:
+						tile.change_state(TileConst.STATE_HIGHLIGHT)
+						tile.change_state(TileConst.STATE_SHOW)
+	return loc
+
+func reset_puzzle():
+	# loop through all tiles and reset states
+	for l in range(1,5):
+		var grid = get_node("PuzzleGrid/Line" + str(l) + "Grid")  # get the line
+		
+		for t in range(14):
+			var tile = grid.get_node("Tile" + str(t))  # get the tile
+			if (l == 1 or l ==4) and (t == 0 or t == 13):
+				tile.change_state(TileConst.STATE_BKGD)  # make sure to keep these background color
+			else:
+				tile.change_state(TileConst.STATE_EMPTY)  # this should reset color AND text
+
+func evaluate_guess(c, ind):
+	for l in range(1,5):  # for each line (1 to 4)...
+		if ind[l-1][1]-ind[l-1][0] > 0:  # if the line contains letters...
+			var grid = get_node("PuzzleGrid/Line" + str(l) + "Grid");  # get the line from the grid
+
+			for t in range(ind[l-1][0], ind[l-1][1]):  # check each tile with letters...
+				# note this works with range() bc ind[l][1] is 1+ last tile loc
+				var tile = grid.get_node("Tile" + str(t))  # get the tile from the line
+				var letter = tile.get_node("Letter").text
+				if c.to_upper() == letter.to_upper():
+					tile.letter_found()
+				else:
+					get_node("Background").color = Color.DARK_RED
+					$WrongGuessTimer.start()
+					# use timer to change background briefly as notification
+					# TODO - if this indication stays, also change the first and last tiles in rows 1 and 4
+
+
+func _on_wrong_guess_timer_timeout():
+	get_node("Background").color = TileConst.COLOR_TILE_BKGD # reset background color
+	# TODO - if this indication stays, also change the first and last tines in rows 1 and 4

@@ -45,3 +45,8 @@ size_flags_vertical = 3
 [node name="Line4Grid" type="HBoxContainer" parent="PuzzleGrid"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="WrongGuessTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[connection signal="timeout" from="WrongGuessTimer" to="." method="_on_wrong_guess_timer_timeout"]
