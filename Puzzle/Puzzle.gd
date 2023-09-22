@@ -1,5 +1,8 @@
 extends Node2D
 
+# temp
+var guess
+
 # JSON parsing based off example in Godot documentation:
 # https://docs.godotengine.org/en/stable/classes/class_json.html
 var json = JSON.new()
@@ -18,9 +21,22 @@ func _process(delta):
 		tiles_used = create_new_puzzle()
 		
 	# TODO - add searching for letters
-	var guess = "A"   # replace with a keyboard event for testing
-	evaluate_guess(guess, tiles_used)
+	
+# TODO - this can be replaced with signals from clicking on the letter grid, which
+# may be more reliable and cleaner...
+func _input(event):
+	# scan code enumerations found from:
+	# https://docs.godotengine.org/en/3.0/classes/class_@globalscope.html?highlight=Global_scope
+	# here A = 65 and Z = 90, so it iwll only detect letter key presses
+	if event is InputEventKey and event.keycode >= 65 and event.keycode <= 90:
+		# getting letter is based on example in documentation:
+		# https://docs.godotengine.org/en/stable/classes/class_inputeventkey.html
+		guess = OS.get_keycode_string(event.key_label)
+		print(guess)
+		var count = evaluate_guess(guess, tiles_used)
+		print("Count of letter " + guess + " found = " + str(count))
 
+		
 func create_new_puzzle():
 	reset_puzzle()
 	var new_puzzle = get_puzzle("res://answers.json")
@@ -132,6 +148,7 @@ func reset_puzzle():
 				tile.change_state(TileConst.STATE_EMPTY)  # this should reset color AND text
 
 func evaluate_guess(c, ind):
+	var count = 0
 	for l in range(1,5):  # for each line (1 to 4)...
 		if ind[l-1][1]-ind[l-1][0] > 0:  # if the line contains letters...
 			var grid = get_node("PuzzleGrid/Line" + str(l) + "Grid");  # get the line from the grid
@@ -142,12 +159,14 @@ func evaluate_guess(c, ind):
 				var letter = tile.get_node("Letter").text
 				if c.to_upper() == letter.to_upper():
 					tile.letter_found()
+					count+=1
 				else:
 					get_node("Background").color = Color.DARK_RED
 					$WrongGuessTimer.start()
 					# use timer to change background briefly as notification
 					# TODO - if this indication stays, also change the first and last tiles in rows 1 and 4
 
+	return count
 
 func _on_wrong_guess_timer_timeout():
 	get_node("Background").color = TileConst.COLOR_TILE_BKGD # reset background color
