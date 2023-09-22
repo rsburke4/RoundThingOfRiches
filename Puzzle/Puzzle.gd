@@ -1,7 +1,12 @@
 extends Node2D
 
-# temp
-var guess
+@export var State = PuzzleConst.STATE_EMPTY
+
+# globals used until it is determined if they should be globals or not
+var guess = ""
+var guesses = [""]
+var tiles_used = [[0,0],[0,0],[0,0],[0,0]]  # will hold the first and last tiles used for the puzzle
+var rem_guesses = 0  # will hold the total number of letters in the answer
 
 # JSON parsing based off example in Godot documentation:
 # https://docs.godotengine.org/en/stable/classes/class_json.html
@@ -14,13 +19,23 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	var tiles_used = [[0,0],[0,0],[0,0],[0,0]]  # will hold the first and last tiles used for the puzzle
+	#var tiles_used = [[0,0],[0,0],[0,0],[0,0]]  # will hold the first and last tiles used for the puzzle
 	# as a test, create a new puzzle when the screen is clicked
 	# TODO - replace this with signals, as appropriate, during integration steps
-	if Input.is_action_just_pressed("enter_press"):
+	# The second condition prevents resetting the puzzle in the middle of a game
+	if Input.is_action_just_pressed("enter_press") and State in [PuzzleConst.STATE_EMPTY, PuzzleConst.STATE_GAMEOVER]:
 		tiles_used = create_new_puzzle()
-		
+		State = PuzzleConst.STATE_PLAYING
+	
 	# TODO - add searching for letters
+	# Only do this while in "playing" state
+	if not (guess in guesses) and State == PuzzleConst.STATE_PLAYING:
+		var count = evaluate_guess(guess, tiles_used)
+		print("Count of letter " + guess + " found = " + str(count))
+		guesses.append(guess)
+		
+		if rem_guesses == 0:
+			State = PuzzleConst.STATE_GAMEOVER
 	
 # TODO - this can be replaced with signals from clicking on the letter grid, which
 # may be more reliable and cleaner...
@@ -32,10 +47,6 @@ func _input(event):
 		# getting letter is based on example in documentation:
 		# https://docs.godotengine.org/en/stable/classes/class_inputeventkey.html
 		guess = OS.get_keycode_string(event.key_label)
-		print(guess)
-		var count = evaluate_guess(guess, tiles_used)
-		print("Count of letter " + guess + " found = " + str(count))
-
 		
 func create_new_puzzle():
 	reset_puzzle()
@@ -133,6 +144,9 @@ func setup_puzzle(puzzle):
 					if cur_line[i] in ["-", "'"]:
 						tile.change_state(TileConst.STATE_HIGHLIGHT)
 						tile.change_state(TileConst.STATE_SHOW)
+					else:
+						rem_guesses+=1  # increase this for each (letter) tile added
+
 	return loc
 
 func reset_puzzle():
@@ -149,6 +163,7 @@ func reset_puzzle():
 
 func evaluate_guess(c, ind):
 	var count = 0
+	
 	for l in range(1,5):  # for each line (1 to 4)...
 		if ind[l-1][1]-ind[l-1][0] > 0:  # if the line contains letters...
 			var grid = get_node("PuzzleGrid/Line" + str(l) + "Grid");  # get the line from the grid
@@ -157,9 +172,11 @@ func evaluate_guess(c, ind):
 				# note this works with range() bc ind[l][1] is 1+ last tile loc
 				var tile = grid.get_node("Tile" + str(t))  # get the tile from the line
 				var letter = tile.get_node("Letter").text
+
 				if c.to_upper() == letter.to_upper():
 					tile.letter_found()
 					count+=1
+					rem_guesses-=1  # reduce the number of guesses by one for each tile turned
 				else:
 					get_node("Background").color = Color.DARK_RED
 					$WrongGuessTimer.start()
