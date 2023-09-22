@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://ced1d2aafjdoq"]
+
+[node name="Tile" type="ColorRect"]
+offset_right = 80.0
+offset_bottom = 90.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Letter" type="Label" parent="."]
+layout_mode = 0
+offset_right = 80.0
+offset_bottom = 103.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 65
+horizontal_alignment = 1
+vertical_alignment = 1
