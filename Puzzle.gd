@@ -80,13 +80,25 @@ func setup_puzzle(puzzle):
 	# for each line, need to find the first and last tiles to be used so that
 	# text is as close to centered as possible
 	for l in [line1, line2, line3, line4]:
-		var cur_line = puzzle[l.name.substr(0,5)]
+		var label = l.name.substr(0,5)  # this will get "LineX"
+		var cur_line = puzzle[label]
 
 # TODO - need to account for extra padding on lines 1 and 4
-		if cur_line .length() > 0:
-			var padding = (14-cur_line.length())/2.0  # number of blanks on either side
-			var start = floor(padding)
-			var end = 14 - ceil(padding)  # this will pad more to the end if there's an odd number
+		if cur_line.length() > 0:
+			# need to do padding differently for lines 1 and 4
+			var padding
+			var start
+			var end
+			if label in ["Line1", "Line4"]:
+				# this only has 12 open spaces and starts/stops "one in" from the other lines
+				padding = (12-cur_line.length())/2.0
+				start = floor(padding) + 1
+				end = 14 - ceil(padding) - 1 
+			else:
+				padding = (14-cur_line.length())/2.0  # number of blanks on either side
+				start = floor(padding)
+				end = 14 - ceil(padding)  # this will pad more to the end if there's an odd number
+
 			var tiles = range(start,end)
 
 			for i in range(cur_line.length()):
