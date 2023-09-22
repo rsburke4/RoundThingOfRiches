@@ -11,8 +11,13 @@ config_version=5
 [application]
 
 config/name="WheelOfFortune"
+run/main_scene="res://Puzzle/puzzle.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+TileConst="*res://Puzzle/tile_const.gd"
 
 [dotnet]
 

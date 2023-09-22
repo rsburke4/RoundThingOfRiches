@@ -9,10 +9,14 @@ var json = JSON.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# any formatting...
+	get_node("Background").color = TileConst.COLOR_TILE_BKGD
+	
 	new_puzzle = get_puzzle("res://answers.json")
 	var category = get_node("Category")
 	
 	# initialize the puzzle
+	# TODO - move this to a separate function to be called each new round
 	category.text = new_puzzle.Category
 	setup_puzzle(new_puzzle)  # is this argument necessary? would this ever be called without the global?
 
@@ -78,6 +82,7 @@ func setup_puzzle(puzzle):
 	for l in [line1, line2, line3, line4]:
 		var cur_line = puzzle[l.name.substr(0,5)]
 
+# TODO - need to account for extra padding on lines 1 and 4
 		if cur_line .length() > 0:
 			var padding = (14-cur_line.length())/2.0  # number of blanks on either side
 			var start = floor(padding)
@@ -85,8 +90,6 @@ func setup_puzzle(puzzle):
 			var tiles = range(start,end)
 
 			for i in range(cur_line.length()):
-				var tile = l.get_node("Tile"+str(tiles[i]))
-				var letter = tile.get_node("Letter")
-				
-				letter.text = cur_line[i]
-				tile.color = Color.LIGHT_YELLOW
+				if cur_line[i] != " ":
+					var tile = l.get_node("Tile"+str(tiles[i]))
+					tile.change_state(TileConst.STATE_HIDDEN, cur_line[i])
