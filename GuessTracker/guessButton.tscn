@@ -1,0 +1,42 @@
+[gd_scene load_steps=4 format=3 uid="uid://cxkqac356ggef"]
+
+[ext_resource type="Script" path="res://GuessTracker/guessButton.gd" id="1_0uinw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e4tf7"]
+bg_color = Color(0.0784314, 0.235294, 0.129412, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tehog"]
+bg_color = Color(0.227451, 0.564706, 0.341176, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.607843, 0.607843, 0.607843, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="Guess" type="Button"]
+custom_minimum_size = Vector2(50, 50)
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.85098, 0.662745, 0.12549, 1)
+theme_override_colors/font_disabled_color = Color(0.588235, 0.588235, 0.588235, 1)
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_e4tf7")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_tehog")
+disabled = true
+text = "A"
+icon_alignment = 1
+script = ExtResource("1_0uinw")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]

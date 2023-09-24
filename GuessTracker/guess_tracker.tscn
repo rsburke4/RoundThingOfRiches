@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://csds172y40utw"]
+
+[ext_resource type="Script" path="res://GuessTracker/guess_tracker.gd" id="1_et12i"]
+
+[node name="GuessTracker" type="HBoxContainer"]
+script = ExtResource("1_et12i")
+
+[node name="AtoJ" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="KtoT" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="UtoZ" type="VBoxContainer" parent="."]
+layout_mode = 2
