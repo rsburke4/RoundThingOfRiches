@@ -1,6 +1,6 @@
 extends Button
 
-# define styleboxes here for now to enable easier adjustmest through constants later
+# define styleboxes here for now to enable easier adjustmest through constants (if needed later)
 var stylebox_active = get_theme_stylebox("normal")
 var stylebox_hidden = get_theme_stylebox("pressed")
 var stylebox_disabled = get_theme_stylebox("disabled")
@@ -9,10 +9,9 @@ var stylebox_disabled = get_theme_stylebox("disabled")
 func _ready():
 	# set the styles
 	# adapted from https://www.reddit.com/r/godot/comments/12zh2qq/godot_40_why_wont_my_ui_panel_stylebox_overwrite/
-	# TODO - create constants file
-	set_style(stylebox_active, Color.DARK_GREEN, Color.BLACK)
-	set_style(stylebox_hidden, Color(1,1,1,0), Color(1,1,1,0))
-	set_style(stylebox_disabled, Color.DARK_SEA_GREEN, Color.DIM_GRAY)
+	set_style(stylebox_active, GuessConst.COLOR_BUTTON_ACTiVE_BKGD, GuessConst.COLOR_BUTTON_ACTIVE_BORDER)
+	set_style(stylebox_hidden, GuessConst.COLOR_BUTTON_HIDDEN, GuessConst.COLOR_BUTTON_HIDDEN)
+	set_style(stylebox_disabled, GuessConst.COLOR_BUTTON_DISABLED_BKGD, GuessConst.COLOR_BUTTON_DISABLED_BORDER)
 		
 	reset_button()
 
