@@ -37,7 +37,7 @@ func change_state(state, letter := "", bkgd := Color(1,1,1,1)):
 		get_node("Letter").visible_characters = 1
 	elif state == TileConst.STATE_BKGD:
 		# format to match the background color
-		color = TileConst.COLOR_TILE_BKGD
+		color = Color(TileConst.COLOR_TILE_BKGD, 0)  # this makes it transparent
 		
 	State = state
 
