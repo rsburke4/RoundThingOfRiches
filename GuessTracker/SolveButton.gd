@@ -8,25 +8,19 @@ var stylebox_disabled = get_theme_stylebox("disabled").duplicate()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	# set the styles
+	# programatcally set the apperance using constants
 	# adapted from https://www.reddit.com/r/godot/comments/12zh2qq/godot_40_why_wont_my_ui_panel_stylebox_overwrite/
-	set_style(stylebox_active, GuessConst.COLOR_BUTTON_ACTiVE_BKGD, GuessConst.COLOR_BUTTON_ACTIVE_BORDER)
-	set_style(stylebox_hidden, GuessConst.COLOR_BUTTON_HIDDEN, GuessConst.COLOR_BUTTON_HIDDEN)
-	set_style(stylebox_disabled, GuessConst.COLOR_BUTTON_DISABLED_BKGD, GuessConst.COLOR_BUTTON_DISABLED_BORDER)
-	
+	set_style(stylebox_active, SolveConst.COLOR_SOLVE_BTN_ACTiVE_BKGD, SolveConst.COLOR_SOLVE_BTN_ACTIVE_BORDER)
+	set_style(stylebox_hidden, SolveConst.COLOR_BUTTON_HIDDEN, SolveConst.COLOR_BUTTON_HIDDEN)
+	set_style(stylebox_disabled, SolveConst.COLOR_SOLVE_BTN_DISABLED_BKGD, SolveConst.COLOR_SOLVE_BTN_DISABLED_BORDER)
+
 	add_theme_stylebox_override("normal", stylebox_active)
 	add_theme_stylebox_override("pressed", stylebox_hidden)
 	add_theme_stylebox_override("disabled", stylebox_disabled)
-	
-	reset_button()
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
-
-func reset_button():
-	disabled = false
 
 func set_style(style, bg_color, bdr_color):
 	# styles are differentated by colors
@@ -43,13 +37,5 @@ func set_style(style, bg_color, bdr_color):
 	style.corner_radius_top_left = 5
 	style.corner_radius_top_right = 5
 
-func hide_button():
-	toggle_mode = true  # needed to set the state of the button
-	set_pressed_no_signal(true)  # per tool tip, this is used to set the state without emitting signal
-	
-	button_mask = 0  # prevent the hidden button from responding to stray clicks
-
 func _on_pressed():
-	print(text)
-	
-	disabled = true
+	print("Solve the puzzle!")
