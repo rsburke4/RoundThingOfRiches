@@ -4,4 +4,4 @@ extends Node
 # References: https://docs.godotengine.org/en/3.0/getting_started/step_by_step/singletons_autoload.html
 
 # enumeration for puzzle state
-enum {STATE_EMPTY, STATE_PLAYING, STATE_GAMEOVER}
+enum {STATE_EMPTY, STATE_PLAYING, STATE_SOLVE, STATE_GAMEOVER}

@@ -7,6 +7,7 @@ var guess = ""
 var guesses = [""]
 var tiles_used = [[0,0],[0,0],[0,0],[0,0]]  # will hold the first and last tiles used for the puzzle
 var rem_guesses = 0  # will hold the total number of letters in the answer
+var solution = ""  # will hold the solution as a single line
 
 # JSON parsing based off example in Godot documentation:
 # https://docs.godotengine.org/en/stable/classes/class_json.html
@@ -16,6 +17,9 @@ var json = JSON.new()
 func _ready():
 	# any formatting...
 	get_node("Background").color = TileConst.COLOR_TILE_BKGD
+	
+	# hide the solution panel
+	get_node("SolutionInput").hide()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -26,10 +30,17 @@ func _process(delta):
 	if Input.is_action_just_pressed("enter_press") and State in [PuzzleConst.STATE_EMPTY, PuzzleConst.STATE_GAMEOVER]:
 		tiles_used = create_new_puzzle()
 		State = PuzzleConst.STATE_PLAYING
+		
+	if Input.is_action_just_pressed("solve_puzzle") and State == PuzzleConst.STATE_PLAYING:
+		get_node("SolutionInput").show()
+		State = PuzzleConst.STATE_SOLVE
+		
+	if Input.is_action_just_pressed("exit_solve") and State == PuzzleConst.STATE_SOLVE:
+		get_node("SolutionInput").hide()
+		State = PuzzleConst.STATE_SOLVE
 	
-	# TODO - add searching for letters
 	# Only do this while in "playing" state
-	if not (guess in guesses) and State == PuzzleConst.STATE_PLAYING:
+	if not (guess in guesses) and State == PuzzleConst.STATE_PLAYING and State != PuzzleConst.STATE_SOLVE:
 		var count = evaluate_guess(guess, tiles_used)
 		print("Count of letter " + guess + " found = " + str(count))
 		guesses.append(guess)
@@ -46,7 +57,8 @@ func _input(event):
 	if event is InputEventKey and event.keycode >= 65 and event.keycode <= 90:
 		# getting letter is based on example in documentation:
 		# https://docs.godotengine.org/en/stable/classes/class_inputeventkey.html
-		guess = OS.get_keycode_string(event.key_label)
+		if State == PuzzleConst.STATE_PLAYING and State != PuzzleConst.STATE_SOLVE:
+			guess = OS.get_keycode_string(event.key_label)
 		
 func create_new_puzzle():
 	reset_puzzle()
@@ -92,6 +104,9 @@ func get_puzzle(filename):
 		puzzle_dict.Line2 = selected_answer[2]
 		if puzzle_dict.NumLines >= 2: puzzle_dict.Line3 = selected_answer[3]
 		if puzzle_dict.NumLines >= 3: puzzle_dict.Line4 = selected_answer[4]
+		
+	solution = puzzle_dict.Line1 + " " + puzzle_dict.Line2 + " " + puzzle_dict.Line3 + " " + puzzle_dict.Line4
+	solution = solution.strip_edges()  # get rid of leading, traiiling spaces
 
 	return puzzle_dict;
 
@@ -141,7 +156,7 @@ func setup_puzzle(puzzle):
 					tile.change_state(TileConst.STATE_HIDDEN, cur_line[i])
 					
 					# show any punctuation that may be used
-					if cur_line[i] in ["-", "'"]:
+					if cur_line[i] in ["-", "'", "&"]:
 						tile.change_state(TileConst.STATE_HIGHLIGHT)
 						tile.change_state(TileConst.STATE_SHOW)
 					else:
@@ -150,6 +165,9 @@ func setup_puzzle(puzzle):
 	return loc
 
 func reset_puzzle():
+	# reset the category
+	get_node("Category").text = ""
+	
 	# loop through all tiles and reset states
 	for l in range(1,5):
 		var grid = get_node("PuzzleGrid/Line" + str(l) + "Grid")  # get the line
@@ -188,3 +206,23 @@ func evaluate_guess(c, ind):
 func _on_wrong_guess_timer_timeout():
 	get_node("Background").color = TileConst.COLOR_TILE_BKGD # reset background color
 	# TODO - if this indication stays, also change the first and last tines in rows 1 and 4
+
+func _on_solution_submit_pressed():
+	print("Made a guess!")
+	
+	var input_box = get_node("SolutionInput/SolutionGuess")
+	var guess = input_box.text.to_upper()
+	
+	var isRoundOver = guess.matchn(solution)
+	
+	if isRoundOver:
+		State = PuzzleConst.STATE_GAMEOVER
+		input_box.text = ""
+		print("You win!")
+		reset_puzzle()
+	else:
+		State = PuzzleConst.STATE_PLAYING
+		input_box.text = ""
+		print("Try again!")
+	
+	get_node("SolutionInput").hide()  # TODO - consider a state machine function

@@ -49,4 +49,22 @@ size_flags_vertical = 3
 [node name="WrongGuessTimer" type="Timer" parent="."]
 wait_time = 0.5
 
+[node name="SolutionInput" type="Node2D" parent="."]
+
+[node name="SolutionGuess" type="LineEdit" parent="SolutionInput"]
+offset_left = 150.0
+offset_top = 570.0
+offset_right = 950.0
+offset_bottom = 620.0
+placeholder_text = "type solution here"
+shortcut_keys_enabled = false
+
+[node name="SolutionSubmit" type="Button" parent="SolutionInput"]
+offset_left = 1000.0
+offset_top = 570.0
+offset_right = 1100.0
+offset_bottom = 620.0
+text = "Submit"
+
 [connection signal="timeout" from="WrongGuessTimer" to="." method="_on_wrong_guess_timer_timeout"]
+[connection signal="pressed" from="SolutionInput/SolutionSubmit" to="." method="_on_solution_submit_pressed"]
