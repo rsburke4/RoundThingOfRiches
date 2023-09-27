@@ -11,8 +11,14 @@ config_version=5
 [application]
 
 config/name="WheelOfFortune"
+run/main_scene="res://GuessTracker/guess_tracker.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GuessConst="*res://GuessTracker/guess_const.gd"
+SolveConst="*res://GuessTracker/solve_const.gd"
 
 [dotnet]
 
