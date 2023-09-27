@@ -63,15 +63,31 @@ Game created using [Godot game engine](https://godotengine.org/).
 
 ## 3rd-party Assets
 
-* TBD asset: (link)
-Wheel Answers Come from DataGrabber's previous scrape of a Wheel of Fortune Facebook game:
-https://www.datagrabber.org/wheel-of-fortune-facebook-game/wheel-of-fortune-cheat-answer/
+* Wheel Answers Come from [DataGrabber's previous scrape of a Wheel of Fortune Facebook game](
+https://www.datagrabber.org/wheel-of-fortune-facebook-game/wheel-of-fortune-cheat-answer/)
 
 A truncated version of the HTML containing the table is saved in res://WebScraper/
 
 ## Code snippets
 
-* TBD snippet: (link)
+* [Using AutoLoad for constants](https://docs.godotengine.org/en/3.0/getting_started/step_by_step/singletons_autoload.html)
+* [Setting styles for components](https://www.reddit.com/r/godot/comments/12zh2qq/godot_40_why_wont_my_ui_panel_stylebox_overwrite/)
+  ```
+  var stylebox_active = get_theme_stylebox("normal").duplicate()
+  style.<property> = <new value>
+  add_theme_stylebox_override("normal", stylebox_active)
+  ```
+* [Translating between ASCII code and character (used in GuessTracker)](https://ask.godotengine.org/106152/convert-an-character-to-ascii-value)
+  ```
+  var ascii = <string>.unicode_at(0)  # ASCII code for first character of <string>
+  button_i.text = char(start_ascii + i)  # convert ASCII code to character
+  ```
+* [Parsing JSON file (used in PuzzleBoard)](https://docs.godotengine.org/en/stable/classes/class_json.html)
+  ```
+  var json = JSON.new()
+  var raw_data = FileAccess.get_file_as_string(<filename>)
+  var all_answers = json.parse_string(raw_data)
+  ```
 
 # Reflection: Design and development process
 
