@@ -1,0 +1,1 @@
+this folder should hold any assets (images, sounds, etc) associated with the guess tracker component
