@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://ced1d2aafjdoq"]
+
+[ext_resource type="Script" path="res://Puzzle/tile.gd" id="1_lc8wg"]
+
+[node name="Tile" type="ColorRect"]
+offset_right = 80.0
+offset_bottom = 90.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0.18, 0.55, 0.34, 1)
+script = ExtResource("1_lc8wg")
+
+[node name="Letter" type="Label" parent="."]
+layout_mode = 0
+offset_right = 80.0
+offset_bottom = 103.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 65
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RevealTimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="RevealTimer" to="." method="_on_reveal_timer_timeout"]
