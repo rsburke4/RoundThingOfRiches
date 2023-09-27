@@ -1,0 +1,104 @@
+[gd_scene load_steps=11 format=3 uid="uid://c5b1hocmae8sh"]
+
+[ext_resource type="Script" path="res://Wheel/WheelPhysics.gd" id="1_3mmcp"]
+[ext_resource type="Texture2D" uid="uid://bceusqkao36oy" path="res://icon.svg" id="2_mm2ay"]
+[ext_resource type="Texture2D" uid="uid://d20vvy3cia2jx" path="res://Wheel/assets/WheelPlaceholder.png" id="2_uym3h"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_00akf"]
+rough = true
+absorbent = true
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_spdrm"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_01dat"]
+radius = 33.0
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ijp63"]
+rough = true
+absorbent = true
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_m57s6"]
+height = 80.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gs2n2"]
+height = 79.04
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_08mq1"]
+
+[node name="WheelRoot" type="Node2D"]
+
+[node name="WheelPhysics" type="RigidBody2D" parent="."]
+inertia = 10.0
+physics_material_override = SubResource("PhysicsMaterial_00akf")
+gravity_scale = 0.0
+angular_damp_mode = 1
+angular_damp = 0.4
+script = ExtResource("1_3mmcp")
+wheel_choices = Array[int]([500, 900, 700, 300, 800, 550, 400, 500, 600, 350, 500, 900, -1, 650, -2, 700, -3, 800, 500, 450, 500, 300, -1, 5000])
+angular_threshold = 0.1
+
+[node name="WheelSprite" type="Sprite2D" parent="WheelPhysics"]
+position = Vector2(-4, 6)
+rotation = -0.144862
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_uym3h")
+
+[node name="WheelCollider" type="CollisionShape2D" parent="WheelPhysics"]
+scale = Vector2(28, 28)
+shape = SubResource("CircleShape2D_spdrm")
+
+[node name="WheelSection1" type="CollisionPolygon2D" parent="WheelPhysics"]
+polygon = PackedVector2Array(14, -108, -9, -108, -35, -288, -25, -268, 26, -268, 38, -290)
+
+[node name="WheelArea2D" type="Area2D" parent="WheelPhysics/WheelSection1"]
+collision_layer = 256
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WheelPhysics/WheelSection1/WheelArea2D"]
+position = Vector2(0, -281)
+shape = SubResource("CircleShape2D_01dat")
+
+[node name="Ticker" type="Node2D" parent="."]
+position = Vector2(0, -13.52)
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Ticker"]
+position = Vector2(0, -335.48)
+node_a = NodePath("../HingeAnchor")
+node_b = NodePath("../NeedlePhysics")
+bias = 0.5
+softness = 0.01
+
+[node name="NeedlePhysics" type="RigidBody2D" parent="Ticker"]
+position = Vector2(0, -335)
+collision_layer = 258
+physics_material_override = SubResource("PhysicsMaterial_ijp63")
+gravity_scale = 128.0
+
+[node name="NeedleSprite" type="Sprite2D" parent="Ticker/NeedlePhysics"]
+position = Vector2(0, 34.04)
+scale = Vector2(0.15625, 0.647569)
+texture = ExtResource("2_mm2ay")
+
+[node name="NeedleCollider" type="CollisionShape2D" parent="Ticker/NeedlePhysics"]
+position = Vector2(0, 21)
+shape = SubResource("CapsuleShape2D_m57s6")
+
+[node name="DecisionArea" type="Area2D" parent="Ticker/NeedlePhysics"]
+collision_layer = 257
+collision_mask = 257
+
+[node name="DecisionCollider" type="CollisionShape2D" parent="Ticker/NeedlePhysics/DecisionArea"]
+position = Vector2(0, 21)
+shape = SubResource("CapsuleShape2D_gs2n2")
+
+[node name="HingeAnchor" type="StaticBody2D" parent="Ticker"]
+position = Vector2(0, -336)
+collision_layer = 4
+
+[node name="HingeCollider" type="CollisionShape2D" parent="Ticker/HingeAnchor"]
+shape = SubResource("CircleShape2D_08mq1")
+disabled = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[connection signal="input_event" from="WheelPhysics" to="WheelPhysics" method="_on_input_event"]
+[connection signal="area_shape_entered" from="Ticker/NeedlePhysics/DecisionArea" to="WheelPhysics" method="_on_decision_area_area_shape_entered"]
