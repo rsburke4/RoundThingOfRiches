@@ -5,6 +5,8 @@ extends Node2D
 # globals used until it is determined if they should be globals or not
 var guess = ""
 var guesses = [""]
+var puzzles_used = []  # used to prevent using same puzzle in a game
+var puzzles_skipped = []
 var tiles_used = [[0,0],[0,0],[0,0],[0,0]]  # will hold the first and last tiles used for the puzzle
 var rem_guesses = 0  # will hold the total number of letters in the answer
 var solution = ""  # will hold the solution as a single line
@@ -79,32 +81,58 @@ func get_puzzle(filename):
 	#   (1) Don't let the selected answer be element [0], which is the heading of the table
 	#   (2) Modulo (size - 1) will all access from first to penultimate element
 	#   (3) Adding 1 will allow access from second to last element
+	var reroll = true
 	var answer_count = all_answers.size() - 1
-	var selected_answer = all_answers[(randi() % answer_count) + 1]
-	
-	# this assumes each entry of the JSON file is an array of the format:
-	# [ round, category, [lines up to 4]]
-	# probably could better generalize this by processing the first element, which contains these headings
-	puzzle_dict.Category = selected_answer[1]
-	puzzle_dict.NumLines = selected_answer.size() - 2
-	
-	# read into the dictionary based on number of lines so it appears "centered"
-	# vertically on the grid
-	#  > 1-line will be on line 2
-	#  > 2-lines will be on lines 2 and 3
-	#  > 3-lines will be on lines 2 through 4
-	#  > 4-lines will be on lines 1 through 4
-	if puzzle_dict.NumLines == 4:  # this is the only case that will use Line1
-		print("in if")
-		puzzle_dict.Line1 = selected_answer[2]
-		puzzle_dict.Line2 = selected_answer[3]
-		puzzle_dict.Line3 = selected_answer[4]
-		puzzle_dict.Line4 = selected_answer[5]
-	else:  # the only caution here is to not overrrun the number of lines
-		puzzle_dict.Line2 = selected_answer[2]
-		if puzzle_dict.NumLines >= 2: puzzle_dict.Line3 = selected_answer[3]
-		if puzzle_dict.NumLines >= 3: puzzle_dict.Line4 = selected_answer[4]
+	var selected_answer
+	var puzzle_index
 		
+	while reroll:
+		puzzle_index = (randi() % answer_count) + 1
+		selected_answer = all_answers[puzzle_index]
+		
+		# this assumes each entry of the JSON file is an array of the format:
+		# [ round, category, [lines up to 4]]
+		# probably could better generalize this by processing the first element, which contains these headings
+		puzzle_dict.Category = selected_answer[1]
+		puzzle_dict.NumLines = selected_answer.size() - 2
+	
+		# read into the dictionary based on number of lines so it appears "centered"
+		# vertically on the grid
+		#  > 1-line will be on line 2
+		#  > 2-lines will be on lines 2 and 3
+		#  > 3-lines will be on lines 2 through 4
+		#  > 4-lines will be on lines 1 through 4
+		if puzzle_dict.NumLines == 4:  # this is the only case that will use Line1
+			puzzle_dict.Line1 = selected_answer[2].to_upper()
+			puzzle_dict.Line2 = selected_answer[3].to_upper()
+			puzzle_dict.Line3 = selected_answer[4].to_upper()
+			puzzle_dict.Line4 = selected_answer[5].to_upper()
+		else:  # the only caution here is to not overrrun the number of lines
+			puzzle_dict.Line2 = selected_answer[2].to_upper()
+			if puzzle_dict.NumLines >= 2: puzzle_dict.Line3 = selected_answer[3].to_upper()
+			if puzzle_dict.NumLines >= 3: puzzle_dict.Line4 = selected_answer[4].to_upper()
+			
+		reroll = puzzle_dict.Line1.length() > 12 or puzzle_dict.Line2.length() > 14 or \
+			puzzle_dict.Line3.length() > 14 or puzzle_dict.Line4.length() > 12 or \
+			(puzzle_index in puzzles_used) or (puzzle_index in puzzles_skipped)
+			
+		# bookkeeping to track skipped puzzles and reset the dict to avoid stray words
+		if reroll:
+			puzzles_skipped.append(puzzle_index)  # collect indices of all puzzles which won't fit grid (or have already been used)
+
+			# reset the solution in the dict
+			puzzle_dict.Line1 = ""
+			puzzle_dict.Line2 = ""
+			puzzle_dict.Line3 = ""
+			puzzle_dict.Line4 = ""
+			
+		# reset puzzle trackers if all puzzles have been used or skipped
+		if reroll and (puzzle_index in puzzles_used) and (puzzle_index in puzzles_skipped):
+			puzzles_used = []
+			puzzles_skipped = []
+			
+	puzzles_used.append(puzzle_index)
+
 	solution = puzzle_dict.Line1 + " " + puzzle_dict.Line2 + " " + puzzle_dict.Line3 + " " + puzzle_dict.Line4
 	solution = solution.strip_edges()  # get rid of leading, traiiling spaces
 
@@ -122,7 +150,8 @@ func setup_puzzle(puzzle):
 	var line3 = get_node("PuzzleGrid/Line3Grid")
 	var line4 = get_node("PuzzleGrid/Line4Grid")
 	
-	var loc = [ [0, 0], [0, 0], [0, 0], [0, 0]]
+	var loc = [ [0, 0], [0, 0], [0, 0], [0, 0] ]  # reset ranges for each new puzzle
+	rem_guesses = 0  # reset this counter for each new puzzle
 	
 	# for each line, need to find the first and last tiles to be used so that
 	# text is as close to centered as possible
@@ -167,6 +196,9 @@ func setup_puzzle(puzzle):
 func reset_puzzle():
 	# reset the category
 	get_node("Category").text = ""
+	
+	guesses = [""]  # reset the list of guesses so it doesn't carry over round-to-round
+	guess = ""  # prevents the last guess of previous puzzle from automatically being used as the first guess of new puzzle
 	
 	# loop through all tiles and reset states
 	for l in range(1,5):
