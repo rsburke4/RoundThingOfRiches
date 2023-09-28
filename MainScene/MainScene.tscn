@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://7q6oxgp6hu6h"]
 
-[ext_resource type="Texture2D" uid="uid://cwu36q40ids4v" path="res://MainScene/WheelLayout.png" id="1_dcvdi"]
+[ext_resource type="PackedScene" uid="uid://csds172y40utw" path="res://GuessTracker/guess_tracker.tscn" id="2_1omuh"]
 [ext_resource type="PackedScene" uid="uid://c5b1hocmae8sh" path="res://Wheel/Wheel.tscn" id="2_u8u61"]
 
 [node name="MainScene" type="Node2D"]
@@ -21,7 +21,9 @@ size_flags_vertical = 3
 [node name="WheelLayout" type="Sprite2D" parent="Control"]
 position = Vector2(644, 322)
 scale = Vector2(1.03507, 1.0534)
-texture = ExtResource("1_dcvdi")
 
 [node name="WheelRoot" parent="." instance=ExtResource("2_u8u61")]
 position = Vector2(572, 786)
+
+[node name="GameControl" parent="." instance=ExtResource("2_1omuh")]
+position = Vector2(951, 416)
