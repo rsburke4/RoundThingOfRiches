@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://7q6oxgp6hu6h"]
+[gd_scene load_steps=4 format=3 uid="uid://7q6oxgp6hu6h"]
 
 [ext_resource type="PackedScene" uid="uid://csds172y40utw" path="res://GuessTracker/guess_tracker.tscn" id="2_1omuh"]
 [ext_resource type="PackedScene" uid="uid://c5b1hocmae8sh" path="res://Wheel/Wheel.tscn" id="2_u8u61"]
+[ext_resource type="PackedScene" uid="uid://gsf4ctc5makr" path="res://Puzzle/puzzle.tscn" id="3_sr3qk"]
 
 [node name="MainScene" type="Node2D"]
 
@@ -27,3 +28,5 @@ position = Vector2(572, 786)
 
 [node name="GameControl" parent="." instance=ExtResource("2_1omuh")]
 position = Vector2(951, 416)
+
+[node name="Puzzle" parent="." instance=ExtResource("3_sr3qk")]
