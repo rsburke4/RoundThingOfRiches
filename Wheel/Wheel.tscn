@@ -74,7 +74,7 @@ physics_material_override = SubResource("PhysicsMaterial_ijp63")
 gravity_scale = 128.0
 
 [node name="NeedleSprite" type="Sprite2D" parent="Ticker/NeedlePhysics"]
-position = Vector2(0, 34.04)
+position = Vector2(0, 79.04)
 scale = Vector2(0.15625, 0.647569)
 texture = ExtResource("2_mm2ay")
 
