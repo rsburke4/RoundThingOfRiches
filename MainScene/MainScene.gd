@@ -16,6 +16,24 @@ func _ready():
 	submit.solve_the_puzzle.connect(puzzle._on_solve_attempt)
 	submit.cancel_solve.connect(puzzle._on_solve_cancelled)
 	
+	## connect puzzle with main scene
+	# TODO - change connections if/when needed during gameflow implementation
+	puzzle.guess_complete.connect(_on_guess_complete)
+	puzzle.round_over.connect(_on_round_over)
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
+
+func _on_guess_complete(c,g):
+	if c == 0:
+		print("Incorrect guess. Next player's turn.")
+	else:
+		print("Count of letter " + g + ": " + str(c))
+		
+		if g in ["A","E","I","O","U"]:
+			c = 1
+			# TODO - handle scoring for vowels
+		
+func _on_round_over():
+	print("Puzzle successfully solved!")

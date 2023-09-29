@@ -2,6 +2,9 @@ extends Node2D
 
 @export var State = PuzzleConst.STATE_EMPTY
 
+signal guess_complete(count,guess)
+signal round_over
+
 # globals used until it is determined if they should be globals or not
 var guesses = []
 var puzzles_used = []  # used to prevent using same puzzle in a game
@@ -207,11 +210,12 @@ func _on_guess_made(g):
 	# Only do this while in "playing" state
 	if not (g in guesses) and State == PuzzleConst.STATE_PLAYING and State != PuzzleConst.STATE_SOLVE:
 		var count = evaluate_guess(g, tiles_used)
-		print("Count of letter " + g + " found = " + str(count))
 		guesses.append(g)
 		
 		if rem_guesses == 0:
 			State = PuzzleConst.STATE_GAMEOVER
+			
+		guess_complete.emit(count,g)
 
 func _on_wrong_guess_timer_timeout():
 	get_node("Background").color = TileConst.COLOR_TILE_BKGD # reset background color
@@ -240,11 +244,12 @@ func _on_solution_submit_pressed():
 	if isRoundOver:
 		State = PuzzleConst.STATE_GAMEOVER
 		input_box.text = ""
-		print("You win!")
+		round_over.emit()
 		reset_puzzle()
 	else:
 		State = PuzzleConst.STATE_PLAYING
 		input_box.text = ""
 		print("Try again!")
+		guess_complete.emit(0)  # if the guess is wrong, turn moves to next player with no points awarded
 	
 	get_node("SolutionInput").hide()  # TODO - consider a state machine function
