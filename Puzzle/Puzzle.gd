@@ -213,7 +213,7 @@ func _on_guess_made(g):
 		guesses.append(g)
 		
 		if rem_guesses == 0:
-			State = PuzzleConst.STATE_GAMEOVER
+			_on_solve_attempt()
 			
 		guess_complete.emit(count,g)
 
@@ -223,7 +223,7 @@ func _on_wrong_guess_timer_timeout():
 
 func _on_solve_attempt():
 	print("solve the puzzle!")
-	if State == PuzzleConst.STATE_PLAYING:
+	if State == PuzzleConst.STATE_PLAYING or rem_guesses == 0:
 		get_node("SolutionInput").show()
 		State = PuzzleConst.STATE_SOLVE
 
