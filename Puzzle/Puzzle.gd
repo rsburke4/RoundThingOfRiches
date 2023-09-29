@@ -24,21 +24,12 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	#var tiles_used = [[0,0],[0,0],[0,0],[0,0]]  # will hold the first and last tiles used for the puzzle
 	# as a test, create a new puzzle when the screen is clicked
 	# TODO - replace this with signals, as appropriate, during integration steps
 	# The second condition prevents resetting the puzzle in the middle of a game
 	if Input.is_action_just_pressed("enter_press") and State in [PuzzleConst.STATE_EMPTY, PuzzleConst.STATE_GAMEOVER]:
 		tiles_used = create_new_puzzle()
 		State = PuzzleConst.STATE_PLAYING
-		
-	if Input.is_action_just_pressed("solve_puzzle") and State == PuzzleConst.STATE_PLAYING:
-		get_node("SolutionInput").show()
-		State = PuzzleConst.STATE_SOLVE
-		
-	if Input.is_action_just_pressed("exit_solve") and State == PuzzleConst.STATE_SOLVE:
-		get_node("SolutionInput").hide()
-		State = PuzzleConst.STATE_SOLVE
 		
 func create_new_puzzle():
 	reset_puzzle()
@@ -225,6 +216,18 @@ func _on_guess_made(g):
 func _on_wrong_guess_timer_timeout():
 	get_node("Background").color = TileConst.COLOR_TILE_BKGD # reset background color
 	# TODO - if this indication stays, also change the first and last tines in rows 1 and 4
+
+func _on_solve_attempt():
+	print("solve the puzzle!")
+	if State == PuzzleConst.STATE_PLAYING:
+		get_node("SolutionInput").show()
+		State = PuzzleConst.STATE_SOLVE
+
+func _on_solve_cancelled():
+	print("changed my mind!")
+	if State == PuzzleConst.STATE_SOLVE:
+		get_node("SolutionInput").hide()
+		State = PuzzleConst.STATE_PLAYING
 
 func _on_solution_submit_pressed():
 	print("Made a guess!")

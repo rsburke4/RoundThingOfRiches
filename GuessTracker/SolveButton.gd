@@ -1,5 +1,8 @@
 extends Button
 
+signal solve_the_puzzle
+signal cancel_solve
+
 # define styleboxes here for now to enable easier adjustmest through constants (if needed later)
 var stylebox_active = get_theme_stylebox("normal").duplicate()
 var stylebox_hidden = get_theme_stylebox("pressed").duplicate()
@@ -37,5 +40,8 @@ func set_style(style, bg_color, bdr_color):
 	style.corner_radius_top_left = 5
 	style.corner_radius_top_right = 5
 
-func _on_pressed():
-	print("Solve the puzzle!")
+func _on_toggled(button_pressed):
+	if button_pressed:
+		solve_the_puzzle.emit()
+	else:
+		cancel_solve.emit()

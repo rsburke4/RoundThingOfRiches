@@ -11,7 +11,11 @@ func _ready():
 	tracker.make_a_guess.connect(puzzle._on_guess_made)
 
 	# try to solve puzzle
-
+	var submit = get_node("GameControl/SolveButton")
+	
+	submit.solve_the_puzzle.connect(puzzle._on_solve_attempt)
+	submit.cancel_solve.connect(puzzle._on_solve_cancelled)
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
