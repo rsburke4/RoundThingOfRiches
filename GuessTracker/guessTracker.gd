@@ -15,6 +15,7 @@ func _ready():
 			
 				button_i.text = char(start_ascii + i)
 				c.add_child(button_i)
+				button_i.guess_a_letter.connect(_on_guess_made)
 		else:  # some special things for the last column to keep it symmetric
 			for i in range(-2,8):
 				var button_i = button.instantiate()
@@ -23,9 +24,13 @@ func _ready():
 					button_i.hide_button()
 				else:
 					button_i.text = char(start_ascii + i)
+					button_i.guess_a_letter.connect(_on_guess_made)
 				
 				c.add_child(button_i)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
+
+func _on_guess_made(g):
+	print(g)
