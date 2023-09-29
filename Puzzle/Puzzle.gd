@@ -247,9 +247,15 @@ func _on_solution_submit_pressed():
 		round_over.emit()
 		reset_puzzle()
 	else:
-		State = PuzzleConst.STATE_PLAYING
-		input_box.text = ""
+		if rem_guesses == 0:
+			State = PuzzleConst.STATE_SOLVE
+			input_box.text = ""
+			_on_solve_attempt()
+			print("no guesses remain")
+		else:
+			State = PuzzleConst.STATE_PLAYING
+			input_box.text = ""	
+			get_node("SolutionInput").hide()  # TODO - consider a state machine function
+
 		print("Try again!")
 		guess_complete.emit(0)  # if the guess is wrong, turn moves to next player with no points awarded
-	
-	get_node("SolutionInput").hide()  # TODO - consider a state machine function
