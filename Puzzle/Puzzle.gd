@@ -3,8 +3,7 @@ extends Node2D
 @export var State = PuzzleConst.STATE_EMPTY
 
 # globals used until it is determined if they should be globals or not
-var guess = ""
-var guesses = [""]
+var guesses = []
 var puzzles_used = []  # used to prevent using same puzzle in a game
 var puzzles_skipped = []
 var tiles_used = [[0,0],[0,0],[0,0],[0,0]]  # will hold the first and last tiles used for the puzzle
@@ -40,27 +39,6 @@ func _process(delta):
 	if Input.is_action_just_pressed("exit_solve") and State == PuzzleConst.STATE_SOLVE:
 		get_node("SolutionInput").hide()
 		State = PuzzleConst.STATE_SOLVE
-	
-	# Only do this while in "playing" state
-	if not (guess in guesses) and State == PuzzleConst.STATE_PLAYING and State != PuzzleConst.STATE_SOLVE:
-		var count = evaluate_guess(guess, tiles_used)
-		print("Count of letter " + guess + " found = " + str(count))
-		guesses.append(guess)
-		
-		if rem_guesses == 0:
-			State = PuzzleConst.STATE_GAMEOVER
-	
-# TODO - this can be replaced with signals from clicking on the letter grid, which
-# may be more reliable and cleaner...
-func _input(event):
-	# scan code enumerations found from:
-	# https://docs.godotengine.org/en/3.0/classes/class_@globalscope.html?highlight=Global_scope
-	# here A = 65 and Z = 90, so it iwll only detect letter key presses
-	if event is InputEventKey and event.keycode >= 65 and event.keycode <= 90:
-		# getting letter is based on example in documentation:
-		# https://docs.godotengine.org/en/stable/classes/class_inputeventkey.html
-		if State == PuzzleConst.STATE_PLAYING and State != PuzzleConst.STATE_SOLVE:
-			guess = OS.get_keycode_string(event.key_label)
 		
 func create_new_puzzle():
 	reset_puzzle()
@@ -197,8 +175,7 @@ func reset_puzzle():
 	# reset the category
 	get_node("Category").text = ""
 	
-	guesses = [""]  # reset the list of guesses so it doesn't carry over round-to-round
-	guess = ""  # prevents the last guess of previous puzzle from automatically being used as the first guess of new puzzle
+	guesses = []  # reset the list of guesses so it doesn't carry over round-to-round
 	
 	# loop through all tiles and reset states
 	for l in range(1,5):
@@ -234,6 +211,16 @@ func evaluate_guess(c, ind):
 					# TODO - if this indication stays, also change the first and last tiles in rows 1 and 4
 
 	return count
+
+func _on_guess_made(g):
+	# Only do this while in "playing" state
+	if not (g in guesses) and State == PuzzleConst.STATE_PLAYING and State != PuzzleConst.STATE_SOLVE:
+		var count = evaluate_guess(g, tiles_used)
+		print("Count of letter " + g + " found = " + str(count))
+		guesses.append(g)
+		
+		if rem_guesses == 0:
+			State = PuzzleConst.STATE_GAMEOVER
 
 func _on_wrong_guess_timer_timeout():
 	get_node("Background").color = TileConst.COLOR_TILE_BKGD # reset background color

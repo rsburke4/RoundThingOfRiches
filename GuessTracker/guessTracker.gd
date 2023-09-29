@@ -1,5 +1,6 @@
 extends HBoxContainer
 
+signal make_a_guess(g)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -15,7 +16,7 @@ func _ready():
 			
 				button_i.text = char(start_ascii + i)
 				c.add_child(button_i)
-				button_i.guess_a_letter.connect(_on_guess_made)
+				button_i.guess_a_letter.connect(_on_guess_made)  # handle the signal when a guess is made
 		else:  # some special things for the last column to keep it symmetric
 			for i in range(-2,8):
 				var button_i = button.instantiate()
@@ -24,7 +25,7 @@ func _ready():
 					button_i.hide_button()
 				else:
 					button_i.text = char(start_ascii + i)
-					button_i.guess_a_letter.connect(_on_guess_made)
+					button_i.guess_a_letter.connect(_on_guess_made)  # handle the signal when a guess is made
 				
 				c.add_child(button_i)
 
@@ -33,4 +34,6 @@ func _process(delta):
 	pass
 
 func _on_guess_made(g):
-	print(g)
+	make_a_guess.emit(g)  # propagate the guess so it can be used by the puzzle board
+	# emitted in two stages as it is easier to connect to the buttons here rather than at main
+	# scene level - here only one connection is needed, instead of 26
