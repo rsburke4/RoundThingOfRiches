@@ -204,11 +204,11 @@ func evaluate_guess(c, ind):
 					tile.letter_found()
 					count+=1
 					rem_guesses-=1  # reduce the number of guesses by one for each tile turned
-				else:
-					get_node("Background").color = Color.DARK_RED
-					$WrongGuessTimer.start()
-					# use timer to change background briefly as notification
-					# TODO - if this indication stays, also change the first and last tiles in rows 1 and 4
+					
+	if count == 0:
+		get_node("Background").color = Color.DARK_RED
+		$WrongGuessTimer.start()
+		# use timer to change background briefly as notification
 
 	return count
 
