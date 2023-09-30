@@ -7,6 +7,7 @@ func _ready():
 	# guess a letter
 	var puzzle = get_node("Puzzle")
 	var tracker = get_node("GameControl/GuessTracker")
+	var solve = get_node("GameControl/SolveButton")
 	
 	tracker.make_a_guess.connect(puzzle._on_guess_made)
 
@@ -15,6 +16,15 @@ func _ready():
 	
 	submit.solve_the_puzzle.connect(puzzle._on_solve_attempt)
 	submit.cancel_solve.connect(puzzle._on_solve_cancelled)
+	
+	# manage guess buttons in special game cases (only vowels/consonants left to guess)
+	puzzle.only_vowels.connect(tracker.only_vowels)
+	puzzle.only_consonants.connect(tracker.only_consonants)
+	
+	# reset the buttons when the round is over
+	puzzle.round_over.connect(tracker.reset_tracker)
+	
+	puzzle.wrong_solution.connect(solve._on_wrong_guess)
 	
 	## connect puzzle with main scene
 	# TODO - change connections if/when needed during gameflow implementation
@@ -32,6 +42,7 @@ func _on_guess_complete(c,g):
 		print("Count of letter " + g + ": " + str(c))
 		
 		if g in ["A","E","I","O","U"]:
+			print("Vowel guessed")
 			c = 1
 			# TODO - handle scoring for vowels
 		

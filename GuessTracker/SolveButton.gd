@@ -45,3 +45,6 @@ func _on_toggled(button_pressed):
 		solve_the_puzzle.emit()
 	else:
 		cancel_solve.emit()
+
+func _on_wrong_guess():
+	button_pressed = false
