@@ -17,10 +17,6 @@ var rem_guesses = 0  # will hold the total number of letters in the answer
 var rem_vowels = 0  # will hold the total number of vowels in the answer
 var solution = ""  # will hold the solution as a single line
 
-# JSON parsing based off example in Godot documentation:
-# https://docs.godotengine.org/en/stable/classes/class_json.html
-var json = JSON.new()
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# any formatting...
@@ -30,7 +26,7 @@ func _ready():
 	get_node("SolutionInput").hide()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	# as a test, create a new puzzle when the screen is clicked
 	# TODO - replace this with signals, as appropriate, during integration steps
 	# The second condition prevents resetting the puzzle in the middle of a game
@@ -51,7 +47,7 @@ func get_puzzle(filename):
 	
 	# TODO - check for file existence
 	var raw_data = FileAccess.get_file_as_string(filename)
-	var all_answers = json.parse_string(raw_data)
+	var all_answers = JSON.parse_string(raw_data)
 	
 	# do some manipulation to select a random puzzle
 	#   (1) Don't let the selected answer be element [0], which is the heading of the table
@@ -280,4 +276,4 @@ func _on_solution_submit_pressed():
 			wrong_solution.emit()
 
 		print("Try again!")
-		guess_complete.emit(0)  # if the guess is wrong, turn moves to next player with no points awarded
+		guess_complete.emit(0, "")  # if the guess is wrong, turn moves to next player with no points awarded

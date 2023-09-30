@@ -22,7 +22,7 @@ func _ready():
 	add_theme_stylebox_override("disabled", stylebox_disabled)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	pass
 
 func set_style(style, bg_color, bdr_color):
@@ -40,8 +40,8 @@ func set_style(style, bg_color, bdr_color):
 	style.corner_radius_top_left = 5
 	style.corner_radius_top_right = 5
 
-func _on_toggled(button_pressed):
-	if button_pressed:
+func _on_toggled(is_button_pressed):
+	if is_button_pressed:
 		solve_the_puzzle.emit()
 	else:
 		cancel_solve.emit()

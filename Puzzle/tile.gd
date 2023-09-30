@@ -8,10 +8,10 @@ func _ready():
 	change_state(State)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	pass
 
-func change_state(state, letter := "", bkgd := Color(1,1,1,1)):
+func change_state(state, letter := ""):
 	# this state machine enforces some directionality to prevent tile states from changing
 	# inappropriately. this was found to be needed when resetting the puzzle board as
 	# random tiles sometimes "revealed" wrongly when checking a guess during testing,
