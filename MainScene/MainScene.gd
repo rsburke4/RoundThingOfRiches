@@ -8,6 +8,7 @@ func _ready():
 	var puzzle = get_node("Puzzle")
 	var tracker = get_node("GameControl/GuessTracker")
 	var solve = get_node("GameControl/SolveButton")
+	var wheel = get_node("WheelRoot/WheelPhysics")
 	
 	tracker.make_a_guess.connect(puzzle._on_guess_made)
 
@@ -31,6 +32,10 @@ func _ready():
 	puzzle.guess_complete.connect(_on_guess_complete)
 	puzzle.round_over.connect(_on_round_over)
 	
+	#connect the wheel to the main scene
+	wheel.landed_on_value.connect(_on_wheel_stopped)
+	wheel.connect_puzzle(puzzle.get_path())
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
@@ -45,6 +50,11 @@ func _on_guess_complete(c,g):
 			print("Vowel guessed")
 			c = 1
 			# TODO - handle scoring for vowels
-		
+	
 func _on_round_over():
 	print("Puzzle successfully solved!")
+	
+func _on_wheel_stopped(value):
+	print("The value of the wheel is: " + str(value))
+	
+
