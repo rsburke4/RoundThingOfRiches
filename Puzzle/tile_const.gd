@@ -5,9 +5,3 @@ extends Node
 
 # enumeration for tile state
 enum {STATE_EMPTY, STATE_HIDDEN, STATE_HIGHLIGHT, STATE_SHOW, STATE_BKGD}
-
-# colors for puzzle background and tile states
-var COLOR_TILE_BKGD = Color.DARK_GREEN
-var COLOR_TILE_EMPTY = Color.SEA_GREEN
-var COLOR_TILE_LIT = Color.LIGHT_YELLOW
-var COLOR_TILE_HILITE = Color.NAVAJO_WHITE

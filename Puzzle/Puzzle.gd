@@ -19,9 +19,13 @@ var solution = ""  # will hold the solution as a single line
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	# any formatting...
-	get_node("Background").color = TileConst.COLOR_TILE_BKGD
+	# set colors and other formatting/stylizing
+	get_node("Background").color = Colors.COLOR_PUZZLE_BKGD
+	var category = get_node("Category")
 	
+	category.add_theme_color_override("font_color", Colors.COLOR_CATEGORY_TEXT)
+	category.add_theme_color_override("font_outline_color", Colors.COLOR_CATEGORY_TEXT_OUTLINE)
+		
 	# hide the solution panel
 	get_node("SolutionInput").hide()
 
@@ -205,7 +209,7 @@ func evaluate_guess(c, ind):
 					if is_vowel(c):
 						rem_vowels-=1  # reduce the number of vowels by one
 	if count == 0:
-		get_node("Background").color = Color.DARK_RED
+		get_node("Background").color = Colors.COLOR_PUZZLE_BKGD_WRONG_GUESS
 		$WrongGuessTimer.start()
 		# use timer to change background briefly as notification
 
@@ -235,8 +239,7 @@ func _on_guess_made(g):
 		guess_complete.emit(count,g)
 
 func _on_wrong_guess_timer_timeout():
-	get_node("Background").color = TileConst.COLOR_TILE_BKGD # reset background color
-	# TODO - if this indication stays, also change the first and last tines in rows 1 and 4
+	get_node("Background").color = Colors.COLOR_PUZZLE_BKGD # reset background color
 
 func _on_solve_attempt():
 	print("solve the puzzle!")
