@@ -2,18 +2,20 @@ extends Node2D
 
 @export var State = PuzzleConst.STATE_EMPTY
 
+signal guess_complete(count,guess)
+signal round_over
+signal wrong_solution
+signal only_vowels
+signal only_consonants
+
 # globals used until it is determined if they should be globals or not
-var guess = ""
-var guesses = [""]
+var guesses = []
 var puzzles_used = []  # used to prevent using same puzzle in a game
 var puzzles_skipped = []
 var tiles_used = [[0,0],[0,0],[0,0],[0,0]]  # will hold the first and last tiles used for the puzzle
 var rem_guesses = 0  # will hold the total number of letters in the answer
+var rem_vowels = 0  # will hold the total number of vowels in the answer
 var solution = ""  # will hold the solution as a single line
-
-# JSON parsing based off example in Godot documentation:
-# https://docs.godotengine.org/en/stable/classes/class_json.html
-var json = JSON.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -24,43 +26,13 @@ func _ready():
 	get_node("SolutionInput").hide()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	#var tiles_used = [[0,0],[0,0],[0,0],[0,0]]  # will hold the first and last tiles used for the puzzle
+func _process(_delta):
 	# as a test, create a new puzzle when the screen is clicked
 	# TODO - replace this with signals, as appropriate, during integration steps
 	# The second condition prevents resetting the puzzle in the middle of a game
 	if Input.is_action_just_pressed("enter_press") and State in [PuzzleConst.STATE_EMPTY, PuzzleConst.STATE_GAMEOVER]:
 		tiles_used = create_new_puzzle()
 		State = PuzzleConst.STATE_PLAYING
-		
-	if Input.is_action_just_pressed("solve_puzzle") and State == PuzzleConst.STATE_PLAYING:
-		get_node("SolutionInput").show()
-		State = PuzzleConst.STATE_SOLVE
-		
-	if Input.is_action_just_pressed("exit_solve") and State == PuzzleConst.STATE_SOLVE:
-		get_node("SolutionInput").hide()
-		State = PuzzleConst.STATE_SOLVE
-	
-	# Only do this while in "playing" state
-	if not (guess in guesses) and State == PuzzleConst.STATE_PLAYING and State != PuzzleConst.STATE_SOLVE:
-		var count = evaluate_guess(guess, tiles_used)
-		print("Count of letter " + guess + " found = " + str(count))
-		guesses.append(guess)
-		
-		if rem_guesses == 0:
-			State = PuzzleConst.STATE_GAMEOVER
-	
-# TODO - this can be replaced with signals from clicking on the letter grid, which
-# may be more reliable and cleaner...
-func _input(event):
-	# scan code enumerations found from:
-	# https://docs.godotengine.org/en/3.0/classes/class_@globalscope.html?highlight=Global_scope
-	# here A = 65 and Z = 90, so it iwll only detect letter key presses
-	if event is InputEventKey and event.keycode >= 65 and event.keycode <= 90:
-		# getting letter is based on example in documentation:
-		# https://docs.godotengine.org/en/stable/classes/class_inputeventkey.html
-		if State == PuzzleConst.STATE_PLAYING and State != PuzzleConst.STATE_SOLVE:
-			guess = OS.get_keycode_string(event.key_label)
 		
 func create_new_puzzle():
 	reset_puzzle()
@@ -75,7 +47,7 @@ func get_puzzle(filename):
 	
 	# TODO - check for file existence
 	var raw_data = FileAccess.get_file_as_string(filename)
-	var all_answers = json.parse_string(raw_data)
+	var all_answers = JSON.parse_string(raw_data)
 	
 	# do some manipulation to select a random puzzle
 	#   (1) Don't let the selected answer be element [0], which is the heading of the table
@@ -190,6 +162,9 @@ func setup_puzzle(puzzle):
 						tile.change_state(TileConst.STATE_SHOW)
 					else:
 						rem_guesses+=1  # increase this for each (letter) tile added
+						
+						if is_vowel(cur_line[i]):
+							rem_vowels+=1  # increase this for each vowel tile
 
 	return loc
 
@@ -197,8 +172,7 @@ func reset_puzzle():
 	# reset the category
 	get_node("Category").text = ""
 	
-	guesses = [""]  # reset the list of guesses so it doesn't carry over round-to-round
-	guess = ""  # prevents the last guess of previous puzzle from automatically being used as the first guess of new puzzle
+	guesses = []  # reset the list of guesses so it doesn't carry over round-to-round
 	
 	# loop through all tiles and reset states
 	for l in range(1,5):
@@ -227,17 +201,54 @@ func evaluate_guess(c, ind):
 					tile.letter_found()
 					count+=1
 					rem_guesses-=1  # reduce the number of guesses by one for each tile turned
-				else:
-					get_node("Background").color = Color.DARK_RED
-					$WrongGuessTimer.start()
-					# use timer to change background briefly as notification
-					# TODO - if this indication stays, also change the first and last tiles in rows 1 and 4
+					
+					if is_vowel(c):
+						rem_vowels-=1  # reduce the number of vowels by one
+	if count == 0:
+		get_node("Background").color = Color.DARK_RED
+		$WrongGuessTimer.start()
+		# use timer to change background briefly as notification
 
 	return count
+
+func is_vowel(c):
+	if c.to_upper() in ["A","E","I","O","U"]:
+		return true
+		
+	return false
+
+func _on_guess_made(g):
+	# Only do this while in "playing" state
+	if not (g in guesses) and State == PuzzleConst.STATE_PLAYING and State != PuzzleConst.STATE_SOLVE:
+		var count = evaluate_guess(g, tiles_used)
+		guesses.append(g)
+		
+		if rem_guesses == 0:
+			_on_solve_attempt()
+			
+		if rem_vowels == 0:
+			only_consonants.emit()
+		
+		if rem_guesses == rem_vowels:
+			only_vowels.emit()
+			
+		guess_complete.emit(count,g)
 
 func _on_wrong_guess_timer_timeout():
 	get_node("Background").color = TileConst.COLOR_TILE_BKGD # reset background color
 	# TODO - if this indication stays, also change the first and last tines in rows 1 and 4
+
+func _on_solve_attempt():
+	print("solve the puzzle!")
+	if State == PuzzleConst.STATE_PLAYING or rem_guesses == 0:
+		get_node("SolutionInput").show()
+		State = PuzzleConst.STATE_SOLVE
+
+func _on_solve_cancelled():
+	print("changed my mind!")
+	if State == PuzzleConst.STATE_SOLVE:
+		get_node("SolutionInput").hide()
+		State = PuzzleConst.STATE_PLAYING
 
 func _on_solution_submit_pressed():
 	print("Made a guess!")
@@ -250,11 +261,19 @@ func _on_solution_submit_pressed():
 	if isRoundOver:
 		State = PuzzleConst.STATE_GAMEOVER
 		input_box.text = ""
-		print("You win!")
+		get_node("SolutionInput").hide()
+		round_over.emit()
 		reset_puzzle()
 	else:
-		State = PuzzleConst.STATE_PLAYING
 		input_box.text = ""
+		if rem_guesses == 0:
+			State = PuzzleConst.STATE_SOLVE
+			_on_solve_attempt()
+			print("no guesses remain")
+		else:
+			State = PuzzleConst.STATE_PLAYING
+			get_node("SolutionInput").hide()  # TODO - consider a state machine function
+			wrong_solution.emit()
+
 		print("Try again!")
-	
-	get_node("SolutionInput").hide()  # TODO - consider a state machine function
+		guess_complete.emit(0, "")  # if the guess is wrong, turn moves to next player with no points awarded

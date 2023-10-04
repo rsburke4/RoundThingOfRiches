@@ -1,5 +1,8 @@
 extends Button
 
+signal solve_the_puzzle
+signal cancel_solve
+
 # define styleboxes here for now to enable easier adjustmest through constants (if needed later)
 var stylebox_active = get_theme_stylebox("normal").duplicate()
 var stylebox_hidden = get_theme_stylebox("pressed").duplicate()
@@ -19,7 +22,7 @@ func _ready():
 	add_theme_stylebox_override("disabled", stylebox_disabled)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	pass
 
 func set_style(style, bg_color, bdr_color):
@@ -37,5 +40,11 @@ func set_style(style, bg_color, bdr_color):
 	style.corner_radius_top_left = 5
 	style.corner_radius_top_right = 5
 
-func _on_pressed():
-	print("Solve the puzzle!")
+func _on_toggled(is_button_pressed):
+	if is_button_pressed:
+		solve_the_puzzle.emit()
+	else:
+		cancel_solve.emit()
+
+func _on_wrong_guess():
+	button_pressed = false

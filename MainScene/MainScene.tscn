@@ -1,10 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://7q6oxgp6hu6h"]
+[gd_scene load_steps=5 format=3 uid="uid://7q6oxgp6hu6h"]
 
+[ext_resource type="Script" path="res://MainScene/MainScene.gd" id="1_ke8ft"]
 [ext_resource type="PackedScene" uid="uid://csds172y40utw" path="res://GuessTracker/guess_tracker.tscn" id="2_1omuh"]
 [ext_resource type="PackedScene" uid="uid://c5b1hocmae8sh" path="res://Wheel/Wheel.tscn" id="2_u8u61"]
 [ext_resource type="PackedScene" uid="uid://gsf4ctc5makr" path="res://Puzzle/puzzle.tscn" id="3_sr3qk"]
 
 [node name="MainScene" type="Node2D"]
+script = ExtResource("1_ke8ft")
 
 [node name="Control" type="Control" parent="."]
 clip_contents = true
@@ -27,6 +29,9 @@ scale = Vector2(1.03507, 1.0534)
 position = Vector2(572, 786)
 
 [node name="GameControl" parent="." instance=ExtResource("2_1omuh")]
-position = Vector2(951, 416)
+position = Vector2(998, 598)
+scale = Vector2(0.8, 0.8)
 
 [node name="Puzzle" parent="." instance=ExtResource("3_sr3qk")]
+position = Vector2(28, 477)
+scale = Vector2(0.7, 0.7)

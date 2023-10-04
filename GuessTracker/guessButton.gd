@@ -1,5 +1,7 @@
 extends Button
 
+signal guess_a_letter(g)
+
 # define styleboxes here for now to enable easier adjustmest through constants (if needed later)
 var stylebox_active = get_theme_stylebox("normal").duplicate()
 var stylebox_hidden = get_theme_stylebox("pressed").duplicate()
@@ -22,7 +24,7 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	pass
 
 func reset_button():
@@ -50,6 +52,6 @@ func hide_button():
 	button_mask = 0  # prevent the hidden button from responding to stray clicks
 
 func _on_pressed():
-	print(text)
-	
 	disabled = true
+	
+	guess_a_letter.emit(text)  # emit the signal and send the letter guess to the connected function
