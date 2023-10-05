@@ -15,6 +15,7 @@ var num_players = 3
 var GameState = game.CONFIG
 var RoundState = round.END
 var TurnState = turn.END
+var TurnState_prev  # only used when attempting to solve
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -45,6 +46,10 @@ func _ready():
 	## connect the wheel to the main scene
 	wheel.landed_on_value.connect(_on_wheel_stopped)
 	wheel.connect_puzzle(puzzle.get_path())
+	
+	## connect guess tracker (solve button) with main scene
+	solve.solve_the_puzzle.connect(_on_solve_attempt)
+	solve.cancel_solve.connect(_on_solve_cancelled)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -112,7 +117,39 @@ func start_turn():
 		turn_state_machine()
 		
 func turn_state_machine():
-	pass
+	# state machine will be called for many different states of TurnState, so first
+	# check that the game and round are both in "playing" state before worrying
+	# about the turn state
+	if GameState == game.PLAYING and RoundState == round.PLAYING:
+		if TurnState == turn.START:
+			# each turn starts with a spin, so make that possible
+			TurnState == turn.SPIN
+			
+			# enable wheel (can_spin = true)
+			# hide/diable guess tracker
+		elif TurnState == turn.SPIN:
+			# wait for the player to spin and handle in callback
+			pass  # handled by wheel
+		elif TurnState == turn.GUESS:
+			# player must guess a letter or solve
+			
+			# disable wheen (can_spin = false)
+			# show/enable guess tracker
+			pass
+		elif TurnState == turn.CONSONANT or TurnState == turn.VOWEL:
+			# player must guess a vowel, solve, or spin
+			# different states are used here because the differentiation between
+			# type of guess is necessary in other functions
+			
+			# disable/hide consonants
+			# enable wheel (can_spin = true)
+			pass
+		elif TurnState == turn.SOLVE:
+			# player must enter a solution attempt, or cancel the attempt
+			
+			# disable wheel (can_spin = false)
+			# disable/hide all letters in tracker ("cancel" button should stil be visible)
+			pass
 
 # defines what happens when a player's turn has ended (play passes to the next player)
 func end_turn():
@@ -176,7 +213,8 @@ func _on_wheel_stopped(value):
 	elif value == -3:  # lose a turn
 		end_turn()
 	else:
-		pass
+		TurnState = turn.GUESS
+		turn_state_machine()
 
 func _on_guess_complete(c,g):
 	if c == 0:
@@ -187,9 +225,26 @@ func _on_guess_complete(c,g):
 		
 		if g in ["A","E","I","O","U"]:
 			print("Vowel guessed")
+			TurnState = turn.VOWEL
 			c = 1
 			# TODO - handle scoring for vowels
+		else:
+			TurnState = turn.CONSONANT
+			
+		turn_state_machine()
+
+func _on_solve_attempt():
+	TurnState_prev = TurnState  # this is needed for if solve attempt is cancelled
 	
+	TurnState = turn.SOLVE
+	
+	turn_state_machine()
+	
+func _on_solve_cancelled():
+	TurnState = TurnState_prev  # reinstate the previous turn state
+	
+	turn_state_machine()
+
 func _on_round_over():
 	print("Puzzle successfully solved!")
 	
