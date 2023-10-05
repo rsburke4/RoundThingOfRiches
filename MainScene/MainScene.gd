@@ -3,7 +3,7 @@ extends Node2D
 # TODO - create sonsolidated file containing all state enums?
 enum game {CONFIG, SETUP, PLAYING, END}
 enum round {START, PLAYING, END}
-enum turn {START, SPIN, GUESS, SOLVE, CONSONANT, VOWeL, END}
+enum turn {START, SPIN, GUESS, SOLVE, CONSONANT, VOWEL, END}
 
 var total_scores = []
 var round_scores = []
@@ -50,6 +50,8 @@ func _ready():
 func _process(delta):
 	pass
 
+## functions defining gameplay
+# defines behavior when the "new game" (title) screen is displayed
 func start_new_game():
 	# prevent anything accidentally resetting the game if not coming from configuration state
 	if GameState == game.CONFIG:
@@ -68,8 +70,12 @@ func start_new_game():
 			
 		# TODO - reset/reconfigure scores component (function call to component)
 		
-		start_new_round()
+		# hide game over screen
+		# show title screen
 		
+		# TODO - enable new game button only when # players, # rounds provided
+
+# defines behavior at the start of each round of the game (each new puzzle)
 func start_new_round():
 	# prevent starting a new round unless setting up a new game, or a previous round has ended
 	if GameState == game.SETUP or (GameState == game.PLAYING and RoundState == round.END):
@@ -90,10 +96,39 @@ func start_new_round():
 		await get_tree().create_timer(1.0).timeout
 		
 		start_turn()
-		
+
+# defines the behavior at the start of each player's turn (from first spin until
+# a wrong letter or solution is guessed, a turn-ending space is landed on, or 
+# the puzzle is solved correctly)
 func start_turn():
+	if GameState == game.PLAYING and RoundState == round.PLAYING and TurnState == turn.END:
+		TurnState == turn.START
+		
+		# TODO - highlight current player in scoring component
+		
+		# hide start round screen
+		# show gameplay screen
+		
+		turn_state_machine()
+		
+func turn_state_machine():
 	pass
-	
+
+# defines what happens when a player's turn has ended (play passes to the next player)
+func end_turn():
+	# turn can only end if game and round states are both "playing" and the turn is
+	# in one of the following states: "spinning" (lose-a-turn, bankrupt), "guessing"
+	# (wrong guess after a spin), "vowel" (wrong guess after a right guess), or
+	# "solving" (wrong solution guessed)
+	if GameState == game.PLAYING and RoundState == round.PLAYING and \
+		(TurnState in [turn.SPIN, turn.GUESS, turn.VOWEL, turn.SOLVE]):
+			TurnState = turn.END
+			
+			current_player = (current_player + 1) % num_players
+			
+			start_turn()  # play moves to next player
+
+# defines behavior at the end of a round (puzzle has been solved)
 func end_round():
 	if GameState == game.PLAYING and RoundState == round.PLAYING and TurnState == turn.END:
 		RoundState = round.END
@@ -112,6 +147,7 @@ func end_round():
 		else:
 			start_new_round()
 
+# defines behavior once all rounds have been completed (puzzles solved) and a winner decided
 func end_game():
 	if GameState == game.PLAYING and RoundState == round.END and TurnState == turn.END:
 		GameState == game.END
@@ -121,16 +157,31 @@ func end_game():
 		# hide end round screen
 		# show game over screen: text = "Game Over: Player " + winner + " wins!"
 
-# TODO - connect to new game button
+## functions connected to built-in signals
+# TODO - connect to new game button on both **title and game over screens**
 func new_game_pressed():
 	start_new_game()
-	
+
+## functions connected to custom signals
 func _on_wheel_stopped(value):
 	print("The value of the wheel is: " + str(value))
+	
+	if value == -1:  # bankrupt
+		round_scores[current_player] = 0
+		# TODO: update score for current_player in score component
+		end_turn()
+	elif value == -2:  # free play
+		value = 500  # 0 if vowel
+		# TODO - work on the logic here...
+	elif value == -3:  # lose a turn
+		end_turn()
+	else:
+		pass
 
 func _on_guess_complete(c,g):
 	if c == 0:
 		print("Incorrect guess. Next player's turn.")
+		end_turn()
 	else:
 		print("Count of letter " + g + ": " + str(c))
 		
