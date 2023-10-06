@@ -17,10 +17,12 @@ func _ready():
 				c.add_child(button_i)
 		else:  # some special things for the last column to keep it symmetric
 			for i in range(-2,8):
-				var button_i = create_button(char(start_ascii + i))
+				var button_i
 				if i < 0 or i > 5:
-					button_i.text = ""
+					button_i = create_button("")
 					button_i.hide_button()
+				else:
+					button_i = create_button(char(start_ascii + i))
 				
 				c.add_child(button_i)
 
@@ -35,6 +37,8 @@ func create_button(text):
 	# used for game cues (no consonants/vowels left to guess)
 	if text in ["A","E","I","O","U"]:
 		vowels.append(b)
+	elif text == "":
+		pass
 	else:
 		consonants.append(b)
 		
@@ -66,3 +70,12 @@ func only_vowels():
 func only_consonants():
 	for c in vowels:
 		c.disabled = true
+
+func hide_consonants():
+	for c in consonants:
+		c.hide_button()
+		# TODO - figure out how to hide text too
+		
+func show_consonants():
+	for c in consonants:
+		c.show_button()

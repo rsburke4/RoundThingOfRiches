@@ -3,7 +3,7 @@ extends Node2D
 # TODO - create sonsolidated file containing all state enums?
 enum game {CONFIG, SETUP, PLAYING, END}
 enum round {START, PLAYING, END}
-enum turn {START, SPIN, GUESS, SOLVE, CONSONANT, VOWEL, END}
+enum turn {START, SPIN, GUESS, SOLVE, CORRECT, END}
 
 var total_scores = []
 var round_scores = []
@@ -11,11 +11,14 @@ var current_round = 0
 var current_player = 0
 var num_rounds = 3  # use a placeholder here until needed layers are ready
 var num_players = 3
+var guess_score = 0
 
 var GameState = game.CONFIG
 var RoundState = round.END
 var TurnState = turn.END
 var TurnState_prev  # only used when attempting to solve
+
+var tmp = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -93,10 +96,16 @@ func start_new_round():
 		for p in range(num_players):
 			round_scores[p] = 0
 		
-		get_node("Puzzle").create_new_puzzle()
+		get_node("Puzzle").start_new_round()
 		
+		# TODO - remove, this is just for testing
+		get_node("Tmp/P1score").text = "P1: " + str(round_scores[0])
+		get_node("Tmp/P2score").text = "P2: " + str(round_scores[1])
+		get_node("Tmp/P3score").text = "P3: " + str(round_scores[2])
+
 		# hide title screen, end round screen
 		# show start round screen: text = "Round " + current_round
+		get_node("Tmp/Label").text = "Round " + str(current_round + 1)
 		# TODO - adjust timer as needed
 		await get_tree().create_timer(1.0).timeout
 		
@@ -106,13 +115,18 @@ func start_new_round():
 # a wrong letter or solution is guessed, a turn-ending space is landed on, or 
 # the puzzle is solved correctly)
 func start_turn():
+	RoundState = round.PLAYING
+	
 	if GameState == game.PLAYING and RoundState == round.PLAYING and TurnState == turn.END:
-		TurnState == turn.START
+		print("starting turn")
+		TurnState = turn.START
 		
 		# TODO - highlight current player in scoring component
 		
 		# hide start round screen
 		# show gameplay screen
+		
+		get_node("WheelRoot/WheelPhysics").set_spin(false)
 		
 		turn_state_machine()
 		
@@ -120,36 +134,49 @@ func turn_state_machine():
 	# state machine will be called for many different states of TurnState, so first
 	# check that the game and round are both in "playing" state before worrying
 	# about the turn state
+	var wheel = get_node("WheelRoot/WheelPhysics")
+	var tracker = get_node("GameControl")
 	if GameState == game.PLAYING and RoundState == round.PLAYING:
 		if TurnState == turn.START:
+			print("State: Turn Start")
 			# each turn starts with a spin, so make that possible
-			TurnState == turn.SPIN
+			TurnState = turn.SPIN
 			
-			# enable wheel (can_spin = true)
-			# hide/diable guess tracker
+			wheel.set_spin(true)
+			tracker.hide()  # hide/diable guess tracker
 		elif TurnState == turn.SPIN:
+			print("State: Turn Spin")
+			
 			# wait for the player to spin and handle in callback
 			pass  # handled by wheel
 		elif TurnState == turn.GUESS:
+			print("State: Turn Guess")
 			# player must guess a letter or solve
 			
-			# disable wheen (can_spin = false)
-			# show/enable guess tracker
-			pass
-		elif TurnState == turn.CONSONANT or TurnState == turn.VOWEL:
+			wheel.set_spin(false)
+			tracker.get_node("GuessTracker").show_consonants()  # enable/show consonants
+			tracker.get_node("GuessTracker").show()  # show tracker buttons
+			tracker.show()  # show/enable guess tracker
+		elif TurnState == turn.CORRECT:
+			print("State: Turn Post-guess")
 			# player must guess a vowel, solve, or spin
-			# different states are used here because the differentiation between
-			# type of guess is necessary in other functions
 			
-			# disable/hide consonants
-			# enable wheel (can_spin = true)
+			tracker.get_node("GuessTracker").hide_consonants()  # disable/hide consonants
+			tracker.get_node("GuessTracker").show()  # show tracker buttons
+			wheel.set_spin(true)
 			pass
 		elif TurnState == turn.SOLVE:
+			print("State: Solve Attempt")
 			# player must enter a solution attempt, or cancel the attempt
 			
-			# disable wheel (can_spin = false)
-			# disable/hide all letters in tracker ("cancel" button should stil be visible)
-			pass
+			wheel.set_spin(false)
+			tracker.get_node("GuessTracker").hide()
+		elif TurnState == turn.END:
+			print("State: Turn Over")
+			
+			TurnState = turn.SPIN
+			
+			start_turn()  # start turn for next player (incremented in end_turn())
 
 # defines what happens when a player's turn has ended (play passes to the next player)
 func end_turn():
@@ -158,7 +185,8 @@ func end_turn():
 	# (wrong guess after a spin), "vowel" (wrong guess after a right guess), or
 	# "solving" (wrong solution guessed)
 	if GameState == game.PLAYING and RoundState == round.PLAYING and \
-		(TurnState in [turn.SPIN, turn.GUESS, turn.VOWEL, turn.SOLVE]):
+		(TurnState in [turn.SPIN, turn.GUESS, turn.CORRECT, turn.SOLVE]):
+			print("turn ended")
 			TurnState = turn.END
 			
 			current_player = (current_player + 1) % num_players
@@ -171,7 +199,7 @@ func end_round():
 		RoundState = round.END
 		
 		total_scores[current_player] = round_scores[current_player]  # update the score for winning player
-		# round scores are updated in start_new_round()
+		# round scores are reset in start_new_round()
 		
 		# hide gameplay screen
 		# show end round screen: text = "Player " + current_player + " wins Round " + current_round "!"
@@ -194,43 +222,79 @@ func end_game():
 		# hide end round screen
 		# show game over screen: text = "Game Over: Player " + winner + " wins!"
 
+# defines how to update the player's score
+func update_score(count, is_vowel):
+	print("updating player score")
+	if count == -1:  # scoring for "bankrupt"
+		round_scores[current_player] = 0
+	elif guess_score == -2:  # scoring for "free-play": consonant = 500 (per), vowel = 0
+		if not is_vowel:
+			round_scores[current_player] += 500 * count
+	else:
+		if is_vowel:
+			round_scores[current_player] -= 250  # lose 250 total when buying vowel
+		else:
+			round_scores[current_player] += guess_score * count
+			
+	# TODO - update score in scoring component
+	get_node("Tmp/P" + str(current_player + 1) + "score").text = \
+		"P" + str(current_player + 1) + ": " + str(round_scores[current_player])
+
 ## functions connected to built-in signals
-# TODO - connect to new game button on both **title and game over screens**
-func new_game_pressed():
+# TODO - connect to new game button on game over screen
+func play_again_pressed():
 	start_new_game()
+
+# TODO - connect to start game button on title screen
+func start_game_pressed():
+	print("starting game")
+	start_new_game()  # TODO - remove when testing is done
+	start_new_round()
 
 ## functions connected to custom signals
 func _on_wheel_stopped(value):
 	print("The value of the wheel is: " + str(value))
 	
+	if tmp == 5:
+		value = -1
+	
 	if value == -1:  # bankrupt
-		round_scores[current_player] = 0
-		# TODO: update score for current_player in score component
+		# TODO - work on the logic here...
+		print("Bankrupt")
+		update_score(-1, false)
 		end_turn()
 	elif value == -2:  # free play
-		value = 500  # 0 if vowel
+		print("Free Play")
+		TurnState = turn.GUESS
+		guess_score = -2  # use this in scoring calculation
+		turn_state_machine()
 		# TODO - work on the logic here...
 	elif value == -3:  # lose a turn
+		print("Lose a turn")
 		end_turn()
 	else:
 		TurnState = turn.GUESS
+		guess_score = value
+		tmp+=1
 		turn_state_machine()
 
 func _on_guess_complete(c,g):
-	if c == 0:
+	if c == 0 and guess_score != -2:  # second condition prevents turn from ending if free play was landed on
 		print("Incorrect guess. Next player's turn.")
 		end_turn()
 	else:
 		print("Count of letter " + g + ": " + str(c))
+		TurnState = turn.CORRECT
+		var is_vowel = false
 		
 		if g in ["A","E","I","O","U"]:
 			print("Vowel guessed")
-			TurnState = turn.VOWEL
 			c = 1
+			is_vowel = true
 			# TODO - handle scoring for vowels
-		else:
-			TurnState = turn.CONSONANT
-			
+		
+		update_score(c, is_vowel)
+
 		turn_state_machine()
 
 func _on_solve_attempt():

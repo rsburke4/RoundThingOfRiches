@@ -16,7 +16,7 @@ func spin():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	can_spin = true
+	can_spin = false
 	input_pickable = true
 	just_stopped = false
 	#Set up colliders for all wheel sections
@@ -36,6 +36,7 @@ func _process(delta):
 			landed_value = landed_node.name.get_slice("WheelSection", 1)
 			just_stopped = false
 			angular_velocity = 0.0
+			print("spin finished")
 			landed_on_value.emit(wheel_choices[int(landed_value)-1])
 	#This is a placeholder. For now, can_spin allows
 	#infinite spins, but this should also factor gamestate in
@@ -53,6 +54,13 @@ func _on_input_event(viewport, event, shape_idx):
 func connect_puzzle(nodePath):
 	var puzzle = get_node(nodePath)
 	puzzle.guess_complete.connect(_on_guess_over)
+
+# TODO - not sure if this is the best way to do this, but need to control if wheel can spin or not
+func set_spin(b):
+	can_spin = b
+
+func set_just_stopped(b):
+	just_stopped = b
 
 func _on_decision_area_area_shape_entered(area_rid, area, area_shape_index, local_shape_index):
 	landed_node = area.get_parent()

@@ -33,7 +33,11 @@ func _process(_delta):
 	if Input.is_action_just_pressed("enter_press") and State in [PuzzleConst.STATE_EMPTY, PuzzleConst.STATE_GAMEOVER]:
 		tiles_used = create_new_puzzle()
 		State = PuzzleConst.STATE_PLAYING
-		
+
+func start_new_round():
+	tiles_used = create_new_puzzle()
+	State = PuzzleConst.STATE_PLAYING
+
 func create_new_puzzle():
 	reset_puzzle()
 	var new_puzzle = get_puzzle("res://answers.json")
@@ -157,7 +161,7 @@ func setup_puzzle(puzzle):
 					tile.change_state(TileConst.STATE_HIDDEN, cur_line[i])
 					
 					# show any punctuation that may be used
-					if cur_line[i] in ["-", "'", "&"]:
+					if cur_line[i] in ["-", "'", "&", ".", "?", "!"]:
 						tile.change_state(TileConst.STATE_HIGHLIGHT)
 						tile.change_state(TileConst.STATE_SHOW)
 					else:

@@ -51,6 +51,10 @@ func hide_button():
 	
 	button_mask = 0  # prevent the hidden button from responding to stray clicks
 
+func show_button():
+	set_pressed_no_signal(false)
+	button_mask = MOUSE_BUTTON_MASK_LEFT
+
 func _on_pressed():
 	disabled = true
 	
