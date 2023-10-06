@@ -18,8 +18,6 @@ var RoundState = round.END
 var TurnState = turn.END
 var TurnState_prev  # only used when attempting to solve
 
-var tmp = 0
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# get nodes for making connections
@@ -99,13 +97,17 @@ func start_new_round():
 		get_node("Puzzle").start_new_round()
 		
 		# TODO - remove, this is just for testing
-		get_node("Tmp/P1score").text = "P1: " + str(round_scores[0])
-		get_node("Tmp/P2score").text = "P2: " + str(round_scores[1])
-		get_node("Tmp/P3score").text = "P3: " + str(round_scores[2])
+		get_node("Tmp/P1score").text = "P1 (R): " + str(round_scores[0])
+		get_node("Tmp/P2score").text = "P2 (R): " + str(round_scores[1])
+		get_node("Tmp/P3score").text = "P3 (R): " + str(round_scores[2])
 
+		get_node("Tmp/P1scoreTotal").text = "P1 (T): " + str(total_scores[0])
+		get_node("Tmp/P2scoreTotal").text = "P2 (T): " + str(total_scores[1])
+		get_node("Tmp/P3scoreTotal").text = "P3 (T): " + str(total_scores[2])
 		# hide title screen, end round screen
 		# show start round screen: text = "Round " + current_round
 		get_node("Tmp/Label").text = "Round " + str(current_round + 1)
+		get_node("Tmp/Announce").text = ""
 		# TODO - adjust timer as needed
 		await get_tree().create_timer(1.0).timeout
 		
@@ -198,13 +200,19 @@ func end_round():
 	if GameState == game.PLAYING and RoundState == round.PLAYING and TurnState == turn.END:
 		RoundState = round.END
 		
-		total_scores[current_player] = round_scores[current_player]  # update the score for winning player
+		total_scores[current_player] += round_scores[current_player]  # update the score for winning player
 		# round scores are reset in start_new_round()
 		
+		get_node("Tmp/P" + str(current_player + 1) + "scoreTotal").text = \
+			"P" + str(current_player + 1) + " (T): " + str(total_scores[current_player])
+		
+		get_node("Tmp/Announce").text = "Player " + str(current_player + 1) + " wins round!"
 		# hide gameplay screen
 		# show end round screen: text = "Player " + current_player + " wins Round " + current_round "!"
 		# TODO - adjust timer as needed
 		await get_tree().create_timer(1.0).timeout
+		
+		get_node("Tmp/Announce").text = ""
 		
 		current_round+=1
 		if current_round == num_rounds:
@@ -219,6 +227,7 @@ func end_game():
 		
 		var winner = total_scores.find(total_scores.max()) + 1  # +1 to make it 1-based instead of 0-based
 		
+		get_node("Tmp/Announce").text = "Player " + str(winner) + " wins game!"
 		# hide end round screen
 		# show game over screen: text = "Game Over: Player " + winner + " wins!"
 
@@ -238,7 +247,7 @@ func update_score(count, is_vowel):
 			
 	# TODO - update score in scoring component
 	get_node("Tmp/P" + str(current_player + 1) + "score").text = \
-		"P" + str(current_player + 1) + ": " + str(round_scores[current_player])
+		"P" + str(current_player + 1) + " (R): " + str(round_scores[current_player])
 
 ## functions connected to built-in signals
 # TODO - connect to new game button on game over screen
@@ -247,16 +256,14 @@ func play_again_pressed():
 
 # TODO - connect to start game button on title screen
 func start_game_pressed():
-	print("starting game")
-	start_new_game()  # TODO - remove when testing is done
-	start_new_round()
+	if GameState in [game.END, game.CONFIG] and RoundState == round.END and TurnState == turn.END:
+		print("starting game")
+		start_new_game()  # TODO - remove when testing is done
+		start_new_round()
 
 ## functions connected to custom signals
 func _on_wheel_stopped(value):
 	print("The value of the wheel is: " + str(value))
-	
-	if tmp == 5:
-		value = -1
 	
 	if value == -1:  # bankrupt
 		# TODO - work on the logic here...
@@ -275,7 +282,6 @@ func _on_wheel_stopped(value):
 	else:
 		TurnState = turn.GUESS
 		guess_score = value
-		tmp+=1
 		turn_state_machine()
 
 func _on_guess_complete(c,g):

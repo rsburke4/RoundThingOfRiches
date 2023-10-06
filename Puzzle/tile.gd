@@ -46,6 +46,7 @@ func letter_found():
 	print("letter found")
 	change_state(TileConst.STATE_HIGHLIGHT)
 	$RevealTimer.start()
+	await $RevealTimer.timeout
 	
 
 func _on_reveal_timer_timeout():

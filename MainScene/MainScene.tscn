@@ -45,10 +45,17 @@ color = Color(0.0117647, 0.278431, 0.329412, 1)
 
 [node name="Label" type="Label" parent="Tmp"]
 layout_mode = 0
-offset_left = 22.0
-offset_top = 19.0
-offset_right = 245.0
-offset_bottom = 70.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 108.0
+offset_bottom = 33.0
+
+[node name="Announce" type="Label" parent="Tmp"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 49.0
+offset_right = 108.0
+offset_bottom = 74.0
 
 [node name="Button" type="Button" parent="Tmp"]
 layout_mode = 0
@@ -56,30 +63,54 @@ offset_left = 5.0
 offset_top = 89.0
 offset_right = 113.0
 offset_bottom = 136.0
-text = "Start Round"
+text = "Start Game"
 
 [node name="P1score" type="Label" parent="Tmp"]
 layout_mode = 0
-offset_left = 165.0
-offset_top = 71.0
-offset_right = 205.0
-offset_bottom = 94.0
+offset_left = 141.0
+offset_top = 5.0
+offset_right = 181.0
+offset_bottom = 31.0
 text = "P1:"
 
 [node name="P2score" type="Label" parent="Tmp"]
 layout_mode = 0
-offset_left = 163.0
-offset_top = 92.0
-offset_right = 203.0
-offset_bottom = 118.0
+offset_left = 139.0
+offset_top = 26.0
+offset_right = 179.0
+offset_bottom = 52.0
 text = "P2:"
 
 [node name="P3score" type="Label" parent="Tmp"]
 layout_mode = 0
-offset_left = 162.0
-offset_top = 114.0
-offset_right = 202.0
-offset_bottom = 140.0
+offset_left = 138.0
+offset_top = 48.0
+offset_right = 178.0
+offset_bottom = 74.0
+text = "P3:"
+
+[node name="P1scoreTotal" type="Label" parent="Tmp"]
+layout_mode = 0
+offset_left = 137.0
+offset_top = 74.0
+offset_right = 177.0
+offset_bottom = 100.0
+text = "P1:"
+
+[node name="P2scoreTotal" type="Label" parent="Tmp"]
+layout_mode = 0
+offset_left = 135.0
+offset_top = 95.0
+offset_right = 175.0
+offset_bottom = 121.0
+text = "P2:"
+
+[node name="P3scoreTotal" type="Label" parent="Tmp"]
+layout_mode = 0
+offset_left = 134.0
+offset_top = 117.0
+offset_right = 174.0
+offset_bottom = 143.0
 text = "P3:"
 
 [connection signal="pressed" from="Tmp/Button" to="." method="start_game_pressed"]
