@@ -48,11 +48,14 @@ func set_style(style, bg_color, bdr_color):
 func hide_button():
 	toggle_mode = true  # needed to set the state of the button
 	set_pressed_no_signal(true)  # per tool tip, this is used to set the state without emitting signal
-	
+	if not disabled:
+		text = ""
 	button_mask = 0  # prevent the hidden button from responding to stray clicks
 
 func show_button():
 	set_pressed_no_signal(false)
+	if not disabled:
+		text = name
 	button_mask = MOUSE_BUTTON_MASK_LEFT
 
 func _on_pressed():

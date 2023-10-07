@@ -32,6 +32,7 @@ func create_button(text):
 
 	b.guess_a_letter.connect(_on_guess_made)  # handle the signal when a guess is made
 	b.text = text
+	b.name = text
 	
 	# create lists of references to buttons for vowels and consonants
 	# used for game cues (no consonants/vowels left to guess)
