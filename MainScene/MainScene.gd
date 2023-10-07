@@ -200,7 +200,7 @@ func end_round():
 	if GameState == game.PLAYING and RoundState == round.PLAYING and TurnState == turn.END:
 		RoundState = round.END
 		
-		total_scores[current_player] += round_scores[current_player]  # update the score for winning player
+		total_scores[current_player] += max(1000, round_scores[current_player])  # update the score for winning player (min score per round = 1000)
 		# round scores are reset in start_new_round()
 		
 		get_node("Tmp/P" + str(current_player + 1) + "scoreTotal").text = \
