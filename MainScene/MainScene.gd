@@ -158,8 +158,6 @@ func turn_state_machine():
 			
 			wheel.set_spin(true)
 			tracker.hide()  # hide/diable guess tracker
-			
-			get_node("Tmp/Announce").text = ""
 		elif TurnState == turn.SPIN:
 			print("State: Turn Spin")
 			
@@ -171,16 +169,26 @@ func turn_state_machine():
 			
 			wheel.set_spin(false)
 			tracker.get_node("GuessTracker").show_consonants()  # enable/show consonants
+			
+			if round_scores[current_player] < 250:
+				tracker.get_node("GuessTracker").hide_vowels()  # disable/hide vowels if not able to buy one
+			else:
+				tracker.get_node("GuessTracker").show_vowels()  # otherwise enable/show them
+			
 			tracker.get_node("GuessTracker").show()  # show tracker buttons
 			tracker.show()  # show/enable guess tracker
 		elif TurnState == turn.CORRECT:
 			print("State: Turn Post-guess")
 			# player must guess a vowel, solve, or spin
 			
-			tracker.get_node("GuessTracker").hide_consonants()  # disable/hide consonants
-			tracker.get_node("GuessTracker").show()  # show tracker buttons
+			if round_scores[current_player] < 250:
+				tracker.get_node("GuessTracker").hide()
+			else:
+				tracker.get_node("GuessTracker").show_vowels()  # enable/show consonants
+				tracker.get_node("GuessTracker").hide_consonants()  # disable/hide consonants
+				tracker.get_node("GuessTracker").show()  # show tracker buttons
+
 			wheel.set_spin(true)
-			pass
 		elif TurnState == turn.SOLVE:
 			print("State: Solve Attempt")
 			# player must enter a solution attempt, or cancel the attempt

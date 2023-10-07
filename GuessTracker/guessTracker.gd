@@ -75,8 +75,15 @@ func only_consonants():
 func hide_consonants():
 	for c in consonants:
 		c.hide_button()
-		# TODO - figure out how to hide text too
 		
 func show_consonants():
 	for c in consonants:
+		c.show_button()
+
+func hide_vowels():
+	for c in vowels:
+		c.hide_button()
+
+func show_vowels():
+	for c in vowels:
 		c.show_button()
