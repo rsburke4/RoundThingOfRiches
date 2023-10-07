@@ -97,13 +97,18 @@ func start_new_round():
 		get_node("Puzzle").start_new_round()
 		
 		# TODO - remove, this is just for testing
-		get_node("Tmp/P1score").text = "P1 (R): " + str(round_scores[0])
-		get_node("Tmp/P2score").text = "P2 (R): " + str(round_scores[1])
-		get_node("Tmp/P3score").text = "P3 (R): " + str(round_scores[2])
-
-		get_node("Tmp/P1scoreTotal").text = "P1 (T): " + str(total_scores[0])
-		get_node("Tmp/P2scoreTotal").text = "P2 (T): " + str(total_scores[1])
-		get_node("Tmp/P3scoreTotal").text = "P3 (T): " + str(total_scores[2])
+		for i in range(3):
+			var Rscore = get_node("Tmp/P" + str(i+1) + "score")
+			var Tscore = get_node("Tmp/P" + str(i+1) + "scoreTotal")
+			
+			Rscore.text = "P" + str(i+1) + " (R): " + str(round_scores[i])
+			Tscore.text = "P" + str(i+1) + " (T): " + str(total_scores[i])
+		
+			if i == current_player:
+				Rscore.add_theme_color_override("font_color", Color(0.85, 0.66, 0.12, 1))
+			else:
+				Rscore.add_theme_color_override("font_color", Color(1, 1, 1, 1))
+			
 		# hide title screen, end round screen
 		# show start round screen: text = "Round " + current_round
 		get_node("Tmp/Label").text = "Round " + str(current_round + 1)
@@ -124,6 +129,13 @@ func start_turn():
 		TurnState = turn.START
 		
 		# TODO - highlight current player in scoring component
+		for i in range(3):
+			var Rscore = get_node("Tmp/P" + str(i+1) + "score")
+
+			if i == current_player:
+				Rscore.add_theme_color_override("font_color", Color(0.85, 0.66, 0.12, 1))
+			else:
+				Rscore.add_theme_color_override("font_color", Color(1, 1, 1, 1))
 		
 		# hide start round screen
 		# show gameplay screen
@@ -146,6 +158,8 @@ func turn_state_machine():
 			
 			wheel.set_spin(true)
 			tracker.hide()  # hide/diable guess tracker
+			
+			get_node("Tmp/Announce").text = ""
 		elif TurnState == turn.SPIN:
 			print("State: Turn Spin")
 			
@@ -264,23 +278,28 @@ func start_game_pressed():
 ## functions connected to custom signals
 func _on_wheel_stopped(value):
 	print("The value of the wheel is: " + str(value))
+	var msg = get_node("Tmp/Announce")
 	
 	if value == -1:  # bankrupt
 		# TODO - work on the logic here...
 		print("Bankrupt")
+		msg.text = "Bankrupt"
 		update_score(-1, false)
 		end_turn()
 	elif value == -2:  # free play
 		print("Free Play")
+		msg.text = "Free Play"
 		TurnState = turn.GUESS
 		guess_score = -2  # use this in scoring calculation
 		turn_state_machine()
 		# TODO - work on the logic here...
 	elif value == -3:  # lose a turn
 		print("Lose a turn")
+		msg.text = "Lose a turn"
 		end_turn()
 	else:
 		TurnState = turn.GUESS
+		msg.text = "$" + str(value)
 		guess_score = value
 		turn_state_machine()
 
