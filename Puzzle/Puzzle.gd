@@ -203,6 +203,7 @@ func evaluate_guess(c, ind):
 
 				if c.to_upper() == letter.to_upper():
 					tile.letter_found()
+					await tile.get_node("RevealTimer").timeout  # this allows letters to reveal one-by-one (like the TV show)
 					count+=1
 					rem_guesses-=1  # reduce the number of guesses by one for each tile turned
 					
@@ -224,7 +225,7 @@ func is_vowel(c):
 func _on_guess_made(g):
 	# Only do this while in "playing" state
 	if not (g in guesses) and State == PuzzleConst.STATE_PLAYING and State != PuzzleConst.STATE_SOLVE:
-		var count = evaluate_guess(g, tiles_used)
+		var count = await evaluate_guess(g, tiles_used)
 		guesses.append(g)
 		
 		if rem_guesses == 0:
