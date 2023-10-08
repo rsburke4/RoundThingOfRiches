@@ -44,7 +44,6 @@ func create_button(text):
 		
 	return b
 
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	pass
@@ -55,6 +54,9 @@ func reset_tracker():
 	
 	for c in vowels:
 		c.disabled = false
+		
+	show_consonants()
+	show_vowels()
 
 func _on_guess_made(g):
 	make_a_guess.emit(g)  # propagate the guess so it can be used by the puzzle board
