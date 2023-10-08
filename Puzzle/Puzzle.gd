@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var State = PuzzleConst.STATE_EMPTY
+@export var State = States.puzzle.STATE_EMPTY
 
 signal guess_complete(count,guess)
 signal round_over
@@ -30,13 +30,13 @@ func _process(_delta):
 	# as a test, create a new puzzle when the screen is clicked
 	# TODO - replace this with signals, as appropriate, during integration steps
 	# The second condition prevents resetting the puzzle in the middle of a game
-	if Input.is_action_just_pressed("enter_press") and State in [PuzzleConst.STATE_EMPTY, PuzzleConst.STATE_GAMEOVER]:
+	if Input.is_action_just_pressed("enter_press") and State in [States.puzzle.STATE_EMPTY, States.puzzle.STATE_GAMEOVER]:
 		tiles_used = create_new_puzzle()
-		State = PuzzleConst.STATE_PLAYING
+		State = States.puzzle.STATE_PLAYING
 
 func start_new_round():
 	tiles_used = create_new_puzzle()
-	State = PuzzleConst.STATE_PLAYING
+	State = States.puzzle.STATE_PLAYING
 
 func create_new_puzzle():
 	reset_puzzle()
@@ -158,12 +158,12 @@ func setup_puzzle(puzzle):
 			for i in range(cur_line.length()):
 				if cur_line[i] != " ":
 					var tile = l.get_node("Tile"+str(tiles[i]))
-					tile.change_state(TileConst.STATE_HIDDEN, cur_line[i])
+					tile.change_state(States.tile.STATE_HIDDEN, cur_line[i])
 					
 					# show any punctuation that may be used
 					if cur_line[i] in ["-", "'", "&", ".", "?", "!"]:
-						tile.change_state(TileConst.STATE_HIGHLIGHT)
-						tile.change_state(TileConst.STATE_SHOW)
+						tile.change_state(States.tile.STATE_HIGHLIGHT)
+						tile.change_state(States.tile.STATE_SHOW)
 					else:
 						rem_guesses+=1  # increase this for each (letter) tile added
 						
@@ -185,9 +185,9 @@ func reset_puzzle():
 		for t in range(14):
 			var tile = grid.get_node("Tile" + str(t))  # get the tile
 			if (l == 1 or l ==4) and (t == 0 or t == 13):
-				tile.change_state(TileConst.STATE_BKGD)  # make sure to keep these background color
+				tile.change_state(States.tile.STATE_BKGD)  # make sure to keep these background color
 			else:
-				tile.change_state(TileConst.STATE_EMPTY)  # this should reset color AND text
+				tile.change_state(States.tile.STATE_EMPTY)  # this should reset color AND text
 
 func evaluate_guess(c, ind):
 	var count = 0
@@ -209,6 +209,9 @@ func evaluate_guess(c, ind):
 					
 					if is_vowel(c):
 						rem_vowels-=1  # reduce the number of vowels by one
+						
+			print("Remaining guesses: " + str(rem_guesses))
+			print("Remaining vowels: " + str(rem_vowels))
 	if count == 0:
 		get_node("Background").color = Color.DARK_RED
 		$WrongGuessTimer.start()
@@ -224,7 +227,7 @@ func is_vowel(c):
 
 func _on_guess_made(g):
 	# Only do this while in "playing" state
-	if not (g in guesses) and State == PuzzleConst.STATE_PLAYING and State != PuzzleConst.STATE_SOLVE:
+	if not (g in guesses) and State == States.puzzle.STATE_PLAYING and State != States.puzzle.STATE_SOLVE:
 		var count = await evaluate_guess(g, tiles_used)
 		guesses.append(g)
 		
@@ -245,15 +248,15 @@ func _on_wrong_guess_timer_timeout():
 
 func _on_solve_attempt():
 	print("solve the puzzle!")
-	if State == PuzzleConst.STATE_PLAYING or rem_guesses == 0:
+	if State == States.puzzle.STATE_PLAYING or rem_guesses == 0:
 		get_node("SolutionInput").show()
-		State = PuzzleConst.STATE_SOLVE
+		State = States.puzzle.STATE_SOLVE
 
 func _on_solve_cancelled():
 	print("changed my mind!")
-	if State == PuzzleConst.STATE_SOLVE:
+	if State == States.puzzle.STATE_SOLVE:
 		get_node("SolutionInput").hide()
-		State = PuzzleConst.STATE_PLAYING
+		State = States.puzzle.STATE_PLAYING
 
 func _on_solution_submit_pressed():
 	print("Made a guess!")
@@ -264,7 +267,7 @@ func _on_solution_submit_pressed():
 	var isRoundOver = guess.matchn(solution)
 	
 	if isRoundOver:
-		State = PuzzleConst.STATE_GAMEOVER
+		State = States.puzzle.STATE_GAMEOVER
 		input_box.text = ""
 		get_node("SolutionInput").hide()
 		round_over.emit()
@@ -272,11 +275,11 @@ func _on_solution_submit_pressed():
 	else:
 		input_box.text = ""
 		if rem_guesses == 0:
-			State = PuzzleConst.STATE_SOLVE
+			State = States.puzzle.STATE_SOLVE
 			_on_solve_attempt()
 			print("no guesses remain")
 		else:
-			State = PuzzleConst.STATE_PLAYING
+			State = States.puzzle.STATE_PLAYING
 			get_node("SolutionInput").hide()  # TODO - consider a state machine function
 			wrong_solution.emit()
 
