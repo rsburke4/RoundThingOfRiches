@@ -1,12 +1,33 @@
-[gd_scene load_steps=5 format=3 uid="uid://7q6oxgp6hu6h"]
+[gd_scene load_steps=8 format=3 uid="uid://7q6oxgp6hu6h"]
 
 [ext_resource type="Script" path="res://MainScene/MainScene.gd" id="1_ke8ft"]
 [ext_resource type="PackedScene" uid="uid://csds172y40utw" path="res://GuessTracker/guess_tracker.tscn" id="2_1omuh"]
 [ext_resource type="PackedScene" uid="uid://c5b1hocmae8sh" path="res://Wheel/Wheel.tscn" id="2_u8u61"]
 [ext_resource type="PackedScene" uid="uid://gsf4ctc5makr" path="res://Puzzle/puzzle.tscn" id="3_sr3qk"]
+[ext_resource type="Script" path="res://MainScene/WheelRenderer.gd" id="5_abvpq"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_7nmnb"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8gy8h"]
+radius = 282.336
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_ke8ft")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+physics_object_picking = true
+physics_object_picking_sort = true
+size = Vector2i(1152, 648)
+size_2d_override_stretch = true
+
+[node name="WheelRoot" parent="SubViewport" instance=ExtResource("2_u8u61")]
+position = Vector2(576, 345.01)
+
+[node name="WheelLayout" type="Sprite2D" parent="SubViewport"]
+position = Vector2(644, 322)
+scale = Vector2(1.03507, 1.0534)
 
 [node name="Control" type="Control" parent="."]
 clip_contents = true
@@ -21,17 +42,25 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="WheelLayout" type="Sprite2D" parent="Control"]
-position = Vector2(644, 322)
-scale = Vector2(1.03507, 1.0534)
-
-[node name="WheelRoot" parent="." instance=ExtResource("2_u8u61")]
-position = Vector2(572, 786)
-
 [node name="GameControl" parent="." instance=ExtResource("2_1omuh")]
 position = Vector2(998, 598)
 scale = Vector2(0.8, 0.8)
 
 [node name="Puzzle" parent="." instance=ExtResource("3_sr3qk")]
-position = Vector2(28, 477)
+position = Vector2(10, 22)
 scale = Vector2(0.7, 0.7)
+
+[node name="WheelRenderer" type="Sprite2D" parent="."]
+position = Vector2(549, 643)
+scale = Vector2(1.76034, 0.701659)
+texture = SubResource("ViewportTexture_7nmnb")
+script = ExtResource("5_abvpq")
+
+[node name="Area2D" type="Area2D" parent="WheelRenderer"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WheelRenderer/Area2D"]
+position = Vector2(3.9765, 18.5275)
+shape = SubResource("CircleShape2D_8gy8h")
+
+[connection signal="mouse_shape_entered" from="WheelRenderer/Area2D" to="WheelRenderer" method="_on_area_2d_mouse_shape_entered"]
+[connection signal="mouse_shape_exited" from="WheelRenderer/Area2D" to="WheelRenderer" method="_on_area_2d_mouse_shape_exited"]

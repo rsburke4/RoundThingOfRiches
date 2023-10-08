@@ -12,7 +12,8 @@ signal landed_on_value(value)
 
 func spin():
 	var random_num = rng.randf_range(10.0, 20.0)
-	apply_torque_impulse(random_num * 10.0)
+	if can_spin:
+		apply_torque_impulse(random_num * 10.0)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -45,8 +46,7 @@ func _process(delta):
 	
 func _on_input_event(viewport, event, shape_idx):
 	if Input.is_action_just_released("SpinWheel"):
-		if can_spin:
-			spin()
+		spin()
 
 #This is my clever workaround to connecting the round over signa
 # to the wheel, without knowing the path until the main scene instances it
