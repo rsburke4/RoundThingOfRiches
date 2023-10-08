@@ -164,6 +164,8 @@ func reset_puzzle():
 	get_node("Category").text = ""
 	
 	guesses = []  # reset the list of guesses so it doesn't carry over round-to-round
+	rem_guesses = 0
+	rem_vowels = 0
 	
 	# loop through all tiles and reset states
 	for l in range(1,5):
