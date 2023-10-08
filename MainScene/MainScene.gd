@@ -10,7 +10,7 @@ var guess_score = 0
 var can_spin = false
 
 var GameState = States.game.CONFIG
-var RoundState = States.round.END
+var RoundState = States.puzzle_round.END
 var TurnState = States.turn.END
 var TurnState_prev  # only used when attempting to solve
 
@@ -50,7 +50,7 @@ func _ready():
 	solve.cancel_solve.connect(_on_solve_cancelled)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	pass
 
 ## functions defining gameplay
@@ -81,9 +81,9 @@ func start_new_game():
 # defines behavior at the start of each round of the game (each new puzzle)
 func start_new_round():
 	# prevent starting a new round unless setting up a new game, or a previous round has ended
-	if GameState == States.game.SETUP or (GameState == States.game.PLAYING and RoundState == States.round.END):
+	if GameState == States.game.SETUP or (GameState == States.game.PLAYING and RoundState == States.puzzle_round.END):
 		GameState = States.game.PLAYING
-		RoundState = States.round.START
+		RoundState = States.puzzle_round.START
 		
 		# setup the new round/puzzle
 		current_player = current_round % num_players  # player 1 starts round 1, etc...with cycling in case num_round > num_players
@@ -105,11 +105,13 @@ func start_new_round():
 				Rscore.add_theme_color_override("font_color", Color(0.85, 0.66, 0.12, 1))
 			else:
 				Rscore.add_theme_color_override("font_color", Color(1, 1, 1, 1))
+				
+		get_node("Tmp/Label").text = "Round " + str(current_round + 1)
+		get_node("Tmp/Announce").text = ""
 			
 		# hide title screen, end round screen
 		# show start round screen: text = "Round " + current_round
-		get_node("Tmp/Label").text = "Round " + str(current_round + 1)
-		get_node("Tmp/Announce").text = ""
+		
 		# TODO - adjust timer as needed
 		await get_tree().create_timer(1.0).timeout
 		
@@ -119,13 +121,13 @@ func start_new_round():
 # a wrong letter or solution is guessed, a turn-ending space is landed on, or 
 # the puzzle is solved correctly)
 func start_turn():
-	RoundState = States.round.PLAYING
+	RoundState = States.puzzle_round.PLAYING
 	
-	if GameState == States.game.PLAYING and RoundState == States.round.PLAYING and TurnState == States.turn.END:
-		print("starting turn")
+	if GameState == States.game.PLAYING and RoundState == States.puzzle_round.PLAYING and TurnState == States.turn.END:
 		TurnState = States.turn.START
 		
 		# TODO - highlight current player in scoring component
+		# TODO - remove this, used for testing
 		for i in range(3):
 			var Rscore = get_node("Tmp/P" + str(i+1) + "score")
 
@@ -147,7 +149,9 @@ func turn_state_machine():
 	# about the turn state
 	var wheel = get_node("WheelRoot/WheelPhysics")
 	var tracker = get_node("GameControl")
-	if GameState == States.game.PLAYING and RoundState == States.round.PLAYING:
+	var letters = get_node("GameControl/GuessTracker")
+	
+	if GameState == States.game.PLAYING and RoundState == States.puzzle_round.PLAYING:
 		if TurnState == States.turn.START:
 			print("State: Turn Start")
 			# each turn starts with a spin, so make that possible
@@ -165,25 +169,25 @@ func turn_state_machine():
 			# player must guess a letter or solve
 			
 			wheel.set_spin(false)
-			tracker.get_node("GuessTracker").show_consonants()  # enable/show consonants
+			letters.show_consonants()  # enable/show consonants
 			
 			if round_scores[current_player] < 250:
-				tracker.get_node("GuessTracker").hide_vowels()  # disable/hide vowels if not able to buy one
+				letters.hide_vowels()  # disable/hide vowels if not able to buy one
 			else:
-				tracker.get_node("GuessTracker").show_vowels()  # otherwise enable/show them
+				letters.show_vowels()  # otherwise enable/show them
 			
-			tracker.get_node("GuessTracker").show()  # show tracker buttons
+			letters.show()  # show tracker letter buttons
 			tracker.show()  # show/enable guess tracker
 		elif TurnState == States.turn.CORRECT:
 			print("State: Turn Post-guess")
 			# player must guess a vowel, solve, or spin
 			
 			if round_scores[current_player] < 250:
-				tracker.get_node("GuessTracker").hide()
+				letters.hide()
 			else:
-				tracker.get_node("GuessTracker").show_vowels()  # enable/show consonants
-				tracker.get_node("GuessTracker").hide_consonants()  # disable/hide consonants
-				tracker.get_node("GuessTracker").show()  # show tracker buttons
+				letters.show_vowels()  # enable/show consonants
+				letters.hide_consonants()  # disable/hide consonants
+				letters.show()  # show tracker buttons
 
 			wheel.set_spin(true)
 		elif TurnState == States.turn.SOLVE:
@@ -191,7 +195,7 @@ func turn_state_machine():
 			# player must enter a solution attempt, or cancel the attempt
 			
 			wheel.set_spin(false)
-			tracker.get_node("GuessTracker").hide()
+			letters.hide()
 		elif TurnState == States.turn.END:
 			print("State: Turn Over")
 			
@@ -205,9 +209,8 @@ func end_turn():
 	# in one of the following states: "spinning" (lose-a-turn, bankrupt), "guessing"
 	# (wrong guess after a spin), "vowel" (wrong guess after a right guess), or
 	# "solving" (wrong solution guessed)
-	if GameState == States.game.PLAYING and RoundState == States.round.PLAYING and \
+	if GameState == States.game.PLAYING and RoundState == States.puzzle_round.PLAYING and \
 		(TurnState in [States.turn.SPIN, States.turn.GUESS, States.turn.CORRECT, States.turn.SOLVE]):
-			print("turn ended")
 			TurnState = States.turn.END
 			
 			current_player = (current_player + 1) % num_players
@@ -216,22 +219,25 @@ func end_turn():
 
 # defines behavior at the end of a round (puzzle has been solved)
 func end_round():
-	if GameState == States.game.PLAYING and RoundState == States.round.PLAYING and TurnState == States.turn.END:
-		RoundState = States.round.END
+	if GameState == States.game.PLAYING and RoundState == States.puzzle_round.PLAYING and TurnState == States.turn.END:
+		RoundState = States.puzzle_round.END
 		
 		total_scores[current_player] += max(1000, round_scores[current_player])  # update the score for winning player (min score per round = 1000)
 		# round scores are reset in start_new_round()
 		
+		# TODO - remove this, used for testing
 		get_node("Tmp/P" + str(current_player + 1) + "scoreTotal").text = \
 			"P" + str(current_player + 1) + " (T): " + str(total_scores[current_player])
 		
 		get_node("Tmp/Announce").text = "Player " + str(current_player + 1) + " wins round!"
+		
 		# hide gameplay screen
 		# show end round screen: text = "Player " + current_player + " wins Round " + current_round "!"
+		
 		# TODO - adjust timer as needed
 		await get_tree().create_timer(1.0).timeout
 		
-		get_node("Tmp/Announce").text = ""
+		get_node("Tmp/Announce").text = ""  # TODO - remove after testing is completed
 		
 		current_round+=1
 		if current_round == num_rounds:
@@ -241,18 +247,18 @@ func end_round():
 
 # defines behavior once all rounds have been completed (puzzles solved) and a winner decided
 func end_game():
-	if GameState == States.game.PLAYING and RoundState == States.round.END and TurnState == States.turn.END:
-		GameState == States.game.END
+	if GameState == States.game.PLAYING and RoundState == States.puzzle_round.END and TurnState == States.turn.END:
+		GameState = States.game.END
 		
 		var winner = total_scores.find(total_scores.max()) + 1  # +1 to make it 1-based instead of 0-based
 		
-		get_node("Tmp/Announce").text = "Player " + str(winner) + " wins game!"
+		get_node("Tmp/Announce").text = "Player " + str(winner) + " wins game!"  # TODO - remove when testing is done
+		
 		# hide end round screen
 		# show game over screen: text = "Game Over: Player " + winner + " wins!"
 
 # defines how to update the player's score
 func update_score(count, is_vowel):
-	print("updating player score")
 	if count == -1:  # scoring for "bankrupt"
 		round_scores[current_player] = 0
 	elif guess_score == -2:  # scoring for "free-play": consonant = 500 (per), vowel = 0
@@ -264,7 +270,7 @@ func update_score(count, is_vowel):
 		else:
 			round_scores[current_player] += guess_score * count
 			
-	# TODO - update score in scoring component
+	# TODO - update score in scoring component, remove below once complete
 	get_node("Tmp/P" + str(current_player + 1) + "score").text = \
 		"P" + str(current_player + 1) + " (R): " + str(round_scores[current_player])
 
@@ -275,31 +281,26 @@ func play_again_pressed():
 
 # TODO - connect to start game button on title screen
 func start_game_pressed():
-	if GameState in [States.game.END, States.game.CONFIG] and RoundState == States.round.END and TurnState == States.turn.END:
-		print("starting game")
-		start_new_game()  # TODO - remove when testing is done
+	if GameState in [States.game.END, States.game.CONFIG] and RoundState == States.puzzle_round.END and TurnState == States.turn.END:
+		start_new_game()  # TODO - remove this line when testing is done
 		start_new_round()
 
 ## functions connected to custom signals
 func _on_wheel_stopped(value):
-	print("The value of the wheel is: " + str(value))
 	var msg = get_node("Tmp/Announce")
 	
 	if value == -1:  # bankrupt
 		# TODO - work on the logic here...
-		print("Bankrupt")
 		msg.text = "Bankrupt"
 		update_score(-1, false)
 		end_turn()
 	elif value == -2:  # free play
-		print("Free Play")
 		msg.text = "Free Play"
 		TurnState = States.turn.GUESS
 		guess_score = -2  # use this in scoring calculation
 		turn_state_machine()
 		# TODO - work on the logic here...
 	elif value == -3:  # lose a turn
-		print("Lose a turn")
 		msg.text = "Lose a turn"
 		end_turn()
 	else:
@@ -310,18 +311,14 @@ func _on_wheel_stopped(value):
 
 func _on_guess_complete(c,g):
 	if c == 0 and guess_score != -2:  # second condition prevents turn from ending if free play was landed on
-		print("Incorrect guess. Next player's turn.")
 		end_turn()
 	else:
-		print("Count of letter " + g + ": " + str(c))
 		TurnState = States.turn.CORRECT
 		var is_vowel = false
 		
 		if g in ["A","E","I","O","U"]:
-			print("Vowel guessed")
 			c = 1
 			is_vowel = true
-			# TODO - handle scoring for vowels
 		
 		update_score(c, is_vowel)
 
@@ -343,8 +340,6 @@ func _on_solve_cancelled():
 	turn_state_machine()
 
 func _on_round_over():
-	print("Puzzle successfully solved!")
-	
 	TurnState = States.turn.END
 	
 	end_round()

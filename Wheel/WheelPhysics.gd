@@ -29,14 +29,13 @@ func _ready():
 		add_child(section)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	
 	if angular_velocity < angular_threshold:
 		if just_stopped == true:
 			landed_value = landed_node.name.get_slice("WheelSection", 1)
 			just_stopped = false
 			angular_velocity = 0.0
-			print("spin finished")
 			landed_on_value.emit(wheel_choices[int(landed_value)-1])
 	#This is a placeholder. For now, can_spin allows
 	#infinite spins, but this should also factor gamestate in
@@ -44,7 +43,7 @@ func _process(delta):
 		can_spin = false
 		just_stopped = true
 	
-func _on_input_event(viewport, event, shape_idx):
+func _on_input_event(_viewport, _event, _shape_idx):
 	if Input.is_action_just_released("SpinWheel"):
 		if can_spin:
 			spin()
@@ -62,8 +61,8 @@ func set_spin(b):
 func set_just_stopped(b):
 	just_stopped = b
 
-func _on_decision_area_area_shape_entered(area_rid, area, area_shape_index, local_shape_index):
+func _on_decision_area_area_shape_entered(_area_rid, area, _area_shape_index, _local_shape_index):
 	landed_node = area.get_parent()
 	
-func _on_guess_over(c, g):
+func _on_guess_over(_c, _g):
 	can_spin = true

@@ -2,6 +2,7 @@ extends Node2D
 
 @export var State = States.puzzle.STATE_EMPTY
 
+# signals used for game control
 signal guess_complete(count,guess)
 signal round_over
 signal wrong_solution
@@ -15,7 +16,7 @@ var puzzles_skipped = []
 var tiles_used = [[0,0],[0,0],[0,0],[0,0]]  # will hold the first and last tiles used for the puzzle
 var rem_guesses = 0  # will hold the total number of letters in the answer
 var rem_vowels = 0  # will hold the total number of vowels in the answer
-var solution = ""  # will hold the solution as a single line
+var solution = ""  # will hold the solution as a single line (for checking player-provided solution)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -27,12 +28,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	# as a test, create a new puzzle when the screen is clicked
-	# TODO - replace this with signals, as appropriate, during integration steps
-	# The second condition prevents resetting the puzzle in the middle of a game
-	if Input.is_action_just_pressed("enter_press") and State in [States.puzzle.STATE_EMPTY, States.puzzle.STATE_GAMEOVER]:
-		tiles_used = create_new_puzzle()
-		State = States.puzzle.STATE_PLAYING
+	pass
 
 func start_new_round():
 	tiles_used = create_new_puzzle()
@@ -79,10 +75,8 @@ func get_puzzle(filename):
 		#  > 3-lines will be on lines 2 through 4
 		#  > 4-lines will be on lines 1 through 4
 		if puzzle_dict.NumLines == 4:  # this is the only case that will use Line1
-			puzzle_dict.Line1 = selected_answer[2].to_upper()
-			puzzle_dict.Line2 = selected_answer[3].to_upper()
-			puzzle_dict.Line3 = selected_answer[4].to_upper()
-			puzzle_dict.Line4 = selected_answer[5].to_upper()
+			for l in range(4):
+				puzzle_dict["Line" + str(l+1)] = selected_answer[l+2].to_upper()
 		else:  # the only caution here is to not overrrun the number of lines
 			puzzle_dict.Line2 = selected_answer[2].to_upper()
 			if puzzle_dict.NumLines >= 2: puzzle_dict.Line3 = selected_answer[3].to_upper()
@@ -97,10 +91,8 @@ func get_puzzle(filename):
 			puzzles_skipped.append(puzzle_index)  # collect indices of all puzzles which won't fit grid (or have already been used)
 
 			# reset the solution in the dict
-			puzzle_dict.Line1 = ""
-			puzzle_dict.Line2 = ""
-			puzzle_dict.Line3 = ""
-			puzzle_dict.Line4 = ""
+			for l in range(4):
+				puzzle_dict["Line" + str(l+1)] = ""
 			
 		# reset puzzle trackers if all puzzles have been used or skipped
 		if reroll and (puzzle_index in puzzles_used) and (puzzle_index in puzzles_skipped):
@@ -120,20 +112,14 @@ func setup_puzzle(puzzle):
 	print(puzzle.Line3)
 	print(puzzle.Line4)
 	
-	# get nodes for each line for easier access of children
-	var line1 = get_node("PuzzleGrid/Line1Grid")
-	var line2 = get_node("PuzzleGrid/Line2Grid")
-	var line3 = get_node("PuzzleGrid/Line3Grid")
-	var line4 = get_node("PuzzleGrid/Line4Grid")
-	
 	var loc = [ [0, 0], [0, 0], [0, 0], [0, 0] ]  # reset ranges for each new puzzle
 	rem_guesses = 0  # reset this counter for each new puzzle
 	
 	# for each line, need to find the first and last tiles to be used so that
 	# text is as close to centered as possible
-	for l in [line1, line2, line3, line4]:
-		var label = l.name.substr(0,5)  # this will get "LineX"
-		var cur_line = puzzle[label]
+	for l in range(4):
+		var line = get_node("PuzzleGrid/Line" + str(l+1) + "Grid")
+		var cur_line = puzzle["Line" + str(l+1)]
 
 		if cur_line.length() > 0:
 			# need to do padding differently for lines 1 and 4
@@ -141,8 +127,9 @@ func setup_puzzle(puzzle):
 			var start
 			var end
 			
-			if label in ["Line1", "Line4"]:
-				# this only has 12 open spaces and starts/stops "one in" from the other lines
+			# first and last lines only have 12 open spaces, so the first/last
+			# tiles are "one in" from the other lines
+			if l == 0 or l == 3:
 				padding = (12-cur_line.length())/2.0
 				start = floor(padding) + 1
 				end = 14 - ceil(padding) - 1
@@ -151,13 +138,13 @@ func setup_puzzle(puzzle):
 				start = floor(padding)
 				end = 14 - ceil(padding)  # this will pad more to the end if there's an odd number
 				
-			loc[label[label.length()-1].to_int()-1] = [start, end]
+			loc[l] = [start, end]
 
 			var tiles = range(start,end)
 
 			for i in range(cur_line.length()):
 				if cur_line[i] != " ":
-					var tile = l.get_node("Tile"+str(tiles[i]))
+					var tile = line.get_node("Tile"+str(tiles[i]))
 					tile.change_state(States.tile.STATE_HIDDEN, cur_line[i])
 					
 					# show any punctuation that may be used
@@ -247,41 +234,35 @@ func _on_wrong_guess_timer_timeout():
 	# TODO - if this indication stays, also change the first and last tines in rows 1 and 4
 
 func _on_solve_attempt():
-	print("solve the puzzle!")
 	if State == States.puzzle.STATE_PLAYING or rem_guesses == 0:
 		get_node("SolutionInput").show()
 		State = States.puzzle.STATE_SOLVE
 
 func _on_solve_cancelled():
-	print("changed my mind!")
 	if State == States.puzzle.STATE_SOLVE:
 		get_node("SolutionInput").hide()
 		State = States.puzzle.STATE_PLAYING
 
 func _on_solution_submit_pressed():
-	print("Made a guess!")
-	
 	var input_box = get_node("SolutionInput/SolutionGuess")
 	var guess = input_box.text.to_upper()
 	
 	var isRoundOver = guess.matchn(solution)
 	
+	# reset the display based on if the guess is right or wrong
+	input_box.text = ""
 	if isRoundOver:
 		State = States.puzzle.STATE_GAMEOVER
-		input_box.text = ""
 		get_node("SolutionInput").hide()
 		round_over.emit()
 		reset_puzzle()
 	else:
-		input_box.text = ""
 		if rem_guesses == 0:
 			State = States.puzzle.STATE_SOLVE
 			_on_solve_attempt()
-			print("no guesses remain")
 		else:
 			State = States.puzzle.STATE_PLAYING
-			get_node("SolutionInput").hide()  # TODO - consider a state machine function
+			get_node("SolutionInput").hide()
 			wrong_solution.emit()
 
-		print("Try again!")
 		guess_complete.emit(0, "")  # if the guess is wrong, turn moves to next player with no points awarded

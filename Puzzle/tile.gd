@@ -43,11 +43,9 @@ func change_state(state, letter := ""):
 
 func letter_found():
 	# if the letter is found, highlight the tile and start the timer
-	print("letter found")
 	change_state(States.tile.STATE_HIGHLIGHT)
 	$RevealTimer.start()	
 
 func _on_reveal_timer_timeout():
 	# when the timer times out, reveal the letter
 	change_state(States.tile.STATE_SHOW)
-	#pass

@@ -10,7 +10,6 @@ func _ready():
 	for c in get_children():
 		var start_ascii = c.name.unicode_at(0)  # per comment at https://ask.godotengine.org/106152/convert-an-character-to-ascii-value
 		
-		# TODO - add applicaiton of styleboxes
 		if start_ascii < "U".unicode_at(0):
 			for i in range(10):
 				var button_i = create_button(char(start_ascii + i))
@@ -32,7 +31,7 @@ func create_button(text):
 
 	b.guess_a_letter.connect(_on_guess_made)  # handle the signal when a guess is made
 	b.text = text
-	b.name = text
+	if text.length() > 0: b.name = text
 	
 	# create lists of references to buttons for vowels and consonants
 	# used for game cues (no consonants/vowels left to guess)
@@ -72,6 +71,8 @@ func only_consonants():
 	for c in vowels:
 		c.disabled = true
 
+# manage visibility of consonant and vowel buttons when these are unavailable for
+# a given turn, but may still be in the puzzle (shouldn't be disabled)
 func hide_consonants():
 	for c in consonants:
 		c.hide_button()
