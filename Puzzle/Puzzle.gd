@@ -198,9 +198,6 @@ func evaluate_guess(c, ind):
 					
 					if is_vowel(c):
 						rem_vowels-=1  # reduce the number of vowels by one
-						
-			print("Remaining guesses: " + str(rem_guesses))
-			print("Remaining vowels: " + str(rem_vowels))
 	if count == 0:
 		get_node("Background").color = Color.DARK_RED
 		$WrongGuessTimer.start()
