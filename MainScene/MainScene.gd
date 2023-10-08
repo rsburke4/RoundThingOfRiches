@@ -33,12 +33,14 @@ func _ready():
 	
 	# reset the buttons when the round is over
 	puzzle.round_over.connect(tracker.reset_tracker)
+	puzzle.round_over.connect(solve.reset_button)
 	puzzle.wrong_solution.connect(solve._on_wrong_guess)
 	
 	## connect puzzle with main scene
 	# TODO - change connections if/when needed during gameflow implementation
 	puzzle.guess_complete.connect(_on_guess_complete)
 	puzzle.round_over.connect(_on_round_over)
+	puzzle.wrong_solution.connect(_on_wrong_solve)
 	puzzle.only_vowels.connect(_on_only_vowels)
 	
 	## connect the wheel to the main scene
@@ -329,7 +331,6 @@ func _on_only_vowels():
 
 func _on_solve_attempt():
 	TurnState_prev = TurnState  # this is needed for if solve attempt is cancelled
-	
 	TurnState = States.turn.SOLVE
 	
 	turn_state_machine()
@@ -338,6 +339,11 @@ func _on_solve_cancelled():
 	TurnState = TurnState_prev  # reinstate the previous turn state
 	
 	turn_state_machine()
+
+func _on_wrong_solve():
+	get_node("Tmp/Announce").text = "Wrong guess"
+	
+	end_turn()
 
 func _on_round_over():
 	TurnState = States.turn.END
