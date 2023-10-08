@@ -1,8 +1,8 @@
 [gd_scene load_steps=11 format=3 uid="uid://c5b1hocmae8sh"]
 
 [ext_resource type="Script" path="res://Wheel/WheelPhysics.gd" id="1_3mmcp"]
-[ext_resource type="Texture2D" uid="uid://bceusqkao36oy" path="res://icon.svg" id="2_mm2ay"]
-[ext_resource type="Texture2D" uid="uid://d20vvy3cia2jx" path="res://Wheel/assets/WheelPlaceholder.png" id="2_uym3h"]
+[ext_resource type="Texture2D" uid="uid://buxtwydtopodw" path="res://icon.svg" id="2_mm2ay"]
+[ext_resource type="Texture2D" uid="uid://b7k7te5lk3c7n" path="res://Wheel/assets/WheelGraphic.png" id="2_yd2au"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_00akf"]
 rough = true
@@ -40,8 +40,7 @@ angular_threshold = 0.1
 [node name="WheelSprite" type="Sprite2D" parent="WheelPhysics"]
 position = Vector2(-4, 6)
 rotation = -0.144862
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_uym3h")
+texture = ExtResource("2_yd2au")
 
 [node name="WheelCollider" type="CollisionShape2D" parent="WheelPhysics"]
 scale = Vector2(28, 28)
