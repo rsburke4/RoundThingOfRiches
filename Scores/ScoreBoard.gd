@@ -17,7 +17,6 @@ func setup_scores(num_players):
 	total_players = num_players
 	
 	for i in range(num_players):
-		print("adding for player" + str(i))
 		var s = score.instantiate()
 		
 		s.name = "Player" + str(i+1)
@@ -26,9 +25,7 @@ func setup_scores(num_players):
 		s.reset_score()
 		
 		array.add_child(s)
-		
-	print(array.get_children())
-	
+
 func update_score(player, score):
 	var cur_score = get_node("ScoreArray/Player" + str(player))
 	cur_score.update_score(score)
