@@ -67,11 +67,13 @@ func start_new_game():
 		
 		total_scores = []
 		round_scores = []
+		guess_score = 0
 		
 		for p in range(num_players):
 			total_scores.append(0)
 			round_scores.append(0)
-			
+		
+		get_node("ScoreBoard").reset_board()
 		get_node("ScoreBoard").setup_scores(num_players)
 		
 		# hide game over screen
@@ -89,6 +91,8 @@ func start_new_round():
 		# setup the new round/puzzle
 		current_player = current_round % num_players  # player 1 starts round 1, etc...with cycling in case num_round > num_players
 		get_node("ScoreBoard").next_player(current_player+1)
+		
+		guess_score = 0
 		
 		for p in range(num_players):
 			round_scores[p] = 0
@@ -229,16 +233,35 @@ func end_game():
 	if GameState == States.game.PLAYING and RoundState == States.puzzle_round.END and TurnState == States.turn.END:
 		GameState = States.game.END
 		
-		var winner = total_scores.find(total_scores.max()) + 1  # +1 to make it 1-based instead of 0-based
+		var max_score = total_scores.max()
+		var is_tie = total_scores.count(max_score) > 1
 		
-		get_node("Tmp/Announce").text = "Player " + str(winner) + " wins game!"  # TODO - remove when testing is done
+		if is_tie:
+			var loc = 0
+			for i in range(num_players):
+				loc = total_scores.find(max_score, loc)
+				loc+=1
+			
+			get_node("Tmp/Announce").text = "There's a tie! Winner take all round"  # TODO - remove when testing is done
+			
+			num_players = total_scores.count(max_score)
+			num_rounds = 1
+			
+			GameState = States.game.CONFIG
+			
+			start_new_game()
+			start_new_round()
+		else:
+			var winner = total_scores.find(max_score) + 1  # +1 to make it 1-based instead of 0-based
 		
-		for i in range(num_players):
-			get_node("ScoreBoard").update_score(i+1, total_scores[i])
-		get_node("ScoreBoard").next_player(winner)
+			get_node("Tmp/Announce").text = "Player " + str(winner) + " wins game!"  # TODO - remove when testing is done
 		
-		# hide end round screen
-		# show game over screen: text = "Game Over: Player " + winner + " wins!"
+			for i in range(num_players):
+				get_node("ScoreBoard").update_score(i+1, total_scores[i])
+			get_node("ScoreBoard").next_player(winner)
+			
+			# hide end round screen
+			# show game over screen: text = "Game Over: Player " + winner + " wins!"
 
 # defines how to update the player's score
 func update_score(count, is_vowel):

@@ -10,6 +10,12 @@ func _ready():
 func _process(_delta):
 	pass
 
+# reset the board by removing all children in the score array
+func reset_board():
+	for c in get_node("ScoreArray").get_children():
+		c.queue_free()
+		get_node("ScoreArray").remove_child(c)
+		
 func setup_scores(num_players):
 	var array = get_node("ScoreArray")
 	var score=preload("res://Scores/score.tscn")
