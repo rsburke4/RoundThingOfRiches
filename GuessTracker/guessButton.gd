@@ -2,23 +2,32 @@ extends Button
 
 signal guess_a_letter(g)
 
-# define styleboxes here for now to enable easier adjustmest through constants (if needed later)
+# define styleboxes here for now to enable easier adjustmest through constants
+# duplicate the default styles so only this element is affected, not the entire project
 var stylebox_active = get_theme_stylebox("normal").duplicate()
 var stylebox_hidden = get_theme_stylebox("pressed").duplicate()
 var stylebox_disabled = get_theme_stylebox("disabled").duplicate()
+var stylebox_hovered = get_theme_stylebox("hover").duplicate()
 # TODO - set styles for hover; add other theme overrides (font size, color, etc) as necessary
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# set the styles
 	# adapted from https://www.reddit.com/r/godot/comments/12zh2qq/godot_40_why_wont_my_ui_panel_stylebox_overwrite/
-	set_style(stylebox_active, GuessConst.COLOR_BUTTON_ACTiVE_BKGD, GuessConst.COLOR_BUTTON_ACTIVE_BORDER)
-	set_style(stylebox_hidden, GuessConst.COLOR_BUTTON_HIDDEN, GuessConst.COLOR_BUTTON_HIDDEN)
-	set_style(stylebox_disabled, GuessConst.COLOR_BUTTON_DISABLED_BKGD, GuessConst.COLOR_BUTTON_DISABLED_BORDER)
+	set_style(stylebox_active, Colors.COLOR_BUTTON_ACTiVE_BKGD, Colors.COLOR_BUTTON_ACTIVE_BORDER)
+	set_style(stylebox_hidden, Colors.COLOR_HIDDEN, Colors.COLOR_HIDDEN)
+	set_style(stylebox_disabled, Colors.COLOR_BUTTON_DISABLED_BKGD, Colors.COLOR_BUTTON_DISABLED_BORDER)
+	set_style(stylebox_hovered, Colors.COLOR_BUTTON_HOVERED_BKGD, Colors.COLOR_BUTTON_HOVERED_BORDER)
+	
+	# TODO - change font colors here, check if this only impacts this component
+	add_theme_color_override("font_color", Colors.COLOR_BUTTON_ACTIVE_TEXT)
+	add_theme_color_override("font_disabled_color", Colors.COLOR_BUTTON_DISABLED_TEXT)
+	add_theme_color_override("font_hover_color", Colors.COLOR_BUTTON_HOVERED_TEXT)
 	
 	add_theme_stylebox_override("normal", stylebox_active)
 	add_theme_stylebox_override("pressed", stylebox_hidden)
 	add_theme_stylebox_override("disabled", stylebox_disabled)
+	add_theme_stylebox_override("hover", stylebox_hovered)
 	
 	reset_button()
 

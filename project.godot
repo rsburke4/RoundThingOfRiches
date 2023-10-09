@@ -17,9 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-TileConst="*res://Puzzle/tile_const.gd"
-GuessConst="*res://GuessTracker/guess_const.gd"
-SolveConst="*res://GuessTracker/solve_const.gd"
+Colors="*res://colors.gd"
 States="*res://states.gd"
 
 [dotnet]
