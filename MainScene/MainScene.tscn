@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://7q6oxgp6hu6h"]
+[gd_scene load_steps=6 format=3 uid="uid://7q6oxgp6hu6h"]
 
 [ext_resource type="Script" path="res://MainScene/MainScene.gd" id="1_ke8ft"]
 [ext_resource type="PackedScene" uid="uid://csds172y40utw" path="res://GuessTracker/guess_tracker.tscn" id="2_1omuh"]
 [ext_resource type="PackedScene" uid="uid://c5b1hocmae8sh" path="res://Wheel/Wheel.tscn" id="2_u8u61"]
 [ext_resource type="PackedScene" uid="uid://gsf4ctc5makr" path="res://Puzzle/puzzle.tscn" id="3_sr3qk"]
+[ext_resource type="PackedScene" uid="uid://bcxhe2gx0523t" path="res://Scores/score_board.tscn" id="5_bm03a"]
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_ke8ft")
@@ -33,84 +34,39 @@ position = Vector2(998, 598)
 scale = Vector2(0.8, 0.8)
 
 [node name="Puzzle" parent="." instance=ExtResource("3_sr3qk")]
-position = Vector2(28, 477)
+position = Vector2(8, 539)
 scale = Vector2(0.7, 0.7)
 
 [node name="Tmp" type="ColorRect" parent="."]
-offset_left = 30.0
-offset_top = 954.0
-offset_right = 293.0
-offset_bottom = 1096.0
+offset_left = 8.0
+offset_top = 1020.0
+offset_right = 271.0
+offset_bottom = 1101.0
 color = Color(0.0117647, 0.278431, 0.329412, 1)
 
 [node name="Label" type="Label" parent="Tmp"]
 layout_mode = 0
-offset_left = 10.0
-offset_top = 8.0
-offset_right = 108.0
-offset_bottom = 33.0
+offset_left = 127.0
+offset_top = 42.0
+offset_right = 225.0
+offset_bottom = 67.0
 
 [node name="Announce" type="Label" parent="Tmp"]
 layout_mode = 0
-offset_left = 10.0
-offset_top = 49.0
-offset_right = 108.0
-offset_bottom = 74.0
+offset_left = 7.0
+offset_top = 4.0
+offset_right = 255.0
+offset_bottom = 29.0
 
 [node name="Button" type="Button" parent="Tmp"]
 layout_mode = 0
 offset_left = 5.0
-offset_top = 89.0
+offset_top = 29.0
 offset_right = 113.0
-offset_bottom = 136.0
+offset_bottom = 76.0
 text = "Start Game"
 
-[node name="P1score" type="Label" parent="Tmp"]
-layout_mode = 0
-offset_left = 141.0
-offset_top = 5.0
-offset_right = 181.0
-offset_bottom = 31.0
-text = "P1:"
-
-[node name="P2score" type="Label" parent="Tmp"]
-layout_mode = 0
-offset_left = 139.0
-offset_top = 26.0
-offset_right = 179.0
-offset_bottom = 52.0
-text = "P2:"
-
-[node name="P3score" type="Label" parent="Tmp"]
-layout_mode = 0
-offset_left = 138.0
-offset_top = 48.0
-offset_right = 178.0
-offset_bottom = 74.0
-text = "P3:"
-
-[node name="P1scoreTotal" type="Label" parent="Tmp"]
-layout_mode = 0
-offset_left = 137.0
-offset_top = 74.0
-offset_right = 177.0
-offset_bottom = 100.0
-text = "P1:"
-
-[node name="P2scoreTotal" type="Label" parent="Tmp"]
-layout_mode = 0
-offset_left = 135.0
-offset_top = 95.0
-offset_right = 175.0
-offset_bottom = 121.0
-text = "P2:"
-
-[node name="P3scoreTotal" type="Label" parent="Tmp"]
-layout_mode = 0
-offset_left = 134.0
-offset_top = 117.0
-offset_right = 174.0
-offset_bottom = 143.0
-text = "P3:"
+[node name="ScoreBoard" parent="." instance=ExtResource("5_bm03a")]
+position = Vector2(12, 477)
 
 [connection signal="pressed" from="Tmp/Button" to="." method="start_game_pressed"]

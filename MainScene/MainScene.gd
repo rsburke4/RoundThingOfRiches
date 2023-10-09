@@ -73,7 +73,7 @@ func start_new_game():
 			total_scores.append(0)
 			round_scores.append(0)
 			
-		# TODO - reset/reconfigure scores component (function call to component)
+		get_node("ScoreBoard").setup_scores(num_players)
 		
 		# hide game over screen
 		# show title screen
@@ -89,25 +89,15 @@ func start_new_round():
 		
 		# setup the new round/puzzle
 		current_player = current_round % num_players  # player 1 starts round 1, etc...with cycling in case num_round > num_players
+		get_node("ScoreBoard").next_player(current_player+1)
 		
 		for p in range(num_players):
 			round_scores[p] = 0
+			get_node("ScoreBoard").update_score(p+1, 0)
 		
 		get_node("Puzzle").start_new_round()
 		
 		# TODO - remove, this is just for testing
-		for i in range(3):
-			var Rscore = get_node("Tmp/P" + str(i+1) + "score")
-			var Tscore = get_node("Tmp/P" + str(i+1) + "scoreTotal")
-			
-			Rscore.text = "P" + str(i+1) + " (R): " + str(round_scores[i])
-			Tscore.text = "P" + str(i+1) + " (T): " + str(total_scores[i])
-		
-			if i == current_player:
-				Rscore.add_theme_color_override("font_color", Color(0.85, 0.66, 0.12, 1))
-			else:
-				Rscore.add_theme_color_override("font_color", Color(1, 1, 1, 1))
-				
 		get_node("Tmp/Label").text = "Round " + str(current_round + 1)
 		get_node("Tmp/Announce").text = ""
 			
@@ -129,14 +119,7 @@ func start_turn():
 		TurnState = States.turn.START
 		
 		# TODO - highlight current player in scoring component
-		# TODO - remove this, used for testing
-		for i in range(3):
-			var Rscore = get_node("Tmp/P" + str(i+1) + "score")
-
-			if i == current_player:
-				Rscore.add_theme_color_override("font_color", Color(0.85, 0.66, 0.12, 1))
-			else:
-				Rscore.add_theme_color_override("font_color", Color(1, 1, 1, 1))
+		get_node("ScoreBoard").next_player(current_player+1)
 		
 		# hide start round screen
 		# show gameplay screen
@@ -227,10 +210,7 @@ func end_round():
 		total_scores[current_player] += max(1000, round_scores[current_player])  # update the score for winning player (min score per round = 1000)
 		# round scores are reset in start_new_round()
 		
-		# TODO - remove this, used for testing
-		get_node("Tmp/P" + str(current_player + 1) + "scoreTotal").text = \
-			"P" + str(current_player + 1) + " (T): " + str(total_scores[current_player])
-		
+		# TODO - remove this, used for testing		
 		get_node("Tmp/Announce").text = "Player " + str(current_player + 1) + " wins round!"
 		
 		# hide gameplay screen
@@ -256,6 +236,10 @@ func end_game():
 		
 		get_node("Tmp/Announce").text = "Player " + str(winner) + " wins game!"  # TODO - remove when testing is done
 		
+		for i in range(num_players):
+			get_node("ScoreBoard").update_score(i+1, total_scores[i])
+		get_node("ScoreBoard").next_player(winner)
+		
 		# hide end round screen
 		# show game over screen: text = "Game Over: Player " + winner + " wins!"
 
@@ -272,9 +256,8 @@ func update_score(count, is_vowel):
 		else:
 			round_scores[current_player] += guess_score * count
 			
-	# TODO - update score in scoring component, remove below once complete
-	get_node("Tmp/P" + str(current_player + 1) + "score").text = \
-		"P" + str(current_player + 1) + " (R): " + str(round_scores[current_player])
+	# TODO - update score in scoring component
+	get_node("ScoreBoard").update_score(current_player+1, round_scores[current_player])
 
 ## functions connected to built-in signals
 # TODO - connect to new game button on game over screen

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://bcxhe2gx0523t"]
+
+[ext_resource type="Script" path="res://Scores/ScoreBoard.gd" id="1_u16xv"]
+
+[node name="ScoreBoard" type="Node2D"]
+script = ExtResource("1_u16xv")
+
+[node name="ScoreArray" type="HBoxContainer" parent="."]
+size_flags_horizontal = 3
+size_flags_vertical = 3
