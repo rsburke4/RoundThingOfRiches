@@ -40,7 +40,6 @@ func _ready():
 	# TODO - change connections if/when needed during gameflow implementation
 	puzzle.guess_complete.connect(_on_guess_complete)
 	puzzle.round_over.connect(_on_round_over)
-	puzzle.wrong_solution.connect(_on_wrong_solve)
 	puzzle.only_vowels.connect(_on_only_vowels)
 	
 	## connect the wheel to the main scene
@@ -184,7 +183,7 @@ func turn_state_machine():
 		elif TurnState == States.turn.END:
 			print("State: Turn Over")
 			
-			TurnState = States.turn.SPIN
+			current_player = (current_player + 1) % num_players
 			
 			start_turn()  # start turn for next player (incremented in end_turn())
 
@@ -198,9 +197,7 @@ func end_turn():
 		(TurnState in [States.turn.SPIN, States.turn.GUESS, States.turn.CORRECT, States.turn.SOLVE]):
 			TurnState = States.turn.END
 			
-			current_player = (current_player + 1) % num_players
-			
-			start_turn()  # play moves to next player
+			turn_state_machine()
 
 # defines behavior at the end of a round (puzzle has been solved)
 func end_round():
@@ -322,11 +319,6 @@ func _on_solve_cancelled():
 	TurnState = TurnState_prev  # reinstate the previous turn state
 	
 	turn_state_machine()
-
-func _on_wrong_solve():
-	get_node("Tmp/Announce").text = "Wrong guess"
-	
-	end_turn()
 
 func _on_round_over():
 	TurnState = States.turn.END
