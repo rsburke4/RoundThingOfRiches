@@ -1,5 +1,7 @@
 extends Node2D
 
+signal game_over
+
 var total_scores = []
 var round_scores = []
 var current_round = 0
@@ -51,6 +53,9 @@ func _ready():
 	solve.solve_the_puzzle.connect(_on_solve_attempt)
 	solve.cancel_solve.connect(_on_solve_cancelled)
 	
+	## connect main scene with game over
+	game_over.connect(get_node("GameOver")._on_game_over)
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	pass
@@ -75,7 +80,7 @@ func start_new_game():
 			
 		get_node("ScoreBoard").setup_scores(num_players)
 		
-		# hide game over screen
+		get_node("GameOver").hide()
 		# show title screen
 		
 		# TODO - enable new game button only when # players, # rounds provided
@@ -87,6 +92,11 @@ func start_new_round():
 		GameState = States.game.PLAYING
 		RoundState = States.puzzle_round.START
 		
+		get_node("Tmp/Round").text = "ROUND " + str(current_round + 1)
+		get_node("Tmp/Round").show()
+		# this is probably not the best way to do it, but it fixes the problem:
+		await get_tree().create_timer(1.0).timeout  # need to have a delay so Puzzle.start_new_round() runs correctly
+		
 		# setup the new round/puzzle
 		current_player = current_round % num_players  # player 1 starts round 1, etc...with cycling in case num_round > num_players
 		get_node("ScoreBoard").next_player(current_player+1)
@@ -95,6 +105,8 @@ func start_new_round():
 			round_scores[p] = 0
 			get_node("ScoreBoard").update_score(p+1, 0)
 		
+		get_node("Tmp/Round").hide()
+		
 		get_node("Puzzle").start_new_round()
 		
 		# TODO - remove, this is just for testing
@@ -102,10 +114,14 @@ func start_new_round():
 		get_node("Tmp/Announce").text = ""
 			
 		# hide title screen, end round screen
+		get_node("GameControl").show()
+		get_node("Puzzle").show()
+		get_node("WheelRenderer").show()
+
 		# show start round screen: text = "Round " + current_round
 		
 		# TODO - adjust timer as needed
-		await get_tree().create_timer(1.0).timeout
+		await get_tree().create_timer(0.5).timeout
 		
 		start_turn()
 
@@ -124,7 +140,7 @@ func start_turn():
 		# hide start round screen
 		# show gameplay screen
 		
-		get_node("WheelRoot/WheelPhysics").set_spin(false)
+		get_node("SubViewport/WheelRoot/WheelPhysics").set_spin(false)
 		
 		turn_state_machine()
 		
@@ -132,7 +148,7 @@ func turn_state_machine():
 	# state machine will be called for many different states of TurnState, so first
 	# check that the game and round are both in "playing" state before worrying
 	# about the turn state
-	var wheel = get_node("WheelRoot/WheelPhysics")
+	var wheel = get_node("SubViewport/WheelRoot/WheelPhysics")
 	var tracker = get_node("GameControl")
 	var letters = get_node("GameControl/GuessTracker")
 	
@@ -241,7 +257,12 @@ func end_game():
 		get_node("ScoreBoard").next_player(winner)
 		
 		# hide end round screen
-		# show game over screen: text = "Game Over: Player " + winner + " wins!"
+		get_node("GameControl").hide()
+		get_node("Puzzle").hide()
+		get_node("WheelRenderer").hide()
+		get_node("GameOver").show()
+		
+		game_over.emit(winner)
 
 # defines how to update the player's score
 func update_score(count, is_vowel):
@@ -332,3 +353,8 @@ func _on_round_over():
 	TurnState = States.turn.END
 	
 	end_round()
+
+
+func _on_tree_entered():
+	start_new_game()
+	start_new_round()
