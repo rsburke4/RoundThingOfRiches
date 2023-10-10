@@ -30,16 +30,35 @@ position = Vector2(576, 345.01)
 position = Vector2(644, 322)
 scale = Vector2(1.03507, 1.0534)
 
+[node name="BackgroundControl" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1152.0
+offset_bottom = 648.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BackgroundColor" type="ColorRect" parent="BackgroundControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.117647, 0.321569, 0.286275, 1)
+
 [node name="GameControl" parent="." instance=ExtResource("2_1omuh")]
-position = Vector2(998, 598)
+position = Vector2(992, 31.0001)
 scale = Vector2(0.8, 0.8)
 
 [node name="Puzzle" parent="." instance=ExtResource("3_sr3qk")]
-position = Vector2(10, 22)
+position = Vector2(107, 29)
 scale = Vector2(0.7, 0.7)
 
 [node name="WheelRenderer" type="Sprite2D" parent="."]
-position = Vector2(549, 643)
+position = Vector2(549, 676)
 scale = Vector2(1.76034, 0.701659)
 texture = SubResource("ViewportTexture_me1uq")
 script = ExtResource("5_abvpq")

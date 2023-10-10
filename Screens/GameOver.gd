@@ -6,7 +6,6 @@ func reload_game():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_on_game_over("WIN")
 	pass # Replace with function body.
 
 
@@ -14,6 +13,7 @@ func _ready():
 func _process(delta):
 	pass
 
+#On game over expects "WIN" or assumes anything else is a lose
 func _on_game_over(state):
 	$"Control".visible = true
 	var background_anim = $"Control/AnimationPlayer"
