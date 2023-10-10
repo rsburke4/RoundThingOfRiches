@@ -243,6 +243,7 @@ func _on_solve_attempt():
 func _on_solve_cancelled():
 	if State == States.puzzle.STATE_SOLVE:
 		get_node("SolutionInput").hide()
+		get_node("SolutionInput/SolutionGuess").text = ""
 		State = States.puzzle.STATE_PLAYING
 
 func _on_solution_submit_pressed():
