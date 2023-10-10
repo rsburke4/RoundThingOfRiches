@@ -5,10 +5,10 @@
 [ext_resource type="PackedScene" uid="uid://c5b1hocmae8sh" path="res://Wheel/Wheel.tscn" id="2_u8u61"]
 [ext_resource type="PackedScene" uid="uid://gsf4ctc5makr" path="res://Puzzle/puzzle.tscn" id="3_sr3qk"]
 [ext_resource type="Script" path="res://MainScene/WheelRenderer.gd" id="5_abvpq"]
-[ext_resource type="PackedScene" path="res://Scores/score_board.tscn" id="5_bm03a"]
+[ext_resource type="PackedScene" uid="uid://bcxhe2gx0523t" path="res://Scores/score_board.tscn" id="5_bm03a"]
 [ext_resource type="PackedScene" uid="uid://c7wdx4y3e5eho" path="res://Screens/GameOver.tscn" id="6_we362"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_me1uq"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_1yi2q"]
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8gy8h"]
@@ -61,7 +61,7 @@ scale = Vector2(0.7, 0.7)
 [node name="WheelRenderer" type="Sprite2D" parent="."]
 position = Vector2(549, 676)
 scale = Vector2(1.76034, 0.701659)
-texture = SubResource("ViewportTexture_me1uq")
+texture = SubResource("ViewportTexture_1yi2q")
 script = ExtResource("5_abvpq")
 
 [node name="Area2D" type="Area2D" parent="WheelRenderer"]
@@ -91,6 +91,14 @@ offset_top = 4.0
 offset_right = 255.0
 offset_bottom = 29.0
 
+[node name="Round" type="Label" parent="Tmp"]
+layout_mode = 0
+offset_left = 301.0
+offset_top = -891.0
+offset_right = 707.0
+offset_bottom = -764.0
+theme_override_font_sizes/font_size = 90
+
 [node name="Button" type="Button" parent="Tmp"]
 layout_mode = 0
 offset_left = 5.0
@@ -103,7 +111,9 @@ text = "Start Game"
 position = Vector2(12, 477)
 
 [node name="GameOver" parent="." instance=ExtResource("6_we362")]
+visible = false
 
+[connection signal="tree_entered" from="." to="." method="_on_tree_entered"]
 [connection signal="mouse_shape_entered" from="WheelRenderer/Area2D" to="WheelRenderer" method="_on_area_2d_mouse_shape_entered"]
 [connection signal="mouse_shape_exited" from="WheelRenderer/Area2D" to="WheelRenderer" method="_on_area_2d_mouse_shape_exited"]
 [connection signal="pressed" from="Tmp/Button" to="." method="start_game_pressed"]
