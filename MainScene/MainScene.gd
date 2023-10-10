@@ -8,7 +8,7 @@ func _ready():
 	var puzzle = get_node("Puzzle")
 	var tracker = get_node("GameControl/GuessTracker")
 	var solve = get_node("GameControl/SolveButton")
-	var wheel = get_node("WheelRoot/WheelPhysics")
+	var wheel = get_node("SubViewport/WheelRoot/WheelPhysics")
 	
 	tracker.make_a_guess.connect(puzzle._on_guess_made)
 
