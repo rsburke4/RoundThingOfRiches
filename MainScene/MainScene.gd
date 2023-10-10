@@ -22,7 +22,7 @@ func _ready():
 	var puzzle = get_node("Puzzle")
 	var tracker = get_node("GameControl/GuessTracker")
 	var solve = get_node("GameControl/SolveButton")
-	var wheel = get_node("WheelRoot/WheelPhysics")
+	var wheel = get_node("SubViewport/WheelRoot/WheelPhysics")
 	
 	## connect game control and puzzle
 	tracker.make_a_guess.connect(puzzle._on_guess_made)  # guess a letter
@@ -259,6 +259,9 @@ func end_game():
 				loc+=1
 			
 			get_node("Tmp/Announce").text = "There's a tie! Winner take all round"  # TODO - remove when testing is done
+			get_node("Tmp/Round").text = "There's a tie! \nWinner takes all!"
+			get_node("Tmp/Round").show()
+			await get_tree().create_timer(1.0).timeout
 			
 			num_players = total_scores.count(max_score)
 			num_rounds = 1
