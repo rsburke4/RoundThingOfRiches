@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://bv2fyubhthsxq"]
+
+[ext_resource type="Script" path="res://Screens/title_screen.gd" id="1_ljrhc"]
+
+[node name="TitleScreen" type="Node2D"]
+script = ExtResource("1_ljrhc")
+scene_change = "res://MainScene/MainScene.tscn"
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="Button" type="Button" parent="Control"]
+offset_left = 542.0
+offset_top = 261.0
+offset_right = 678.0
+offset_bottom = 397.0
+text = "Start Game"
+icon_alignment = 1
+
+[connection signal="button_up" from="Control/Button" to="." method="_on_button_button_up"]

@@ -1,5 +1,8 @@
 extends RigidBody2D
 
+@export var glow_shader:Shader
+@export var norm_shader:Shader
+
 var rng = RandomNumberGenerator.new()
 var can_spin
 var landed_value
@@ -12,7 +15,8 @@ signal landed_on_value(value)
 
 func spin():
 	var random_num = rng.randf_range(10.0, 20.0)
-	apply_torque_impulse(random_num * 10.0)
+	if can_spin:
+		apply_torque_impulse(random_num * 10.0)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -42,11 +46,15 @@ func _process(_delta):
 	else:
 		can_spin = false
 		just_stopped = true
+		
+	if can_spin == true:
+		get_child(0).material.shader = glow_shader
+	else:
+		get_child(0).material.shader = norm_shader
 	
 func _on_input_event(_viewport, _event, _shape_idx):
 	if Input.is_action_just_released("SpinWheel"):
-		if can_spin:
-			spin()
+		spin()
 
 #This is my clever workaround to connecting the round over signa
 # to the wheel, without knowing the path until the main scene instances it
