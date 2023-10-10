@@ -54,6 +54,9 @@ func set_style(style, bg_color, bdr_color):
 	style.corner_radius_top_left = 5
 	style.corner_radius_top_right = 5
 
+func reset_button():
+	button_pressed = false
+
 func _on_toggled(is_button_pressed):
 	if is_button_pressed:
 		solve_the_puzzle.emit()

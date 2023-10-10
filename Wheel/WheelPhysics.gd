@@ -20,7 +20,7 @@ func spin():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	can_spin = true
+	can_spin = false
 	input_pickable = true
 	just_stopped = false
 	#Set up colliders for all wheel sections
@@ -33,7 +33,7 @@ func _ready():
 		add_child(section)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	
 	if angular_velocity < angular_threshold:
 		if just_stopped == true:
@@ -52,7 +52,7 @@ func _process(delta):
 	else:
 		get_child(0).material.shader = norm_shader
 	
-func _on_input_event(viewport, event, shape_idx):
+func _on_input_event(_viewport, _event, _shape_idx):
 	if Input.is_action_just_released("SpinWheel"):
 		spin()
 
@@ -62,8 +62,15 @@ func connect_puzzle(nodePath):
 	var puzzle = get_node(nodePath)
 	puzzle.guess_complete.connect(_on_guess_over)
 
-func _on_decision_area_area_shape_entered(area_rid, area, area_shape_index, local_shape_index):
+# TODO - not sure if this is the best way to do this, but need to control if wheel can spin or not
+func set_spin(b):
+	can_spin = b
+
+func set_just_stopped(b):
+	just_stopped = b
+
+func _on_decision_area_area_shape_entered(_area_rid, area, _area_shape_index, _local_shape_index):
 	landed_node = area.get_parent()
 	
-func _on_guess_over(c, g):
+func _on_guess_over(_c, _g):
 	can_spin = true
