@@ -1,12 +1,17 @@
-[gd_scene load_steps=11 format=3 uid="uid://c5b1hocmae8sh"]
+[gd_scene load_steps=14 format=3 uid="uid://c5b1hocmae8sh"]
 
 [ext_resource type="Script" path="res://Wheel/WheelPhysics.gd" id="1_3mmcp"]
-[ext_resource type="Texture2D" uid="uid://buxtwydtopodw" path="res://icon.svg" id="2_mm2ay"]
+[ext_resource type="Texture2D" uid="uid://bceusqkao36oy" path="res://icon.svg" id="2_mm2ay"]
+[ext_resource type="Shader" path="res://Shaders/Glow.gdshader" id="2_s60k7"]
 [ext_resource type="Texture2D" uid="uid://b7k7te5lk3c7n" path="res://Wheel/assets/WheelGraphic.png" id="2_yd2au"]
+[ext_resource type="Shader" path="res://Shaders/Norm.gdshader" id="3_biq10"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_00akf"]
 rough = true
 absorbent = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5d0rs"]
+shader = ExtResource("3_biq10")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_spdrm"]
 radius = 5.83467
@@ -37,10 +42,13 @@ gravity_scale = 0.0
 angular_damp_mode = 1
 angular_damp = 0.4
 script = ExtResource("1_3mmcp")
+glow_shader = ExtResource("2_s60k7")
+norm_shader = ExtResource("3_biq10")
 wheel_choices = Array[int]([500, 900, 700, 300, 800, 550, 400, 500, 600, 350, 500, 900, -1, 650, -2, 700, -3, 800, 500, 450, 500, 300, -1, 5000])
 angular_threshold = 0.1
 
 [node name="WheelSprite" type="Sprite2D" parent="WheelPhysics"]
+material = SubResource("ShaderMaterial_5d0rs")
 position = Vector2(5, -4.76837e-07)
 rotation = -0.15708
 texture = ExtResource("2_yd2au")

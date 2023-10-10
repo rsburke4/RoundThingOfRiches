@@ -1,12 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://7q6oxgp6hu6h"]
+[gd_scene load_steps=9 format=3 uid="uid://7q6oxgp6hu6h"]
 
 [ext_resource type="Script" path="res://MainScene/MainScene.gd" id="1_ke8ft"]
 [ext_resource type="PackedScene" uid="uid://csds172y40utw" path="res://GuessTracker/guess_tracker.tscn" id="2_1omuh"]
 [ext_resource type="PackedScene" uid="uid://c5b1hocmae8sh" path="res://Wheel/Wheel.tscn" id="2_u8u61"]
 [ext_resource type="PackedScene" uid="uid://gsf4ctc5makr" path="res://Puzzle/puzzle.tscn" id="3_sr3qk"]
 [ext_resource type="Script" path="res://MainScene/WheelRenderer.gd" id="5_abvpq"]
+[ext_resource type="PackedScene" uid="uid://c7wdx4y3e5eho" path="res://Screens/GameOver.tscn" id="6_we362"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_7nmnb"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_me1uq"]
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8gy8h"]
@@ -29,19 +30,6 @@ position = Vector2(576, 345.01)
 position = Vector2(644, 322)
 scale = Vector2(1.03507, 1.0534)
 
-[node name="Control" type="Control" parent="."]
-clip_contents = true
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 1152.0
-offset_bottom = 648.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
 [node name="GameControl" parent="." instance=ExtResource("2_1omuh")]
 position = Vector2(998, 598)
 scale = Vector2(0.8, 0.8)
@@ -53,7 +41,7 @@ scale = Vector2(0.7, 0.7)
 [node name="WheelRenderer" type="Sprite2D" parent="."]
 position = Vector2(549, 643)
 scale = Vector2(1.76034, 0.701659)
-texture = SubResource("ViewportTexture_7nmnb")
+texture = SubResource("ViewportTexture_me1uq")
 script = ExtResource("5_abvpq")
 
 [node name="Area2D" type="Area2D" parent="WheelRenderer"]
@@ -61,6 +49,8 @@ script = ExtResource("5_abvpq")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WheelRenderer/Area2D"]
 position = Vector2(3.9765, 18.5275)
 shape = SubResource("CircleShape2D_8gy8h")
+
+[node name="GameOver" parent="." instance=ExtResource("6_we362")]
 
 [connection signal="mouse_shape_entered" from="WheelRenderer/Area2D" to="WheelRenderer" method="_on_area_2d_mouse_shape_entered"]
 [connection signal="mouse_shape_exited" from="WheelRenderer/Area2D" to="WheelRenderer" method="_on_area_2d_mouse_shape_exited"]

@@ -1,5 +1,8 @@
 extends RigidBody2D
 
+@export var glow_shader:Shader
+@export var norm_shader:Shader
+
 var rng = RandomNumberGenerator.new()
 var can_spin
 var landed_value
@@ -43,6 +46,11 @@ func _process(delta):
 	else:
 		can_spin = false
 		just_stopped = true
+		
+	if can_spin == true:
+		get_child(0).material.shader = glow_shader
+	else:
+		get_child(0).material.shader = norm_shader
 	
 func _on_input_event(viewport, event, shape_idx):
 	if Input.is_action_just_released("SpinWheel"):
