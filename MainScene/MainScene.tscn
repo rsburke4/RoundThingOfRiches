@@ -78,11 +78,12 @@ offset_bottom = 1101.0
 color = Color(0.0117647, 0.278431, 0.329412, 1)
 
 [node name="Round" type="Label" parent="Tmp"]
-offset_left = 301.0
+offset_left = 23.0
 offset_top = -891.0
-offset_right = 707.0
+offset_right = 980.0
 offset_bottom = -764.0
 theme_override_font_sizes/font_size = 90
+horizontal_alignment = 1
 
 [node name="ScoreBoard" parent="." instance=ExtResource("5_bm03a")]
 position = Vector2(12, 477)

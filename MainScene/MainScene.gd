@@ -86,7 +86,7 @@ func start_new_game():
 		# TODO - enable new game button only when # players, # rounds provided
 
 # defines behavior at the start of each round of the game (each new puzzle)
-func start_new_round():
+func start_new_round(is_tiebreaker := false):
 	# prevent starting a new round unless setting up a new game, or a previous round has ended
 	if GameState == States.game.SETUP or (GameState == States.game.PLAYING and RoundState == States.puzzle_round.END):
 		GameState = States.game.PLAYING
@@ -111,10 +111,10 @@ func start_new_round():
 		# here we need to wait for the puzzle grid to be created before setting
 		# up th puzzle **for the first round only** -- for subsequent rounds,
 		# the grid already exists and can be reset/changed
-		if current_round == 0: await get_node("Puzzle/PuzzleGrid").grid_ready
+		if current_round == 0 and not is_tiebreaker:
+			await get_node("Puzzle/PuzzleGrid").grid_ready
 		get_node("Puzzle").start_new_round()
 		
-		# TODO - hide end round screen
 		show_message("ROUND " + str(current_round + 1))
 		await get_tree().create_timer(1.0).timeout  # this is needed to prevent writing over game screen
 		
@@ -230,8 +230,6 @@ func end_round():
 		get_node("ScoreBoard").hide()
 		
 		show_message("Player " + str(current_player + 1) + "\nwins Round " + str(current_round + 1) + "!")
-		
-		# TODO - adjust timer as needed (or remove...)
 		await get_tree().create_timer(1.0).timeout
 		
 		# increment the round counter, ending the game if the completed round was the last one
@@ -251,12 +249,16 @@ func end_game():
 		
 		if is_tie:
 			var loc = 0
+			var tied = []
 			for i in range(num_players):
 				loc = total_scores.find(max_score, loc)
+				if loc >= 0:  # loc = -1 means not found (here: no more in array)
+					tied.append(loc + 1)  # stores players which tied
 				loc+=1
 			
-			# TODO - update to list which players tied
-			show_message("There's a tie! \nWinner takes all round!")
+			show_message("There's a tie! \nWinner takes all round \nbetween players " + list_players(tied))
+			await get_tree().create_timer(5.0).timeout  # this is a little bit longer to allow players to get ready
+			# TODO - should this be a button instead that then runs the below code?
 			
 			# reset to play one round to determine a winner
 			# TODO - does this need to be improved?
@@ -266,7 +268,7 @@ func end_game():
 			GameState = States.game.CONFIG
 			
 			start_new_game()
-			start_new_round()
+			start_new_round(true)
 		else:
 			var winner = total_scores.find(max_score) + 1  # +1 to make it 1-based instead of 0-based
 		
@@ -274,7 +276,6 @@ func end_game():
 				get_node("ScoreBoard").update_score(i+1, total_scores[i])
 				get_node("ScoreBoard").next_player(winner)
 		
-			# hide end round screen
 			get_node("GameControl").hide()
 			get_node("Puzzle").hide()
 			get_node("WheelRenderer").hide()
@@ -360,6 +361,7 @@ func _on_round_over():
 	end_round()
 
 ## auxiliary functions
+# used to write messages to a textbox during the game
 func show_message(msg):
 	var label = get_node("Tmp/Round")  # TODO - update this path if needed
 	
@@ -367,3 +369,22 @@ func show_message(msg):
 	label.show()
 	await get_tree().create_timer(1.0).timeout
 	label.hide()
+
+# used to create a list of players as a string
+func list_players(players):
+	var penult = players.size() - 2  # index of next-to-last in list
+	var str = ""
+	
+	for p in range(players.size()):
+		str = str + str(players[p])
+		
+		# different delimiters depending on where in list
+		if p == penult:
+			if penult == 0:
+				str = str + " and "
+			else:
+				str = str + ", and "
+		elif p < penult:
+			str = str + ", "
+	
+	return str
