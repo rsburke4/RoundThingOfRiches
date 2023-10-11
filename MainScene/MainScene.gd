@@ -93,11 +93,6 @@ func start_new_round():
 		GameState = States.game.PLAYING
 		RoundState = States.puzzle_round.START
 		
-		get_node("Tmp/Round").text = "ROUND " + str(current_round + 1)
-		get_node("Tmp/Round").show()
-		# this is probably not the best way to do it, but it fixes the problem:
-		await get_tree().create_timer(1.0).timeout  # need to have a delay so Puzzle.start_new_round() runs correctly
-		
 		# setup the new round/puzzle
 		current_player = current_round % num_players  # player 1 starts round 1, etc...with cycling in case num_round > num_players
 		get_node("ScoreBoard").next_player(current_player+1)
@@ -108,14 +103,17 @@ func start_new_round():
 			round_scores[p] = 0
 			get_node("ScoreBoard").update_score(p+1, 0)
 		
-		get_node("Tmp/Round").hide()
-		
+		# here we need to wait for the puzzle grid to be created before setting
+		# up th puzzle **for the first round only** -- for subsequent rounds,
+		# the grid already exists and can be reset/changed
+		if current_round == 0: await get_node("Puzzle/PuzzleGrid").grid_ready
 		get_node("Puzzle").start_new_round()
 		
 		# TODO - remove, this is just for testing
 		get_node("Tmp/Label").text = "Round " + str(current_round + 1)
 		get_node("Tmp/Announce").text = ""
-			
+		show_message("ROUND " + str(current_round + 1))
+		
 		# hide title screen, end round screen
 		get_node("GameControl").show()
 		get_node("Puzzle").show()
@@ -175,7 +173,7 @@ func turn_state_machine():
 			wheel.set_spin(false)
 			letters.show_consonants()  # enable/show consonants
 			
-			if round_scores[current_player] < 250:
+			if round_scores[current_player] < 250 and guess_score != -2:
 				letters.hide_vowels()  # disable/hide vowels if not able to buy one
 			else:
 				letters.show_vowels()  # otherwise enable/show them
@@ -185,14 +183,14 @@ func turn_state_machine():
 		elif TurnState == States.turn.CORRECT:
 			print("State: Turn Post-guess")
 			# player must guess a vowel, solve, or spin
-			
 			if round_scores[current_player] < 250:
 				letters.hide()
 			else:
 				letters.show_vowels()  # enable/show consonants
 				letters.hide_consonants()  # disable/hide consonants
 				letters.show()  # show tracker buttons
-
+			
+			tracker.show()
 			wheel.set_spin(true)
 		elif TurnState == States.turn.SOLVE:
 			print("State: Solve Attempt")
@@ -217,6 +215,7 @@ func end_turn():
 		(TurnState in [States.turn.SPIN, States.turn.GUESS, States.turn.CORRECT, States.turn.SOLVE]):
 			TurnState = States.turn.END
 			
+			guess_score = 0
 			turn_state_machine()
 
 # defines behavior at the end of a round (puzzle has been solved)
@@ -259,9 +258,7 @@ func end_game():
 				loc+=1
 			
 			get_node("Tmp/Announce").text = "There's a tie! Winner take all round"  # TODO - remove when testing is done
-			get_node("Tmp/Round").text = "There's a tie! \nWinner takes all!"
-			get_node("Tmp/Round").show()
-			await get_tree().create_timer(1.0).timeout
+			show_message("There's a tie! \nWinner takes all!")
 			
 			num_players = total_scores.count(max_score)
 			num_rounds = 1
@@ -313,28 +310,30 @@ func start_game_pressed():
 	if GameState in [States.game.END, States.game.CONFIG] and RoundState == States.puzzle_round.END and TurnState == States.turn.END:
 		start_new_game()  # TODO - remove this line when testing is done
 		start_new_round()
+		
+func _on_tree_entered():
+	start_new_game()
+	start_new_round()
 
 ## functions connected to custom signals
 func _on_wheel_stopped(value):
-	var msg = get_node("Tmp/Announce")
-	
 	if value == -1:  # bankrupt
 		# TODO - work on the logic here...
-		msg.text = "Bankrupt"
+		show_message("Bankrupt")
 		update_score(-1, false)
 		end_turn()
 	elif value == -2:  # free play
-		msg.text = "Free Play"
+		show_message("Free Play")
 		TurnState = States.turn.GUESS
 		guess_score = -2  # use this in scoring calculation
 		turn_state_machine()
 		# TODO - work on the logic here...
 	elif value == -3:  # lose a turn
-		msg.text = "Lose a turn"
+		show_message("Lose a turn")
 		end_turn()
 	else:
 		TurnState = States.turn.GUESS
-		msg.text = "$" + str(value)
+		show_message("$" + str(value))
 		guess_score = value
 		turn_state_machine()
 
@@ -350,7 +349,8 @@ func _on_guess_complete(c,g):
 			is_vowel = true
 		
 		update_score(c, is_vowel)
-
+		
+		guess_score = 0
 		turn_state_machine()
 
 func _on_only_vowels():
@@ -372,7 +372,11 @@ func _on_round_over():
 	
 	end_round()
 
-
-func _on_tree_entered():
-	start_new_game()
-	start_new_round()
+## auxiliary functions
+func show_message(msg):
+	var label = get_node("Tmp/Round")
+	
+	label.text = msg
+	label.show()
+	await get_tree().create_timer(1.0).timeout
+	label.hide()

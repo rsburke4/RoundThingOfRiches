@@ -1,5 +1,7 @@
 extends VBoxContainer
 
+signal grid_ready
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -17,6 +19,8 @@ func _ready():
 			tile_i.name = "Tile" + str(i)
 			
 			c.add_child(tile_i)
+			
+	grid_ready.emit()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
