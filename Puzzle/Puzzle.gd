@@ -49,7 +49,7 @@ func create_new_puzzle():
 func get_puzzle(filename):
 	var puzzle_dict = {"Category": "", "NumLines": 0, "Line1": "","Line2": "", "Line3": "","Line4": ""}
 	
-	# TODO - check for file existence
+	# TODO - check for file existence?
 	var raw_data = FileAccess.get_file_as_string(filename)
 	var all_answers = JSON.parse_string(raw_data)
 	
@@ -111,6 +111,7 @@ func get_puzzle(filename):
 	return puzzle_dict;
 
 func setup_puzzle(puzzle):
+	# TODO - remove?
 	print(puzzle.Line1)
 	print(puzzle.Line2)
 	print(puzzle.Line3)

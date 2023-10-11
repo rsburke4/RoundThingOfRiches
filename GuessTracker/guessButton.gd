@@ -8,7 +8,6 @@ var stylebox_active = get_theme_stylebox("normal").duplicate()
 var stylebox_hidden = get_theme_stylebox("pressed").duplicate()
 var stylebox_disabled = get_theme_stylebox("disabled").duplicate()
 var stylebox_hovered = get_theme_stylebox("hover").duplicate()
-# TODO - set styles for hover; add other theme overrides (font size, color, etc) as necessary
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -19,7 +18,6 @@ func _ready():
 	set_style(stylebox_disabled, Colors.COLOR_BUTTON_DISABLED_BKGD, Colors.COLOR_BUTTON_DISABLED_BORDER)
 	set_style(stylebox_hovered, Colors.COLOR_BUTTON_HOVERED_BKGD, Colors.COLOR_BUTTON_HOVERED_BORDER)
 	
-	# TODO - change font colors here, check if this only impacts this component
 	add_theme_color_override("font_color", Colors.COLOR_BUTTON_ACTIVE_TEXT)
 	add_theme_color_override("font_disabled_color", Colors.COLOR_BUTTON_DISABLED_TEXT)
 	add_theme_color_override("font_hover_color", Colors.COLOR_BUTTON_HOVERED_TEXT)

@@ -6,7 +6,6 @@ var vowels = []
 var consonants = []
 
 # Called when the node enters the scene tree for the first time.
-# TODO - Set a background color?
 func _ready():
 	for c in get_children():
 		var start_ascii = c.name.unicode_at(0)  # per comment at https://ask.godotengine.org/106152/convert-an-character-to-ascii-value
