@@ -10,6 +10,8 @@ var just_stopped
 var landed_node
 signal landed_on_value(value)
 
+var only_vowels_left = false
+
 @export var wheel_choices:Array[int]
 @export var angular_threshold:float
 
@@ -39,6 +41,7 @@ func _process(_delta):
 		if just_stopped == true:
 			landed_value = landed_node.name.get_slice("WheelSection", 1)
 			just_stopped = false
+			can_spin = false
 			angular_velocity = 0.0
 			landed_on_value.emit(wheel_choices[int(landed_value)-1])
 	#This is a placeholder. For now, can_spin allows
@@ -66,11 +69,19 @@ func connect_puzzle(nodePath):
 func set_spin(b):
 	can_spin = b
 
-func set_just_stopped(b):
-	just_stopped = b
-
 func _on_decision_area_area_shape_entered(_area_rid, area, _area_shape_index, _local_shape_index):
 	landed_node = area.get_parent()
 	
 func _on_guess_over(_c, _g):
-	can_spin = true
+	if only_vowels_left:
+		can_spin = false
+	else:
+		can_spin = true
+
+func _on_only_vowels():
+	only_vowels_left = true
+	
+func reset():
+	only_vowels_left = false
+	can_spin = false
+	just_stopped = false

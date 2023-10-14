@@ -9,7 +9,7 @@ var current_player = 0
 var num_rounds = 3  # use a placeholder here until needed layers are ready
 var num_players = 3
 var guess_score = 0
-var can_spin = false
+var only_vowels_left = false
 
 var GameState = States.game.CONFIG
 var RoundState = States.puzzle_round.END
@@ -32,11 +32,13 @@ func _ready():
 	# manage guess buttons in special game cases (only vowels/consonants left to guess)
 	puzzle.only_vowels.connect(tracker.only_vowels)
 	puzzle.only_consonants.connect(tracker.only_consonants)
+	puzzle.only_vowels.connect(wheel._on_only_vowels)
 	
 	# reset the buttons when the round is over
 	puzzle.round_over.connect(tracker.reset_tracker)
 	puzzle.round_over.connect(solve.reset_button)
 	puzzle.wrong_solution.connect(solve._on_wrong_guess)
+	puzzle.round_over.connect(wheel.reset)
 	
 	## connect puzzle with main scene
 	# TODO - change connections if/when needed during gameflow implementation
@@ -100,6 +102,7 @@ func start_new_round(is_tiebreaker := false):
 		
 		# setup the new round/puzzle
 		current_player = current_round % num_players  # player 1 starts round 1, etc...with cycling in case num_round > num_players
+		only_vowels_left = false
 		get_node("ScoreBoard").next_player(current_player+1)
 		
 		guess_score = 0
@@ -128,6 +131,9 @@ func start_turn():
 	
 	if GameState == States.game.PLAYING and RoundState == States.puzzle_round.PLAYING and TurnState == States.turn.END:
 		TurnState = States.turn.START
+		if only_vowels_left:
+			# when only vowels are left, don't need to spin, go directly to post-guess state
+			TurnState = States.turn.CORRECT
 		
 		get_node("ScoreBoard").next_player(current_player+1)  # highlight current play in scoring component
 		
@@ -340,9 +346,8 @@ func _on_guess_complete(c,g):
 		guess_score = 0
 		turn_state_machine()
 
-# TODO - get this working
 func _on_only_vowels():
-	can_spin = false
+	only_vowels_left = true
 
 func _on_solve_attempt():
 	TurnState_prev = TurnState  # this is needed for if solve attempt is cancelled
