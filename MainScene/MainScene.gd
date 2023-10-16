@@ -10,6 +10,7 @@ var num_rounds = 3  # use a placeholder here until needed layers are ready
 var num_players = 3
 var guess_score = 0
 var can_spin = false
+var audio_player
 
 var GameState = States.game.CONFIG
 var RoundState = States.puzzle_round.END
@@ -23,6 +24,7 @@ func _ready():
 	var tracker = get_node("GameControl/GuessTracker")
 	var solve = get_node("GameControl/SolveButton")
 	var wheel = get_node("SubViewport/WheelRoot/WheelPhysics")
+	audio_player = get_node("AudioPlayer")
 	
 	## connect game control and puzzle
 	tracker.make_a_guess.connect(puzzle._on_guess_made)  # guess a letter
@@ -43,6 +45,7 @@ func _ready():
 	puzzle.guess_complete.connect(_on_guess_complete)
 	puzzle.round_over.connect(_on_round_over)
 	puzzle.only_vowels.connect(_on_only_vowels)
+	puzzle.reveal_tile.connect(_correct_tile_revealed)
 	
 	## connect the wheel to the main scene
 	wheel.landed_on_value.connect(_on_wheel_stopped)
@@ -54,6 +57,7 @@ func _ready():
 	
 	## connect main scene with game over
 	game_over.connect(get_node("GameOver")._on_game_over)
+	#Having these in ready ensures all objects are initialized
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -87,6 +91,12 @@ func start_new_game():
 
 # defines behavior at the start of each round of the game (each new puzzle)
 func start_new_round(is_tiebreaker := false):
+	#Ready is called here because of an initialization issue
+	#When start_new_round is called from on_tree_entered
+	audio_player = get_node("AudioPlayer")
+	audio_player._ready()
+	audio_player.play_sound(audio_player.CONGRATS)
+	
 	# prevent starting a new round unless setting up a new game, or a previous round has ended
 	if GameState == States.game.SETUP or (GameState == States.game.PLAYING and RoundState == States.puzzle_round.END):
 		GameState = States.game.PLAYING
@@ -230,6 +240,7 @@ func end_round():
 		get_node("ScoreBoard").hide()
 		
 		show_message("Player " + str(current_player + 1) + "\nwins Round " + str(current_round + 1) + "!")
+		audio_player.play_sound(audio_player.GOOD)
 		await get_tree().create_timer(1.0).timeout
 		
 		# increment the round counter, ending the game if the completed round was the last one
@@ -271,7 +282,7 @@ func end_game():
 			start_new_round(true)
 		else:
 			var winner = total_scores.find(max_score) + 1  # +1 to make it 1-based instead of 0-based
-		
+			audio_player.play_sound(audio_player.WIN)
 			for i in range(num_players):
 				get_node("ScoreBoard").update_score(i+1, total_scores[i])
 				get_node("ScoreBoard").next_player(winner)
@@ -309,24 +320,29 @@ func _on_wheel_stopped(value):
 	if value == -1:  # bankrupt
 		show_message("Bankrupt")
 		update_score(-1, false)  # called with -1 resets the score
+		audio_player.play_sound(audio_player.VERY_BAD)
 		end_turn()  # state machine called from here
 	elif value == -2:  # free play
 		show_message("Free Play")
 		TurnState = States.turn.GUESS
+		audio_player.play_sound(audio_player.GOOD)
 		guess_score = -2  # use this in scoring calculation
 		turn_state_machine()
 	elif value == -3:  # lose a turn
 		show_message("Lose a turn")
+		audio_player.play_sound(audio_player.VERY_BAD)
 		end_turn()  # state machine called from here
 	else:
 		TurnState = States.turn.GUESS
 		show_message("$" + str(value))
+		audio_player.play_sound(audio_player.GOOD)
 		guess_score = value
 		turn_state_machine()
 
 func _on_guess_complete(c,g):
 	if c == 0 and guess_score != -2:  # second condition prevents turn from ending if free play was landed on
 		end_turn()  # state machine called from here
+		audio_player.play_sound(audio_player.INCORRECT)
 	else:
 		TurnState = States.turn.CORRECT
 		var is_vowel = false
@@ -388,3 +404,7 @@ func list_players(players):
 			str = str + ", "
 	
 	return str
+
+func _correct_tile_revealed():
+	audio_player.play_sound(audio_player.PING)
+	

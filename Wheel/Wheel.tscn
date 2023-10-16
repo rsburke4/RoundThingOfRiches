@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://c5b1hocmae8sh"]
+[gd_scene load_steps=15 format=3 uid="uid://c5b1hocmae8sh"]
 
 [ext_resource type="Script" path="res://Wheel/WheelPhysics.gd" id="1_3mmcp"]
-[ext_resource type="Texture2D" uid="uid://bceusqkao36oy" path="res://icon.svg" id="2_mm2ay"]
 [ext_resource type="Shader" path="res://Shaders/Glow.gdshader" id="2_s60k7"]
 [ext_resource type="Texture2D" uid="uid://b7k7te5lk3c7n" path="res://Wheel/assets/WheelGraphic.png" id="2_yd2au"]
 [ext_resource type="Shader" path="res://Shaders/Norm.gdshader" id="3_biq10"]
+[ext_resource type="AudioStream" uid="uid://dw84ebt58xn3m" path="res://Sounds/assets/WheelClick.wav" id="4_jy7vp"]
+[ext_resource type="Texture2D" uid="uid://tdhfiouvhmkb" path="res://Wheel/assets/Arrow.png" id="5_trdco"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_00akf"]
 rough = true
@@ -35,7 +36,7 @@ radius = 2.0
 
 [node name="WheelRoot" type="Node2D"]
 
-[node name="WheelPhysics" type="RigidBody2D" parent="."]
+[node name="WheelPhysics" type="RigidBody2D" parent="." node_paths=PackedStringArray("click_sound")]
 inertia = 10.0
 physics_material_override = SubResource("PhysicsMaterial_00akf")
 gravity_scale = 0.0
@@ -44,6 +45,7 @@ angular_damp = 0.4
 script = ExtResource("1_3mmcp")
 glow_shader = ExtResource("2_s60k7")
 norm_shader = ExtResource("3_biq10")
+click_sound = NodePath("../AudioStreamPlayer2D")
 wheel_choices = Array[int]([500, 900, 700, 300, 800, 550, 400, 500, 600, 350, 500, 900, -1, 650, -2, 700, -3, 800, 500, 450, 500, 300, -1, 5000])
 angular_threshold = 0.1
 
@@ -87,8 +89,8 @@ continuous_cd = 2
 
 [node name="NeedleSprite" type="Sprite2D" parent="Ticker/NeedlePhysics"]
 position = Vector2(1, 25.1589)
-scale = Vector2(0.15625, 0.552518)
-texture = ExtResource("2_mm2ay")
+scale = Vector2(0.05, 0.1)
+texture = ExtResource("5_trdco")
 
 [node name="NeedleCollider" type="CollisionShape2D" parent="Ticker/NeedlePhysics"]
 position = Vector2(0, 21)
@@ -110,6 +112,9 @@ collision_layer = 4
 position = Vector2(1, 60.52)
 shape = SubResource("CircleShape2D_08mq1")
 disabled = true
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_jy7vp")
 
 [connection signal="input_event" from="WheelPhysics" to="WheelPhysics" method="_on_input_event"]
 [connection signal="area_shape_entered" from="Ticker/NeedlePhysics/DecisionArea" to="WheelPhysics" method="_on_decision_area_area_shape_entered"]

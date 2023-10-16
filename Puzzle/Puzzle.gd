@@ -8,6 +8,7 @@ signal round_over
 signal wrong_solution
 signal only_vowels
 signal only_consonants
+signal reveal_tile
 
 # globals used until it is determined if they should be globals or not
 var guesses = []
@@ -151,7 +152,6 @@ func setup_puzzle(puzzle):
 				if cur_line[i] != " ":
 					var tile = line.get_node("Tile"+str(tiles[i]))
 					tile.change_state(States.tile.STATE_HIDDEN, cur_line[i])
-					
 					# show any punctuation that may be used
 					if cur_line[i] in ["-", "'", "&", ".", "?", "!"]:
 						tile.change_state(States.tile.STATE_HIGHLIGHT)
@@ -197,10 +197,11 @@ func evaluate_guess(c, ind):
 
 				if c.to_upper() == letter.to_upper():
 					tile.letter_found()
+					
 					await tile.get_node("RevealTimer").timeout  # this allows letters to reveal one-by-one (like the TV show)
 					count+=1
 					rem_guesses-=1  # reduce the number of guesses by one for each tile turned
-					
+					reveal_tile.emit()
 					if is_vowel(c):
 						rem_vowels-=1  # reduce the number of vowels by one
 	if count == 0:

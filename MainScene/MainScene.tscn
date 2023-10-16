@@ -1,12 +1,20 @@
-[gd_scene load_steps=10 format=3 uid="uid://7q6oxgp6hu6h"]
+[gd_scene load_steps=18 format=3 uid="uid://7q6oxgp6hu6h"]
 
 [ext_resource type="Script" path="res://MainScene/MainScene.gd" id="1_ke8ft"]
 [ext_resource type="PackedScene" uid="uid://csds172y40utw" path="res://GuessTracker/guess_tracker.tscn" id="2_1omuh"]
 [ext_resource type="PackedScene" uid="uid://c5b1hocmae8sh" path="res://Wheel/Wheel.tscn" id="2_u8u61"]
 [ext_resource type="PackedScene" uid="uid://gsf4ctc5makr" path="res://Puzzle/puzzle.tscn" id="3_sr3qk"]
 [ext_resource type="Script" path="res://MainScene/WheelRenderer.gd" id="5_abvpq"]
-[ext_resource type="PackedScene" uid="uid://bcxhe2gx0523t" path="res://Scores/score_board.tscn" id="5_bm03a"]
+[ext_resource type="PackedScene" path="res://Scores/score_board.tscn" id="5_bm03a"]
 [ext_resource type="PackedScene" uid="uid://c7wdx4y3e5eho" path="res://Screens/GameOver.tscn" id="6_we362"]
+[ext_resource type="Script" path="res://MainScene/AudioPlayer.gd" id="8_pi05m"]
+[ext_resource type="AudioStream" uid="uid://dwpuc7o340pp0" path="res://Sounds/assets/Yes.wav" id="9_a2uiq"]
+[ext_resource type="AudioStream" uid="uid://7v4qopyyisup" path="res://Sounds/assets/No.wav" id="10_pbqv5"]
+[ext_resource type="AudioStream" uid="uid://bkvi82iwsnfvp" path="res://Sounds/assets/LetterGuess.wav" id="11_fa0fn"]
+[ext_resource type="AudioStream" uid="uid://b3ytvyawrabmu" path="res://Sounds/assets/TooBad.wav" id="12_cq4to"]
+[ext_resource type="AudioStream" uid="uid://0w63o034xyt2" path="res://Sounds/assets/Winner.wav" id="13_5hjhk"]
+[ext_resource type="AudioStream" uid="uid://onxye2fhq01v" path="res://Sounds/assets/Congrats.wav" id="14_6xxxb"]
+[ext_resource type="AudioStream" uid="uid://ckt2d18w71rlm" path="res://Sounds/assets/Incorrect.wav" id="15_7hdtq"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_1yi2q"]
 viewport_path = NodePath("SubViewport")
@@ -19,6 +27,7 @@ script = ExtResource("1_ke8ft")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
+audio_listener_enable_2d = true
 physics_object_picking = true
 physics_object_picking_sort = true
 size = Vector2i(1152, 648)
@@ -78,6 +87,7 @@ offset_bottom = 1101.0
 color = Color(0.0117647, 0.278431, 0.329412, 1)
 
 [node name="Round" type="Label" parent="Tmp"]
+layout_mode = 0
 offset_left = 23.0
 offset_top = -891.0
 offset_right = 980.0
@@ -90,6 +100,17 @@ position = Vector2(12, 477)
 
 [node name="GameOver" parent="." instance=ExtResource("6_we362")]
 visible = false
+
+[node name="AudioPlayer" type="AudioStreamPlayer2D" parent="."]
+autoplay = true
+script = ExtResource("8_pi05m")
+good = ExtResource("9_a2uiq")
+bad = ExtResource("10_pbqv5")
+ping = ExtResource("11_fa0fn")
+very_bad = ExtResource("12_cq4to")
+win = ExtResource("13_5hjhk")
+congrats = ExtResource("14_6xxxb")
+incorrect = ExtResource("15_7hdtq")
 
 [connection signal="tree_entered" from="." to="." method="_on_tree_entered"]
 [connection signal="mouse_shape_entered" from="WheelRenderer/Area2D" to="WheelRenderer" method="_on_area_2d_mouse_shape_entered"]
