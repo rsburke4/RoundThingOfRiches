@@ -18,7 +18,7 @@ shader = ExtResource("3_biq10")
 radius = 5.83467
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_01dat"]
-radius = 36.0139
+radius = 34.0147
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ijp63"]
 rough = true
@@ -67,7 +67,7 @@ polygon = PackedVector2Array(6, -98, -20, -96, -48, -259, -27, -244, 11, -246, 2
 collision_layer = 256
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WheelPhysics/WheelSection1/WheelArea2D"]
-position = Vector2(-13, -271)
+position = Vector2(-13, -258)
 shape = SubResource("CircleShape2D_01dat")
 
 [node name="Ticker" type="Node2D" parent="."]
