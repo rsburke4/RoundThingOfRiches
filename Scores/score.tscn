@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cqiir1hbwan5p"]
+[gd_scene load_steps=3 format=3 uid="uid://cqiir1hbwan5p"]
 
 [ext_resource type="Script" path="res://Scores/Score.gd" id="1_y66jp"]
+[ext_resource type="LabelSettings" uid="uid://biq05s7kms58r" path="res://Fonts/LablePresets/ScorePreset.tres" id="2_krig8"]
 
 [node name="Score" type="ColorRect"]
 custom_minimum_size = Vector2(150, 50)
@@ -16,4 +17,5 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 36
 text = "0"
+label_settings = ExtResource("2_krig8")
 horizontal_alignment = 2

@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://gsf4ctc5makr"]
+[gd_scene load_steps=4 format=3 uid="uid://gsf4ctc5makr"]
 
 [ext_resource type="Script" path="res://Puzzle/Puzzle.gd" id="1_01ibg"]
+[ext_resource type="LabelSettings" uid="uid://cmu0oglljtyvg" path="res://Fonts/LablePresets/CategoryPreset.tres" id="2_uyyeq"]
 [ext_resource type="Script" path="res://Puzzle/PuzzleGrid.gd" id="2_we101"]
 
 [node name="Puzzle" type="Node2D"]
@@ -19,6 +20,7 @@ offset_bottom = 120.0
 theme_override_colors/font_color = Color(0.996094, 0.996094, 0.996094, 1)
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 80
+label_settings = ExtResource("2_uyyeq")
 horizontal_alignment = 1
 vertical_alignment = 1
 
