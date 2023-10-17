@@ -267,7 +267,11 @@ func end_game():
 					tied.append(loc + 1)  # stores players which tied
 				loc+=1
 			
+			var label = get_node("Tmp/Round")
+			label.label_settings.font_size = 50
 			show_message("There's a tie! \nWinner takes all round \nbetween players " + list_players(tied))
+			
+			
 			await get_tree().create_timer(5.0).timeout  # this is a little bit longer to allow players to get ready
 			# TODO - should this be a button instead that then runs the below code?
 			
@@ -384,6 +388,7 @@ func show_message(msg):
 	label.text = msg
 	label.show()
 	await get_tree().create_timer(1.0).timeout
+	label.label_settings.font_size = 100
 	label.hide()
 
 # used to create a list of players as a string

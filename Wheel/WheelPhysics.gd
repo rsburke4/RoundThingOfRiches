@@ -72,7 +72,6 @@ func set_just_stopped(b):
 
 func _on_decision_area_area_shape_entered(_area_rid, area, _area_shape_index, _local_shape_index):
 	landed_node = area.get_parent()
-	print(str(landed_node.name))
 	click_sound.pitch_scale = rng.randf_range(0.8, 1.2)
 	click_sound.play()
 	
