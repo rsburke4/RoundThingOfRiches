@@ -2,6 +2,7 @@ extends RigidBody2D
 
 @export var glow_shader:Shader
 @export var norm_shader:Shader
+@export var click_sound:AudioStreamPlayer2D
 
 var rng = RandomNumberGenerator.new()
 var can_spin
@@ -43,7 +44,7 @@ func _process(_delta):
 			just_stopped = false
 			can_spin = false
 			angular_velocity = 0.0
-			landed_on_value.emit(wheel_choices[int(landed_value)-1])
+			landed_on_value.emit(wheel_choices[(int(landed_value)-1)%24])
 	#This is a placeholder. For now, can_spin allows
 	#infinite spins, but this should also factor gamestate in
 	else:
@@ -71,6 +72,8 @@ func set_spin(b):
 
 func _on_decision_area_area_shape_entered(_area_rid, area, _area_shape_index, _local_shape_index):
 	landed_node = area.get_parent()
+	click_sound.pitch_scale = rng.randf_range(0.8, 1.2)
+	click_sound.play()
 	
 func _on_guess_over(_c, _g):
 	if only_vowels_left:

@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://c7wdx4y3e5eho"]
+[gd_scene load_steps=7 format=3 uid="uid://c7wdx4y3e5eho"]
 
 [ext_resource type="Script" path="res://Screens/GameOver.gd" id="1_d0rym"]
+[ext_resource type="FontFile" uid="uid://de5pjg21lm5n1" path="res://Fonts/Lilita_One/LilitaOne-Regular.ttf" id="2_x25lt"]
 
 [sub_resource type="Animation" id="Animation_1oi0p"]
 resource_name = "BackgroundFade"
@@ -38,7 +39,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 1),
 "transitions": PackedFloat32Array(-3, -3),
 "update": 0,
-"values": [Vector2(559, -49), Vector2(559, 236)]
+"values": [Vector2(357, -87), Vector2(383, 244)]
 }
 
 [sub_resource type="Animation" id="Animation_kjqjb"]
@@ -86,6 +87,15 @@ _data = {
 "RESET": SubResource("Animation_kjqjb")
 }
 
+[sub_resource type="LabelSettings" id="LabelSettings_k3ivg"]
+font = ExtResource("2_x25lt")
+font_size = 50
+outline_size = 20
+outline_color = Color(0.823529, 0.419608, 0, 1)
+shadow_size = 15
+shadow_color = Color(0, 0, 0, 0.294118)
+shadow_offset = Vector2(10, 10)
+
 [node name="GameOver" type="Node2D"]
 script = ExtResource("1_d0rym")
 scene_change = "res://MainScene/MainScene.tscn"
@@ -116,9 +126,10 @@ color = Color(0, 0, 0, 0)
 layout_mode = 1
 offset_left = 551.0
 offset_top = -36.0
-offset_right = 619.0
-offset_bottom = -10.0
+offset_right = 939.0
+offset_bottom = 82.0
 text = "You Win!"
+label_settings = SubResource("LabelSettings_k3ivg")
 horizontal_alignment = 1
 
 [node name="Button" type="Button" parent="Control"]
