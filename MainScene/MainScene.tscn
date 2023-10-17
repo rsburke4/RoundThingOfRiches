@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://7q6oxgp6hu6h"]
+[gd_scene load_steps=19 format=3 uid="uid://7q6oxgp6hu6h"]
 
 [ext_resource type="Script" path="res://MainScene/MainScene.gd" id="1_ke8ft"]
 [ext_resource type="PackedScene" uid="uid://csds172y40utw" path="res://GuessTracker/guess_tracker.tscn" id="2_1omuh"]
@@ -15,6 +15,7 @@
 [ext_resource type="AudioStream" uid="uid://0w63o034xyt2" path="res://Sounds/assets/Winner.wav" id="13_5hjhk"]
 [ext_resource type="AudioStream" uid="uid://onxye2fhq01v" path="res://Sounds/assets/Congrats.wav" id="14_6xxxb"]
 [ext_resource type="AudioStream" uid="uid://ckt2d18w71rlm" path="res://Sounds/assets/Incorrect.wav" id="15_7hdtq"]
+[ext_resource type="LabelSettings" uid="uid://cgwxyf1wrpk1a" path="res://Fonts/LablePresets/MoneyPopup.tres" id="16_d7ha4"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_1yi2q"]
 viewport_path = NodePath("SubViewport")
@@ -88,11 +89,12 @@ color = Color(0.0117647, 0.278431, 0.329412, 1)
 
 [node name="Round" type="Label" parent="Tmp"]
 layout_mode = 0
-offset_left = 23.0
-offset_top = -891.0
-offset_right = 980.0
-offset_bottom = -764.0
+offset_left = 68.0
+offset_top = -771.0
+offset_right = 1025.0
+offset_bottom = -644.0
 theme_override_font_sizes/font_size = 90
+label_settings = ExtResource("16_d7ha4")
 horizontal_alignment = 1
 
 [node name="ScoreBoard" parent="." instance=ExtResource("5_bm03a")]

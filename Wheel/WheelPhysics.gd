@@ -41,7 +41,7 @@ func _process(_delta):
 			landed_value = landed_node.name.get_slice("WheelSection", 1)
 			just_stopped = false
 			angular_velocity = 0.0
-			landed_on_value.emit(wheel_choices[int(landed_value)-1])
+			landed_on_value.emit(wheel_choices[(int(landed_value)-1)%24])
 	#This is a placeholder. For now, can_spin allows
 	#infinite spins, but this should also factor gamestate in
 	else:
@@ -72,6 +72,7 @@ func set_just_stopped(b):
 
 func _on_decision_area_area_shape_entered(_area_rid, area, _area_shape_index, _local_shape_index):
 	landed_node = area.get_parent()
+	print(str(landed_node.name))
 	click_sound.pitch_scale = rng.randf_range(0.8, 1.2)
 	click_sound.play()
 	

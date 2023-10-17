@@ -47,7 +47,7 @@ glow_shader = ExtResource("2_s60k7")
 norm_shader = ExtResource("3_biq10")
 click_sound = NodePath("../AudioStreamPlayer2D")
 wheel_choices = Array[int]([500, 900, 700, 300, 800, 550, 400, 500, 600, 350, 500, 900, -1, 650, -2, 700, -3, 800, 500, 450, 500, 300, -1, 5000])
-angular_threshold = 0.1
+angular_threshold = 0.2
 
 [node name="WheelSprite" type="Sprite2D" parent="WheelPhysics"]
 material = SubResource("ShaderMaterial_5d0rs")
@@ -86,6 +86,7 @@ collision_layer = 258
 physics_material_override = SubResource("PhysicsMaterial_ijp63")
 gravity_scale = 128.0
 continuous_cd = 2
+angular_damp = 36.36
 
 [node name="NeedleSprite" type="Sprite2D" parent="Ticker/NeedlePhysics"]
 position = Vector2(1, 25.1589)
