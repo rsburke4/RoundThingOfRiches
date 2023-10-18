@@ -10,17 +10,15 @@ config_version=5
 
 [application]
 
-config/name="WheelOfFortune"
-run/main_scene="res://MainScene/MainScene.tscn"
+config/name="Round Thing of Riches"
+run/main_scene="res://Screens/TitleScreen.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-TileConst="*res://Puzzle/tile_const.gd"
-PuzzleConst="*res://Puzzle/puzzle_const.gd"
-GuessConst="*res://GuessTracker/guess_const.gd"
-SolveConst="*res://GuessTracker/solve_const.gd"
+Colors="*res://colors.gd"
+States="*res://states.gd"
 
 [dotnet]
 

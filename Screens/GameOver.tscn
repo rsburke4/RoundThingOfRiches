@@ -1,0 +1,143 @@
+[gd_scene load_steps=7 format=3 uid="uid://c7wdx4y3e5eho"]
+
+[ext_resource type="Script" path="res://Screens/GameOver.gd" id="1_d0rym"]
+[ext_resource type="FontFile" uid="uid://de5pjg21lm5n1" path="res://Fonts/Lilita_One/LilitaOne-Regular.ttf" id="2_x25lt"]
+
+[sub_resource type="Animation" id="Animation_1oi0p"]
+resource_name = "BackgroundFade"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Control/Background:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.5, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 0), Color(0, 0, 0, 0.603922)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Control/Button:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(-3, -3),
+"update": 0,
+"values": [Vector2(513.87, 800), Vector2(513.87, 324)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Control/WinLable:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(-3, -3),
+"update": 0,
+"values": [Vector2(357, -87), Vector2(383, 244)]
+}
+
+[sub_resource type="Animation" id="Animation_kjqjb"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Control/Background:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0, 0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Control/Button:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(505, 700)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Control/WinLable:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(551, -36)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vfbyg"]
+_data = {
+"BackgroundFade": SubResource("Animation_1oi0p"),
+"RESET": SubResource("Animation_kjqjb")
+}
+
+[sub_resource type="LabelSettings" id="LabelSettings_k3ivg"]
+font = ExtResource("2_x25lt")
+font_size = 50
+outline_size = 20
+outline_color = Color(0.823529, 0.419608, 0, 1)
+shadow_size = 15
+shadow_color = Color(0, 0, 0, 0.294118)
+shadow_offset = Vector2(10, 10)
+
+[node name="GameOver" type="Node2D"]
+script = ExtResource("1_d0rym")
+scene_change = "res://MainScene/MainScene.tscn"
+
+[node name="Control" type="Control" parent="."]
+custom_minimum_size = Vector2(1152, 648)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Control"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_vfbyg")
+}
+
+[node name="Background" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0)
+
+[node name="WinLable" type="Label" parent="Control"]
+layout_mode = 1
+offset_left = 551.0
+offset_top = -36.0
+offset_right = 939.0
+offset_bottom = 82.0
+text = "You Win!"
+label_settings = SubResource("LabelSettings_k3ivg")
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 505.0
+offset_top = 700.0
+offset_right = 676.0
+offset_bottom = 774.0
+text = "Replay?"
+
+[connection signal="button_up" from="Control/Button" to="." method="_on_button_button_up"]

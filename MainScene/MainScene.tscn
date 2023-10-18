@@ -1,15 +1,47 @@
-[gd_scene load_steps=5 format=3 uid="uid://7q6oxgp6hu6h"]
+[gd_scene load_steps=19 format=3 uid="uid://7q6oxgp6hu6h"]
 
 [ext_resource type="Script" path="res://MainScene/MainScene.gd" id="1_ke8ft"]
 [ext_resource type="PackedScene" uid="uid://csds172y40utw" path="res://GuessTracker/guess_tracker.tscn" id="2_1omuh"]
 [ext_resource type="PackedScene" uid="uid://c5b1hocmae8sh" path="res://Wheel/Wheel.tscn" id="2_u8u61"]
 [ext_resource type="PackedScene" uid="uid://gsf4ctc5makr" path="res://Puzzle/puzzle.tscn" id="3_sr3qk"]
+[ext_resource type="Script" path="res://MainScene/WheelRenderer.gd" id="5_abvpq"]
+[ext_resource type="PackedScene" path="res://Scores/score_board.tscn" id="5_bm03a"]
+[ext_resource type="PackedScene" uid="uid://c7wdx4y3e5eho" path="res://Screens/GameOver.tscn" id="6_we362"]
+[ext_resource type="Script" path="res://MainScene/AudioPlayer.gd" id="8_pi05m"]
+[ext_resource type="AudioStream" uid="uid://dwpuc7o340pp0" path="res://Sounds/assets/Yes.wav" id="9_a2uiq"]
+[ext_resource type="AudioStream" uid="uid://7v4qopyyisup" path="res://Sounds/assets/No.wav" id="10_pbqv5"]
+[ext_resource type="AudioStream" uid="uid://bkvi82iwsnfvp" path="res://Sounds/assets/LetterGuess.wav" id="11_fa0fn"]
+[ext_resource type="AudioStream" uid="uid://b3ytvyawrabmu" path="res://Sounds/assets/TooBad.wav" id="12_cq4to"]
+[ext_resource type="AudioStream" uid="uid://0w63o034xyt2" path="res://Sounds/assets/Winner.wav" id="13_5hjhk"]
+[ext_resource type="AudioStream" uid="uid://onxye2fhq01v" path="res://Sounds/assets/Congrats.wav" id="14_6xxxb"]
+[ext_resource type="AudioStream" uid="uid://ckt2d18w71rlm" path="res://Sounds/assets/Incorrect.wav" id="15_7hdtq"]
+[ext_resource type="LabelSettings" uid="uid://cgwxyf1wrpk1a" path="res://Fonts/LablePresets/MoneyPopup.tres" id="16_d7ha4"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_1yi2q"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8gy8h"]
+radius = 282.336
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_ke8ft")
 
-[node name="Control" type="Control" parent="."]
-clip_contents = true
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+audio_listener_enable_2d = true
+physics_object_picking = true
+physics_object_picking_sort = true
+size = Vector2i(1152, 648)
+size_2d_override_stretch = true
+
+[node name="WheelRoot" parent="SubViewport" instance=ExtResource("2_u8u61")]
+position = Vector2(576, 345.01)
+
+[node name="WheelLayout" type="Sprite2D" parent="SubViewport"]
+position = Vector2(644, 322)
+scale = Vector2(1.03507, 1.0534)
+
+[node name="BackgroundControl" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,20 +50,70 @@ offset_right = 1152.0
 offset_bottom = 648.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
 
-[node name="WheelLayout" type="Sprite2D" parent="Control"]
-position = Vector2(644, 322)
-scale = Vector2(1.03507, 1.0534)
-
-[node name="WheelRoot" parent="." instance=ExtResource("2_u8u61")]
-position = Vector2(572, 786)
+[node name="BackgroundColor" type="ColorRect" parent="BackgroundControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.117647, 0.321569, 0.286275, 1)
 
 [node name="GameControl" parent="." instance=ExtResource("2_1omuh")]
-position = Vector2(998, 598)
+position = Vector2(992, 31.0001)
 scale = Vector2(0.8, 0.8)
 
 [node name="Puzzle" parent="." instance=ExtResource("3_sr3qk")]
-position = Vector2(28, 477)
+position = Vector2(107, 29)
 scale = Vector2(0.7, 0.7)
+
+[node name="WheelRenderer" type="Sprite2D" parent="."]
+position = Vector2(549, 676)
+scale = Vector2(1.76034, 0.701659)
+texture = SubResource("ViewportTexture_1yi2q")
+script = ExtResource("5_abvpq")
+
+[node name="Area2D" type="Area2D" parent="WheelRenderer"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WheelRenderer/Area2D"]
+position = Vector2(3.9765, 18.5275)
+shape = SubResource("CircleShape2D_8gy8h")
+
+[node name="Tmp" type="ColorRect" parent="."]
+offset_left = 8.0
+offset_top = 1020.0
+offset_right = 271.0
+offset_bottom = 1101.0
+color = Color(0.0117647, 0.278431, 0.329412, 1)
+
+[node name="Round" type="Label" parent="Tmp"]
+layout_mode = 0
+offset_left = 68.0
+offset_top = -771.0
+offset_right = 1025.0
+offset_bottom = -644.0
+theme_override_font_sizes/font_size = 90
+label_settings = ExtResource("16_d7ha4")
+horizontal_alignment = 1
+
+[node name="ScoreBoard" parent="." instance=ExtResource("5_bm03a")]
+position = Vector2(12, 477)
+
+[node name="GameOver" parent="." instance=ExtResource("6_we362")]
+visible = false
+
+[node name="AudioPlayer" type="AudioStreamPlayer2D" parent="."]
+autoplay = true
+script = ExtResource("8_pi05m")
+good = ExtResource("9_a2uiq")
+bad = ExtResource("10_pbqv5")
+ping = ExtResource("11_fa0fn")
+very_bad = ExtResource("12_cq4to")
+win = ExtResource("13_5hjhk")
+congrats = ExtResource("14_6xxxb")
+incorrect = ExtResource("15_7hdtq")
+
+[connection signal="tree_entered" from="." to="." method="_on_tree_entered"]
+[connection signal="mouse_shape_entered" from="WheelRenderer/Area2D" to="WheelRenderer" method="_on_area_2d_mouse_shape_entered"]
+[connection signal="mouse_shape_exited" from="WheelRenderer/Area2D" to="WheelRenderer" method="_on_area_2d_mouse_shape_exited"]

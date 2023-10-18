@@ -5,8 +5,6 @@
 [node name="Guess" type="Button"]
 custom_minimum_size = Vector2(50, 50)
 size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.85098, 0.662745, 0.12549, 1)
-theme_override_colors/font_disabled_color = Color(0.588235, 0.588235, 0.588235, 1)
 theme_override_font_sizes/font_size = 32
 icon_alignment = 1
 script = ExtResource("1_0uinw")
