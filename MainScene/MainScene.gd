@@ -43,7 +43,6 @@ func _ready():
 	puzzle.round_over.connect(wheel.reset)
 	
 	## connect puzzle with main scene
-	# TODO - change connections if/when needed during gameflow implementation
 	puzzle.guess_complete.connect(_on_guess_complete)
 	puzzle.round_over.connect(_on_round_over)
 	puzzle.only_vowels.connect(_on_only_vowels)
@@ -67,14 +66,15 @@ func _process(_delta):
 
 ## functions defining gameplay
 # defines behavior when the "new game" (title) screen has switched to this scene via button press
-func start_new_game():
+func start_new_game(is_tiebreaker := false):
 	# prevent anything accidentally resetting the game if not coming from configuration state
 	if GameState == States.game.CONFIG:
 		GameState = States.game.SETUP
 		
 		# set number of rounds and players
 		num_players = PlayerGlobal.num_players
-		num_rounds = num_players
+		if not is_tiebreaker:
+			num_rounds = num_players
 		
 		# reset scores and round
 		current_round = 0
@@ -275,22 +275,19 @@ func end_game():
 					tied.append(loc + 1)  # stores players which tied
 				loc+=1
 			
-			var label = get_node("Tmp/Round")
+			var label = get_node("Intermed/Message")
 			label.label_settings.font_size = 50
 			show_message("There's a tie! \nWinner takes all round \nbetween players " + list_players(tied))
 			
-			
 			await get_tree().create_timer(5.0).timeout  # this is a little bit longer to allow players to get ready
-			# TODO - should this be a button instead that then runs the below code?
 			
 			# reset to play one round to determine a winner
-			# TODO - does this need to be improved?
 			num_players = total_scores.count(max_score)
 			num_rounds = 1
 			
 			GameState = States.game.CONFIG
 			
-			start_new_game()
+			start_new_game(true)
 			start_new_round(true)
 		else:
 			var winner = total_scores.find(max_score) + 1  # +1 to make it 1-based instead of 0-based
@@ -390,7 +387,7 @@ func _on_round_over():
 ## auxiliary functions
 # used to write messages to a textbox during the game
 func show_message(msg):
-	var label = get_node("Tmp/Round")  # TODO - update this path if needed
+	var label = get_node("Intermed/Message")  # TODO - update this path if needed
 	
 	label.text = msg
 	label.show()
