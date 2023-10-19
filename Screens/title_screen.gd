@@ -16,3 +16,7 @@ func _process(delta):
 
 func _on_button_button_up():
 	change_scene()
+
+
+func _on_button_mouse_entered():
+	get_node("AudioStreamPlayer2D").play()
