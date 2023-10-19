@@ -72,24 +72,26 @@ func start_new_game():
 	if GameState == States.game.CONFIG:
 		GameState = States.game.SETUP
 		
+		# set number of rounds and players
+		num_players = PlayerGlobal.num_players
+		num_rounds = num_players
+		
 		# reset scores and round
 		current_round = 0
 		current_player = 0
 		
-		total_scores = []
-		round_scores = []
+		total_scores.resize(num_players)
+		round_scores.resize(num_players)
 		guess_score = 0
 		
 		for p in range(num_players):
-			total_scores.append(0)
-			round_scores.append(0)
+			total_scores[p] = 0
+			round_scores[p] = 0
 		
 		get_node("ScoreBoard").reset_board()
 		get_node("ScoreBoard").setup_scores(num_players)
 		
 		get_node("GameOver").hide()
-
-		# TODO - enable new game button only when # players, # rounds provided
 
 # defines behavior at the start of each round of the game (each new puzzle)
 func start_new_round(is_tiebreaker := false):
