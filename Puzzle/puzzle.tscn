@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://gsf4ctc5makr"]
+[gd_scene load_steps=5 format=3 uid="uid://gsf4ctc5makr"]
 
 [ext_resource type="Script" path="res://Puzzle/Puzzle.gd" id="1_01ibg"]
 [ext_resource type="LabelSettings" uid="uid://cmu0oglljtyvg" path="res://Fonts/LablePresets/CategoryPreset.tres" id="2_uyyeq"]
 [ext_resource type="Script" path="res://Puzzle/PuzzleGrid.gd" id="2_we101"]
+[ext_resource type="Script" path="res://Puzzle/SolutionInput.gd" id="4_p8ua6"]
 
 [node name="Puzzle" type="Node2D"]
 script = ExtResource("1_01ibg")
@@ -51,20 +52,23 @@ size_flags_vertical = 3
 wait_time = 0.5
 
 [node name="SolutionInput" type="Node2D" parent="."]
+script = ExtResource("4_p8ua6")
 
 [node name="SolutionGuess" type="LineEdit" parent="SolutionInput"]
-offset_left = 150.0
-offset_top = 570.0
-offset_right = 950.0
-offset_bottom = 620.0
+offset_left = 137.0
+offset_top = 554.0
+offset_right = 937.0
+offset_bottom = 623.0
+theme_override_font_sizes/font_size = 44
 placeholder_text = "type solution here"
 shortcut_keys_enabled = false
 
 [node name="SolutionSubmit" type="Button" parent="SolutionInput"]
-offset_left = 1000.0
-offset_top = 570.0
-offset_right = 1100.0
-offset_bottom = 620.0
+offset_left = 960.0
+offset_top = 554.0
+offset_right = 1119.0
+offset_bottom = 623.0
+theme_override_font_sizes/font_size = 32
 text = "Submit"
 
 [connection signal="timeout" from="WrongGuessTimer" to="." method="_on_wrong_guess_timer_timeout"]
