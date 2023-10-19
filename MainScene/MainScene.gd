@@ -398,21 +398,21 @@ func show_message(msg):
 # used to create a list of players as a string
 func list_players(players):
 	var penult = players.size() - 2  # index of next-to-last in list
-	var str = ""
+	var strng = ""
 	
 	for p in range(players.size()):
-		str = str + str(players[p])
+		strng = strng + str(players[p])
 		
 		# different delimiters depending on where in list
 		if p == penult:
 			if penult == 0:
-				str = str + " and "
+				strng = strng + " and "
 			else:
-				str = str + ", and "
+				strng = strng + ", and "
 		elif p < penult:
-			str = str + ", "
+			strng = strng + ", "
 	
-	return str
+	return strng
 
 func _correct_tile_revealed():
 	audio_player.play_sound(audio_player.PING)

@@ -112,10 +112,10 @@ func get_puzzle(filename):
 	return puzzle_dict;
 
 func setup_puzzle(puzzle):
-	#print(puzzle.Line1)
-	#print(puzzle.Line2)
-	#print(puzzle.Line3)
-	#print(puzzle.Line4)
+	print(puzzle.Line1)
+	print(puzzle.Line2)
+	print(puzzle.Line3)
+	print(puzzle.Line4)
 	
 	var loc = [ [0, 0], [0, 0], [0, 0], [0, 0] ]  # reset ranges for each new puzzle
 	rem_guesses = 0  # reset this counter for each new puzzle

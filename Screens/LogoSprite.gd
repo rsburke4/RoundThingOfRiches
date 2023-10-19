@@ -13,6 +13,6 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	scale.x = 1.3 + abs(sin(Time.get_ticks_msec() * scaleX_speed)) * scaleX_amp
 	scale.y = 1.3 + abs(sin(Time.get_ticks_msec() * scaleY_speed)) * scaleY_amp

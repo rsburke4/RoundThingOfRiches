@@ -8,5 +8,5 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	rotation = Time.get_ticks_msec() * rotation_speed
