@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://c7wdx4y3e5eho"]
+[gd_scene load_steps=8 format=3 uid="uid://c7wdx4y3e5eho"]
 
 [ext_resource type="Script" path="res://Screens/GameOver.gd" id="1_d0rym"]
 [ext_resource type="FontFile" uid="uid://de5pjg21lm5n1" path="res://Fonts/Lilita_One/LilitaOne-Regular.ttf" id="2_x25lt"]
+[ext_resource type="Theme" uid="uid://vgkt3d8v7x2q" path="res://Screens/PlayerSelectTHEME.tres" id="3_5sy7b"]
 
 [sub_resource type="Animation" id="Animation_1oi0p"]
 resource_name = "BackgroundFade"
@@ -98,7 +99,7 @@ shadow_offset = Vector2(10, 10)
 
 [node name="GameOver" type="Node2D"]
 script = ExtResource("1_d0rym")
-scene_change = "res://MainScene/MainScene.tscn"
+scene_change = "res://Screens/PlayerSelect.tscn"
 
 [node name="Control" type="Control" parent="."]
 custom_minimum_size = Vector2(1152, 648)
@@ -136,8 +137,10 @@ horizontal_alignment = 1
 layout_mode = 0
 offset_left = 505.0
 offset_top = 700.0
-offset_right = 676.0
-offset_bottom = 774.0
+offset_right = 808.0
+offset_bottom = 812.0
+theme = ExtResource("3_5sy7b")
+theme_override_font_sizes/font_size = 0
 text = "Replay?"
 
 [connection signal="button_up" from="Control/Button" to="." method="_on_button_button_up"]

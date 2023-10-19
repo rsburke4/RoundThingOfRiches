@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://c5b1hocmae8sh" path="res://Wheel/Wheel.tscn" id="2_u8u61"]
 [ext_resource type="PackedScene" uid="uid://gsf4ctc5makr" path="res://Puzzle/puzzle.tscn" id="3_sr3qk"]
 [ext_resource type="Script" path="res://MainScene/WheelRenderer.gd" id="5_abvpq"]
-[ext_resource type="PackedScene" path="res://Scores/score_board.tscn" id="5_bm03a"]
+[ext_resource type="PackedScene" uid="uid://bcxhe2gx0523t" path="res://Scores/score_board.tscn" id="5_bm03a"]
 [ext_resource type="PackedScene" uid="uid://c7wdx4y3e5eho" path="res://Screens/GameOver.tscn" id="6_we362"]
 [ext_resource type="Script" path="res://MainScene/AudioPlayer.gd" id="8_pi05m"]
 [ext_resource type="AudioStream" uid="uid://dwpuc7o340pp0" path="res://Sounds/assets/Yes.wav" id="9_a2uiq"]
@@ -80,14 +80,14 @@ script = ExtResource("5_abvpq")
 position = Vector2(3.9765, 18.5275)
 shape = SubResource("CircleShape2D_8gy8h")
 
-[node name="Tmp" type="ColorRect" parent="."]
+[node name="Intermed" type="ColorRect" parent="."]
 offset_left = 8.0
 offset_top = 1020.0
 offset_right = 271.0
 offset_bottom = 1101.0
 color = Color(0.0117647, 0.278431, 0.329412, 1)
 
-[node name="Round" type="Label" parent="Tmp"]
+[node name="Message" type="Label" parent="Intermed"]
 layout_mode = 0
 offset_left = 68.0
 offset_top = -771.0

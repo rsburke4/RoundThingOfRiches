@@ -43,7 +43,6 @@ func _ready():
 	puzzle.round_over.connect(wheel.reset)
 	
 	## connect puzzle with main scene
-	# TODO - change connections if/when needed during gameflow implementation
 	puzzle.guess_complete.connect(_on_guess_complete)
 	puzzle.round_over.connect(_on_round_over)
 	puzzle.only_vowels.connect(_on_only_vowels)
@@ -67,29 +66,32 @@ func _process(_delta):
 
 ## functions defining gameplay
 # defines behavior when the "new game" (title) screen has switched to this scene via button press
-func start_new_game():
+func start_new_game(is_tiebreaker := false):
 	# prevent anything accidentally resetting the game if not coming from configuration state
 	if GameState == States.game.CONFIG:
 		GameState = States.game.SETUP
+		
+		# set number of rounds and players
+		num_players = PlayerGlobal.num_players
+		if not is_tiebreaker:
+			num_rounds = num_players
 		
 		# reset scores and round
 		current_round = 0
 		current_player = 0
 		
-		total_scores = []
-		round_scores = []
+		total_scores.resize(num_players)
+		round_scores.resize(num_players)
 		guess_score = 0
 		
 		for p in range(num_players):
-			total_scores.append(0)
-			round_scores.append(0)
+			total_scores[p] = 0
+			round_scores[p] = 0
 		
 		get_node("ScoreBoard").reset_board()
 		get_node("ScoreBoard").setup_scores(num_players)
 		
 		get_node("GameOver").hide()
-
-		# TODO - enable new game button only when # players, # rounds provided
 
 # defines behavior at the start of each round of the game (each new puzzle)
 func start_new_round(is_tiebreaker := false):
@@ -167,18 +169,18 @@ func turn_state_machine():
 	
 	if GameState == States.game.PLAYING and RoundState == States.puzzle_round.PLAYING:
 		if TurnState == States.turn.START:
-			print("State: Turn Start")
+			#print("State: Turn Start")
 			# each turn starts with a spin, so make that possible
 			TurnState = States.turn.SPIN
 			
 			wheel.set_spin(true)
 			tracker.hide()  # hide/diable guess tracker
 		elif TurnState == States.turn.SPIN:
-			print("State: Turn Spin")
-			
+			#print("State: Turn Spin")
+			pass
 			# wait for the player to spin and handle in callback
 		elif TurnState == States.turn.GUESS:
-			print("State: Turn Guess")
+			#print("State: Turn Guess")
 			# player must guess a letter or solve
 			# new state handled in call back (CORRECT or END)
 			
@@ -193,7 +195,7 @@ func turn_state_machine():
 			letters.show()  # show/enable tracker letter buttons
 			tracker.show()  # show/enable guess tracker
 		elif TurnState == States.turn.CORRECT:
-			print("State: Turn Post-guess")
+			#print("State: Turn Post-guess")
 			# player must guess a vowel, solve, or spin
 			if round_scores[current_player] < 250:
 				letters.hide()  # can only spin or solve if unable to buy vowel
@@ -205,14 +207,14 @@ func turn_state_machine():
 			tracker.show()  # makes the solve button accessible by showing tracker
 			wheel.set_spin(true)
 		elif TurnState == States.turn.SOLVE:
-			print("State: Solve Attempt")
+			#print("State: Solve Attempt")
 			# player must enter a solution attempt, or cancel the attempt
 			
 			# prevent spinning or guessing a letter when in this state
 			wheel.set_spin(false)
 			letters.hide()
 		elif TurnState == States.turn.END:
-			print("State: Turn Over")
+			#print("State: Turn Over")
 			
 			current_player = (current_player + 1) % num_players  # go to the next player
 			
@@ -273,22 +275,19 @@ func end_game():
 					tied.append(loc + 1)  # stores players which tied
 				loc+=1
 			
-			var label = get_node("Tmp/Round")
+			var label = get_node("Intermed/Message")
 			label.label_settings.font_size = 50
 			show_message("There's a tie! \nWinner takes all round \nbetween players " + list_players(tied))
 			
-			
 			await get_tree().create_timer(5.0).timeout  # this is a little bit longer to allow players to get ready
-			# TODO - should this be a button instead that then runs the below code?
 			
 			# reset to play one round to determine a winner
-			# TODO - does this need to be improved?
 			num_players = total_scores.count(max_score)
 			num_rounds = 1
 			
 			GameState = States.game.CONFIG
 			
-			start_new_game()
+			start_new_game(true)
 			start_new_round(true)
 		else:
 			var winner = total_scores.find(max_score) + 1  # +1 to make it 1-based instead of 0-based
@@ -388,7 +387,7 @@ func _on_round_over():
 ## auxiliary functions
 # used to write messages to a textbox during the game
 func show_message(msg):
-	var label = get_node("Tmp/Round")  # TODO - update this path if needed
+	var label = get_node("Intermed/Message")  # TODO - update this path if needed
 	
 	label.text = msg
 	label.show()
