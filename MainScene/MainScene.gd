@@ -169,18 +169,18 @@ func turn_state_machine():
 	
 	if GameState == States.game.PLAYING and RoundState == States.puzzle_round.PLAYING:
 		if TurnState == States.turn.START:
-			print("State: Turn Start")
+			#print("State: Turn Start")
 			# each turn starts with a spin, so make that possible
 			TurnState = States.turn.SPIN
 			
 			wheel.set_spin(true)
 			tracker.hide()  # hide/diable guess tracker
 		elif TurnState == States.turn.SPIN:
-			print("State: Turn Spin")
-			
+			#print("State: Turn Spin")
+			pass
 			# wait for the player to spin and handle in callback
 		elif TurnState == States.turn.GUESS:
-			print("State: Turn Guess")
+			#print("State: Turn Guess")
 			# player must guess a letter or solve
 			# new state handled in call back (CORRECT or END)
 			
@@ -195,7 +195,7 @@ func turn_state_machine():
 			letters.show()  # show/enable tracker letter buttons
 			tracker.show()  # show/enable guess tracker
 		elif TurnState == States.turn.CORRECT:
-			print("State: Turn Post-guess")
+			#print("State: Turn Post-guess")
 			# player must guess a vowel, solve, or spin
 			if round_scores[current_player] < 250:
 				letters.hide()  # can only spin or solve if unable to buy vowel
@@ -207,14 +207,14 @@ func turn_state_machine():
 			tracker.show()  # makes the solve button accessible by showing tracker
 			wheel.set_spin(true)
 		elif TurnState == States.turn.SOLVE:
-			print("State: Solve Attempt")
+			#print("State: Solve Attempt")
 			# player must enter a solution attempt, or cancel the attempt
 			
 			# prevent spinning or guessing a letter when in this state
 			wheel.set_spin(false)
 			letters.hide()
 		elif TurnState == States.turn.END:
-			print("State: Turn Over")
+			#print("State: Turn Over")
 			
 			current_player = (current_player + 1) % num_players  # go to the next player
 			
