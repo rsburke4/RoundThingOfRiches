@@ -59,9 +59,11 @@ offset_left = 137.0
 offset_top = 554.0
 offset_right = 937.0
 offset_bottom = 623.0
+theme_override_constants/caret_width = 5
 theme_override_font_sizes/font_size = 44
 placeholder_text = "type solution here"
 shortcut_keys_enabled = false
+caret_blink = true
 
 [node name="SolutionSubmit" type="Button" parent="SolutionInput"]
 offset_left = 960.0

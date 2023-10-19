@@ -20,7 +20,7 @@ func _ready():
 	textbox.set("theme_override_colors/selection_color", Colors.COLOR_SOLVE_BTN_HOVERED_TEXT)
 	
 	textbox.add_theme_stylebox_override("normal", stylebox_normal)
-	textbox.add_theme_stylebox_override("focux", stylebox_focus)
+	textbox.add_theme_stylebox_override("focus", stylebox_focus)
 	
 	# format the submit button
 	var stylebox_active = submit.get_theme_stylebox("normal").duplicate()
