@@ -26,9 +26,8 @@ func setup_scores(num_players):
 		var s = score.instantiate()
 		
 		s.name = "Player" + str(i+1)
-		s.change_colors(Colors["COLOR_SCORE_BKGD_ACTIVE_PLAYER" + str(i+1)], \
-			Colors.COLOR_SCORE_BORDER_ACTIVE, \
-			Colors["COLOR_SCORE_TEXT_PLAYER" + str(i+1)])
+		s.change_colors(Colors.COLOR_SCORE_BKGD_ACTIVE[i], \
+			Colors.COLOR_SCORE_BORDER_ACTIVE, Colors.COLOR_SCORE_TEXT)
 		s.reset_score()
 		
 		array.add_child(s)
@@ -42,10 +41,8 @@ func next_player(player):
 		var cur_score = get_node("ScoreArray/Player" + str(p+1))
 		
 		if p == (player-1):
-			cur_score.change_colors(Colors["COLOR_SCORE_BKGD_ACTIVE_PLAYER" + str(player)], \
-				Colors.COLOR_SCORE_BORDER_ACTIVE, \
-				Colors["COLOR_SCORE_TEXT_PLAYER" + str(player)])
+			cur_score.change_colors(Colors.COLOR_SCORE_BKGD_ACTIVE[player-1], \
+				Colors.COLOR_SCORE_BORDER_ACTIVE, Colors.COLOR_SCORE_TEXT)
 		else:
-			cur_score.change_colors(Colors["COLOR_SCORE_BKGD_INACTIVE_PLAYER" + str(p+1)], \
-				Colors.COLOR_SCORE_BORDER_INACTIVE, \
-				Colors["COLOR_SCORE_TEXT_PLAYER" + str(p+1)])
+			cur_score.change_colors(Colors.COLOR_SCORE_BKGD_INACTIVE, \
+				Colors.COLOR_SCORE_BORDER_INACTIVE, Colors.COLOR_SCORE_TEXT)

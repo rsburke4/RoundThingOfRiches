@@ -3,7 +3,7 @@ extends Panel
 var stylebox_panel = get_theme_stylebox("panel").duplicate()
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	set_style(stylebox_panel, Colors.COLOR_SCORE_BKGD_INACTIVE_PLAYER1, Colors.COLOR_SCORE_BORDER_INACTIVE)
+	set_style(stylebox_panel, Colors.COLOR_SCORE_BKGD_INACTIVE, Colors.COLOR_SCORE_BORDER_INACTIVE)
 	add_theme_stylebox_override("panel", stylebox_panel)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
