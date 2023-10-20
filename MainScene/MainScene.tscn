@@ -64,10 +64,6 @@ color = Color(0.117647, 0.321569, 0.286275, 1)
 position = Vector2(992, 31.0001)
 scale = Vector2(0.8, 0.8)
 
-[node name="Puzzle" parent="." instance=ExtResource("3_sr3qk")]
-position = Vector2(107, 29)
-scale = Vector2(0.7, 0.7)
-
 [node name="WheelRenderer" type="Sprite2D" parent="."]
 position = Vector2(549, 676)
 scale = Vector2(1.76034, 0.701659)
@@ -97,9 +93,6 @@ theme_override_font_sizes/font_size = 90
 label_settings = ExtResource("16_d7ha4")
 horizontal_alignment = 1
 
-[node name="ScoreBoard" parent="." instance=ExtResource("5_bm03a")]
-position = Vector2(12, 477)
-
 [node name="GameOver" parent="." instance=ExtResource("6_we362")]
 visible = false
 
@@ -113,6 +106,27 @@ very_bad = ExtResource("12_cq4to")
 win = ExtResource("13_5hjhk")
 congrats = ExtResource("14_6xxxb")
 incorrect = ExtResource("15_7hdtq")
+
+[node name="GameBoard" type="CenterContainer" parent="."]
+offset_left = 167.0
+offset_top = -1.0
+offset_right = 928.0
+offset_bottom = 448.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PuzzleControl" type="Control" parent="GameBoard"]
+layout_mode = 2
+
+[node name="Puzzle" parent="GameBoard/PuzzleControl" instance=ExtResource("3_sr3qk")]
+position = Vector2(-367, -213)
+scale = Vector2(0.6, 0.6)
+
+[node name="ScoreControl" type="Control" parent="GameBoard"]
+layout_mode = 2
+
+[node name="ScoreBoard" parent="GameBoard/ScoreControl" instance=ExtResource("5_bm03a")]
+position = Vector2(-331, 180)
 
 [connection signal="tree_entered" from="." to="." method="_on_tree_entered"]
 [connection signal="mouse_shape_entered" from="WheelRenderer/Area2D" to="WheelRenderer" method="_on_area_2d_mouse_shape_entered"]
