@@ -27,10 +27,10 @@ func set_style(style, bg_color, bdr_color):
 	style.border_color = bdr_color
 	
 	# outline shape is the same for all buttons
-	style.border_width_top = 3
-	style.border_width_bottom = 3
-	style.border_width_left = 3
-	style.border_width_right = 3
+	style.border_width_top = 5
+	style.border_width_bottom = 5
+	style.border_width_left = 5
+	style.border_width_right = 5
 	style.corner_radius_bottom_left = 5
 	style.corner_radius_bottom_right = 5
 	style.corner_radius_top_left = 5
