@@ -27,6 +27,7 @@ func setup_scores(num_players):
 		
 		s.name = "Player" + str(i+1)
 		s.change_colors(Colors["COLOR_SCORE_BKGD_ACTIVE_PLAYER" + str(i+1)], \
+			Colors.COLOR_SCORE_BORDER_ACTIVE, \
 			Colors["COLOR_SCORE_TEXT_PLAYER" + str(i+1)])
 		s.reset_score()
 		
@@ -42,7 +43,9 @@ func next_player(player):
 		
 		if p == (player-1):
 			cur_score.change_colors(Colors["COLOR_SCORE_BKGD_ACTIVE_PLAYER" + str(player)], \
+				Colors.COLOR_SCORE_BORDER_ACTIVE, \
 				Colors["COLOR_SCORE_TEXT_PLAYER" + str(player)])
 		else:
 			cur_score.change_colors(Colors["COLOR_SCORE_BKGD_INACTIVE_PLAYER" + str(p+1)], \
+				Colors.COLOR_SCORE_BORDER_INACTIVE, \
 				Colors["COLOR_SCORE_TEXT_PLAYER" + str(p+1)])

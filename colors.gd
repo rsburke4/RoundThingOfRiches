@@ -58,5 +58,8 @@ var COLOR_SCORE_TEXT_PLAYER2 = Color(0, 0, 0, 1)
 var COLOR_SCORE_TEXT_PLAYER3 = Color(0, 0, 0, 1)
 var COLOR_SCORE_TEXT_PLAYER4 = Color(0, 0, 0, 1)
 
+var COLOR_SCORE_BORDER_ACTIVE = Color(0.81, 0.92, 0.68, 1)
+var COLOR_SCORE_BORDER_INACTIVE = Color(0.25, 0.25, 0.25, 1)
+
 # general colors
 var COLOR_HIDDEN = Color(1,1,1,0)  # this can be used for elements that are needed for alignment but should not be visible (transparent)
