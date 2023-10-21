@@ -60,13 +60,13 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.117647, 0.321569, 0.286275, 1)
 
+[node name="Puzzle" parent="." instance=ExtResource("3_sr3qk")]
+position = Vector2(180, 10)
+scale = Vector2(0.6, 0.6)
+
 [node name="GameControl" parent="." instance=ExtResource("2_1omuh")]
 position = Vector2(992, 31.0001)
 scale = Vector2(0.8, 0.8)
-
-[node name="Puzzle" parent="." instance=ExtResource("3_sr3qk")]
-position = Vector2(107, 29)
-scale = Vector2(0.7, 0.7)
 
 [node name="WheelRenderer" type="Sprite2D" parent="."]
 position = Vector2(549, 676)
@@ -97,11 +97,11 @@ theme_override_font_sizes/font_size = 90
 label_settings = ExtResource("16_d7ha4")
 horizontal_alignment = 1
 
-[node name="ScoreBoard" parent="." instance=ExtResource("5_bm03a")]
-position = Vector2(12, 477)
-
 [node name="GameOver" parent="." instance=ExtResource("6_we362")]
 visible = false
+
+[node name="ScoreBoard" parent="." instance=ExtResource("5_bm03a")]
+position = Vector2(216, 403)
 
 [node name="AudioPlayer" type="AudioStreamPlayer2D" parent="."]
 autoplay = true
