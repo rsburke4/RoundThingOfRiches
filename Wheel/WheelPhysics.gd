@@ -66,7 +66,6 @@ func connect_puzzle(nodePath):
 	var puzzle = get_node(nodePath)
 	puzzle.guess_complete.connect(_on_guess_over)
 
-# TODO - not sure if this is the best way to do this, but need to control if wheel can spin or not
 func set_spin(b):
 	can_spin = b
 

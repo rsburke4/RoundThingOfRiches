@@ -112,7 +112,6 @@ func get_puzzle(filename):
 	return puzzle_dict;
 
 func setup_puzzle(puzzle):
-	# TODO - remove?
 	print(puzzle.Line1)
 	print(puzzle.Line2)
 	print(puzzle.Line3)
@@ -240,6 +239,7 @@ func _on_wrong_guess_timer_timeout():
 func _on_solve_attempt():
 	if State == States.puzzle.STATE_PLAYING or rem_guesses == 0:
 		get_node("SolutionInput").show()
+		get_node("SolutionInput/SolutionGuess").grab_focus()
 		State = States.puzzle.STATE_SOLVE
 
 func _on_solve_cancelled():

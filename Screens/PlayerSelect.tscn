@@ -1,0 +1,88 @@
+[gd_scene load_steps=7 format=3 uid="uid://cps452326nsx5"]
+
+[ext_resource type="Theme" uid="uid://vgkt3d8v7x2q" path="res://Screens/PlayerSelectTHEME.tres" id="1_2r1ul"]
+[ext_resource type="LabelSettings" uid="uid://cmu0oglljtyvg" path="res://Fonts/LablePresets/CategoryPreset.tres" id="1_n2lgt"]
+[ext_resource type="Script" path="res://Screens/PlayerSelect.gd" id="1_rr1py"]
+[ext_resource type="AudioStream" uid="uid://dw84ebt58xn3m" path="res://Sounds/assets/WheelClick.wav" id="4_2dk33"]
+[ext_resource type="AudioStream" uid="uid://bkvi82iwsnfvp" path="res://Sounds/assets/LetterGuess.wav" id="5_dm0yo"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pbcae"]
+
+[node name="PlayerSelect" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+script = ExtResource("1_rr1py")
+scene_change = "res://MainScene/MainScene.tscn"
+
+[node name="BackgroundColor" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.117647, 0.321569, 0.286275, 1)
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = 200.0
+offset_right = -190.0
+offset_bottom = -280.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_pbcae")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Select Number of Players"
+label_settings = ExtResource("1_n2lgt")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_2r1ul")
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="Button1" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_2r1ul")
+text = "1"
+
+[node name="Button2" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "2"
+
+[node name="Button3" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "3"
+
+[node name="Button4" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "4"
+
+[node name="ClickPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_2dk33")
+
+[node name="SceneEnter" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_dm0yo")
+autoplay = true
+
+[connection signal="button_up" from="PanelContainer/VBoxContainer/HBoxContainer/Button1" to="." method="_on_button_1_button_up"]
+[connection signal="mouse_entered" from="PanelContainer/VBoxContainer/HBoxContainer/Button1" to="." method="_on_button_1_mouse_entered"]
+[connection signal="button_up" from="PanelContainer/VBoxContainer/HBoxContainer/Button2" to="." method="_on_button_2_button_up"]
+[connection signal="mouse_entered" from="PanelContainer/VBoxContainer/HBoxContainer/Button2" to="." method="_on_button_2_mouse_entered"]
+[connection signal="button_up" from="PanelContainer/VBoxContainer/HBoxContainer/Button3" to="." method="_on_button_3_button_up"]
+[connection signal="mouse_entered" from="PanelContainer/VBoxContainer/HBoxContainer/Button3" to="." method="_on_button_3_mouse_entered"]
+[connection signal="button_up" from="PanelContainer/VBoxContainer/HBoxContainer/Button4" to="." method="_on_button_4_button_up"]
+[connection signal="mouse_entered" from="PanelContainer/VBoxContainer/HBoxContainer/Button4" to="." method="_on_button_4_mouse_entered"]
