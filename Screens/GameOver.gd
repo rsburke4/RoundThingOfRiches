@@ -18,12 +18,6 @@ func _on_game_over(state):
 	$"Control".visible = true
 	var background_anim = $"Control/AnimationPlayer"
 	background_anim.play("BackgroundFade")
-	#if state=="WIN":
-		#Load win screne
-	#	$Control/WinLable.text = "Yay You Win"
-	#else:
-		#Load lose screen
-	#	$Control/WinLable.text = "Boo You Lost"
 	
 	$Control/WinLable.text = "Yay Player " + str(state) + " wins!"
 
