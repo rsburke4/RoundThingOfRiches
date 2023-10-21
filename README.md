@@ -92,3 +92,6 @@ A truncated version of the HTML containing the table is saved in res://WebScrape
 # Reflection: Design and development process
 
 (Challenges, what worked/didn't work, lessons learned --> 500 words)
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbMTEwMjUzMDEyNV19
+-->
