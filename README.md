@@ -18,7 +18,7 @@ After the specified number of rounds, the player/team which has was the highest 
 
 ## Rules
 
-After selecting the number of players/teams participating and the number of rounds, the game will start the first round with player 1, the second round with player 2, etc.
+After selecting the number of players/teams participating, the game will start the first round with player 1, the second round with player 2, etc.  There will be as many rounds played as players selected, so each player has the chance to start a round.
 
 ### Round play
 
@@ -57,7 +57,16 @@ Game created using [Godot game engine](https://godotengine.org/).
 # Setup and deployment
 
 1. TBD (website and other setup steps, if necessary)
-2. TBD (steps for host to moderate game)
+2. Hosting and moderating
+   * Host launches game and creates 2-4 teams, depending on the size of the group
+   * Click the "Start Game" button and select the appropriate number of players (teams)
+   * Each team instructs moderator what they would like to do: spin, guess, or solve
+     * Spin: moderator clicks the wheel
+     * Guess: moderator clicks the button corresponding to the letter that was guessed
+     * Solve: moderator clicks the "Solve" button and types the response in the text box that appears, then clicks "Submit" when team approves
+   * In the case of a tie, moderator will assign the tied teams a number 1 through (number of tied teams) for the sudden-death round.  Note that these may not correspond to the team numbers assigned during the regular game rounds.
+   * To replay, moderator can click "Replay" button at the end of a game
+   * Optional: if host is comfortable sharing screen control (over Zoom or Teams) or in-person play allows, teams may have a representative do the above actions themselves, removing the need for a moderator (who can instead participate in the game)
 
 # Credits
 
