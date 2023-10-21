@@ -83,6 +83,7 @@ A truncated version of the HTML containing the table is saved in res://WebScrape
   - [Guide for deployment](https://www.reddit.com/r/godot/comments/10buva4/github_action_to_deploy_a_godot_4_game/?rdt=39430)
   - [Tool for deployment](https://gist.github.com/Dams4K/0485cbc874a04030eac8cf0e40c730ac)
   - [Tool for deployment](https://github.com/gzuidhof/coi-serviceworker)
+* README to HTML for page displ
 
 ## Code snippets
 
@@ -113,5 +114,5 @@ As a team, we identified several things that helped us work better together, and
 
 We summarized the above observations into three lessons learned from this experiences.  First, the time and effort put into planning the game up front, and holding weekly progress meetings, helped us complete the majority of the game before the due date.  Next, including a scoping activity during the planning stage helped us identify what to place the highest priority on during implementation.  Finally, it is beneficial to discuss with each developer their prior experience with the tech stack to avoid assigning too many tasks to developers who are still ramping up on it.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTYxOTI1NTk2M119
+eyJoaXN0b3J5IjpbMTU2MzQwNTQ3M119
 -->
