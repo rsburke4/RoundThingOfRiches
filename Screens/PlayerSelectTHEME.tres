@@ -1,0 +1,24 @@
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://vgkt3d8v7x2q"]
+
+[ext_resource type="FontFile" uid="uid://de5pjg21lm5n1" path="res://Fonts/Lilita_One/LilitaOne-Regular.ttf" id="1_jjhy0"]
+[ext_resource type="StyleBox" uid="uid://bnrfmrj1c057h" path="res://Screens/PS_BB_HOVR.tres" id="2_st3vr"]
+[ext_resource type="StyleBox" uid="uid://b45nxu74m4w0j" path="res://Screens/PS_BB_NORM.tres" id="3_s3h7y"]
+[ext_resource type="StyleBox" uid="uid://b5f1dd8uywxkg" path="res://Screens/PS_BB_PRESS.tres" id="4_a5nmr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ty54k"]
+
+[resource]
+/constants/Thing = 305
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_focus_color = Color(0.95, 0.95, 0.95, 1)
+Button/colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
+Button/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0, 0.423529, 0.294118, 1)
+Button/colors/font_pressed_color = Color(0.741176, 0.741176, 0.741176, 1)
+Button/constants/outline_size = 25
+Button/font_sizes/font_size = 80
+Button/fonts/font = ExtResource("1_jjhy0")
+Button/styles/focus = SubResource("StyleBoxEmpty_ty54k")
+Button/styles/hover = ExtResource("2_st3vr")
+Button/styles/normal = ExtResource("3_s3h7y")
+Button/styles/pressed = ExtResource("4_a5nmr")

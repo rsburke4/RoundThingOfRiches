@@ -43,17 +43,15 @@ var COLOR_SOLVE_BTN_HOVERED_BORDER = Color(0.66, 0.75, 0.7, 1)
 var COLOR_SOLVE_BTN_HOVERED_TEXT = Color(0.4, 0.65, 0.64, 1)
 
 # score colors
-var COLOR_SCORE_BKGD_ACTIVE_PLAYER1 = Color(0.73, 0.19, 0.43, 1)
-var COLOR_SCORE_BKGD_ACTIVE_PLAYER2 = Color(0.62, 0.73, 0.49, 1)
-var COLOR_SCORE_BKGD_ACTIVE_PLAYER3 = Color(0.17, 0.62, 0.62, 1)
+var COLOR_SCORE_BKGD_ACTIVE = [ Color(0.73, 0.19, 0.43, 1), Color(0.62, 0.73, 0.49, 1), \
+								Color(0.17, 0.62, 0.62, 1), Color(0.55, 0.36, 0.69, 1) ]
 
-var COLOR_SCORE_BKGD_INACTIVE_PLAYER1 = Color(0.5, 0.5, 0.5, 1)
-var COLOR_SCORE_BKGD_INACTIVE_PLAYER2 = Color(0.5, 0.5, 0.5, 1)
-var COLOR_SCORE_BKGD_INACTIVE_PLAYER3 = Color(0.5, 0.5, 0.5, 1)
+var COLOR_SCORE_BKGD_INACTIVE = Color(0.5, 0.5, 0.5, 1)
 
-var COLOR_SCORE_TEXT_PLAYER1 = Color(0, 0, 0, 1)
-var COLOR_SCORE_TEXT_PLAYER2 = Color(0, 0, 0, 1)
-var COLOR_SCORE_TEXT_PLAYER3 = Color(0, 0, 0, 1)
+var COLOR_SCORE_TEXT = Color(0, 0, 0, 1)
+
+var COLOR_SCORE_BORDER_ACTIVE = Color(0.81, 0.92, 0.68, 1)
+var COLOR_SCORE_BORDER_INACTIVE = Color(0.25, 0.25, 0.25, 1)
 
 # general colors
 var COLOR_HIDDEN = Color(1,1,1,0)  # this can be used for elements that are needed for alignment but should not be visible (transparent)

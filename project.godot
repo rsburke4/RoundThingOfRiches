@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 Colors="*res://colors.gd"
 States="*res://states.gd"
+PlayerGlobal="*res://Screens/PlayerGlobal.gd"
 
 [dotnet]
 

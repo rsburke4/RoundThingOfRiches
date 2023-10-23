@@ -9,14 +9,14 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	if Input.is_action_just_released("SpinWheel") and insideCollider:
 		wheel.spin()
 
 
-func _on_area_2d_mouse_shape_entered(shape_idx):
+func _on_area_2d_mouse_shape_entered(_shape_idx):
 	insideCollider = true
 
 
-func _on_area_2d_mouse_shape_exited(shape_idx):
+func _on_area_2d_mouse_shape_exited(_shape_idx):
 	insideCollider = false
