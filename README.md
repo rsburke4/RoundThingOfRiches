@@ -6,6 +6,8 @@ Gameplay is based on the Wheel of Fortune TV game show; specific rules are below
 
 The game is intended to be played on a single computer, with all elements managed by a moderator.  This makes it useful for in-person settings, such as a classroom with the teacher as the moderator, or virtual meetings, such as an ice breaker activity for remote teams.  See below on how to launch and manage the game.
 
+The game is playable on all desktop browsers here: https://rsburke.itch.io/roundthing-of-riches
+
 # Game objective and rules
 
 (Game rules have been adopted from the TV game show rules, which are summarized [here](https://roulettedoc.com/wof-rules).)
@@ -56,7 +58,7 @@ Game created using [Godot game engine](https://godotengine.org/).
 
 # Setup and deployment
 
-1. TBD (website and other setup steps, if necessary)
+1. The game is available both on [GitHub Pages](https://rsburke4.github.io/) (For Chrome and Edge) and [Itch.io](https://rsburke.itch.io/roundthing-of-riches) (For other browsers)
 2. Hosting and moderating
    * Host launches game and creates 2-4 teams, depending on the size of the group
    * Click the "Start Game" button and select the appropriate number of players (teams)
